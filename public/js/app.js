@@ -194,25 +194,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       newDialog: false,
       editDialog: false,
-      todos: [{
-        id: 1,
-        title: 'aaa',
-        content: 'あああああああああああああ',
-        state: 1,
-        bookMark: false
-      }, {
-        id: 2,
-        title: 'bbb',
-        content: 'あああああああああああああ',
-        state: 2,
-        bookMark: false
-      }, {
-        id: 3,
-        title: 'ccc',
-        content: 'あああああああああああああ',
-        state: 3,
-        bookMark: false
-      }],
+      todos: [],
       newTodo: {
         id: '',
         title: '',
@@ -229,6 +211,9 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
+  mounted: function mounted() {
+    this.getTodos();
+  },
   methods: {
     edit: function edit(todo) {
       this.editDialog = true;
@@ -243,13 +228,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     color: function color(todo) {
       switch (todo.state) {
-        case 1:
+        case 0:
           return "#FFCDD2";
 
-        case 2:
+        case 1:
           return "#BBDEFB";
 
-        case 3:
+        case 2:
           return "#80CBC4";
 
         default:
@@ -265,6 +250,13 @@ __webpack_require__.r(__webpack_exports__);
         });
         this.newDialog = false;
       }
+    },
+    getTodos: function getTodos() {
+      var _this2 = this;
+
+      axios.get('/api/todos').then(function (res) {
+        _this2.todos = res.data;
+      });
     }
   }
 });

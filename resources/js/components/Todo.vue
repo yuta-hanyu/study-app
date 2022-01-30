@@ -138,29 +138,7 @@ export default {
     return{
       newDialog: false,
       editDialog: false,
-      todos:[
-        {
-          id: 1,
-          title: 'aaa',
-          content: 'あああああああああああああ',
-          state: 1,
-          bookMark: false
-        },
-        {
-          id: 2,
-          title: 'bbb',
-          content: 'あああああああああああああ',
-          state: 2,
-          bookMark: false
-        },
-        {
-          id: 3,
-          title: 'ccc',
-          content: 'あああああああああああああ',
-          state: 3,
-          bookMark: false
-        },
-      ],
+      todos:[],
       newTodo: {
         id: '',
         title: '',
@@ -169,13 +147,16 @@ export default {
         bookMark: false
       },
       editTodo: {
-          id: '',
-          title: '',
-          content: '',
-          state:'',
-          bookMark: false
+        id: '',
+        title: '',
+        content: '',
+        state:'',
+        bookMark: false
       }
     }
+  },
+  mounted() {
+    this.getTodos();
   },
   methods:{
     edit(todo){
@@ -191,11 +172,11 @@ export default {
     },
     color(todo){
       switch (todo.state){
-      case 1:
+      case 0:
         return "#FFCDD2"
-      case 2:
+      case 1:
         return "#BBDEFB"
-      case 3:
+      case 2:
         return "#80CBC4"
       default:
       }
@@ -207,6 +188,11 @@ export default {
         this.newDialog = false;
       }
     },
+    getTodos() {
+      axios.get('/api/todos').then((res) => {
+        this.todos = res.data;
+      });
+    }
   }
 }
 </script>

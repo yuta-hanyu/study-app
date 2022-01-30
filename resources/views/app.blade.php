@@ -8,8 +8,11 @@
     <title>{{ config('app.name', 'Vue Laravel SPA') }}</title>
     <!-- Styles -->
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
+    {{-- axios --}}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
+
 <div id="app">
     <example-component></example-component>
     {{-- <header-component></header-component> --}}
