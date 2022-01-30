@@ -6,9 +6,9 @@ import '@mdi/font/css/materialdesignicons.css'
 
 Vue.use(Vuetify);
 new Vue({
-    el: '#app',
-    vuetify: new Vuetify(),
-    router, // ルーティングの定義を読み込む
-    components: { App }, // ルートコンポーネントの使用を宣言する
-    template: '<App />' // ルートコンポーネントを描画する
-  })
+  el: '#app',
+  vuetify: new Vuetify(),
+  router, // ルーティングの定義を読み込む
+  components: { App }, // ルートコンポーネントの使用を宣言する
+  template: '<App />' // ルートコンポーネントを描画する
+})

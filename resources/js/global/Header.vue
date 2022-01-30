@@ -4,7 +4,7 @@
       color="orange"
       dark
     >
-    <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
     <v-toolbar-title>MyPortfolioSite</v-toolbar-title>
     </v-app-bar>
       <v-navigation-drawer

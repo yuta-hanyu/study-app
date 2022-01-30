@@ -1,23 +1,18 @@
 <template>
-<div>
-  <v-app>
   <div>
-    <Header/>
-    <router-link to="/todo">todo</router-link>
-    <main>
-    <RouterView />
-    </main>
+    <v-app>
+      <Header/>
+      <main>
+      <RouterView />
+      </main>
+    </v-app>
   </div>
-  </v-app>
-</div>
 </template>
 
 <script>
 import Header from './global/Header.vue';
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
-
-
 
 export default {
   components: {
@@ -26,10 +21,15 @@ export default {
     Top
   },
   name: 'App',
-
   data() {
     return {
+
     }
   },
+  methods:{
+  }
 };
 </script>
+
+<style scoped>
+</style>
