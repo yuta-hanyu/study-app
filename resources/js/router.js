@@ -13,14 +13,14 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            path: '/',
-            name: 'Top',
-            component: Top
+          path: '/',
+          name: 'Top',
+          component: Top
         },
         {
-            path: '/todo',
-            name: 'Todo',
-            component: Todo
+          path: '/todo',
+          name: 'Todo',
+          component: Todo
         },
     ]
 });

@@ -20,7 +20,7 @@ class CreateTodosTable extends Migration
             $table->string('content');
             $table->tinyInteger('state')->nullable();;
             $table->tinyInteger('book_mark')->nullable();;
-            $table->tinyInteger('is_deleted');
+            $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });
     }

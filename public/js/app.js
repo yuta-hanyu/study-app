@@ -55,6 +55,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _todoComponents_newTodo_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./todoComponents/newTodo.vue */ "./resources/js/components/todoComponents/newTodo.vue");
 //
 //
 //
@@ -136,72 +137,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    newTodo: _todoComponents_newTodo_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   name: 'Todo',
   data: function data() {
     return {
+      // 新規登録ダイアログ表示フラグ
       newDialog: false,
+      // 編集ダイアログ表示フラグ
       editDialog: false,
+      // todo一覧
       todos: [],
-      newTodo: {
-        id: '',
-        title: '',
-        content: '',
-        state: '',
-        bookMark: false
-      },
       editTodo: {
         id: '',
         title: '',
@@ -215,17 +164,23 @@ __webpack_require__.r(__webpack_exports__);
     this.getTodos();
   },
   methods: {
-    edit: function edit(todo) {
-      this.editDialog = true;
-      this.editTodo.id = todo.id;
-      this.editTodo.title = todo.title;
-      this.editTodo.content = todo.content;
-      this.editTodo.state = todo.state;
-      this.editTodo.bookMark = false;
+    /**
+     * todo一覧表示
+     */
+    getTodos: function getTodos() {
+      var _this = this;
+
+      axios.get('/api/todos').then(function (res) {
+        _this.todos = res.data;
+      })["catch"](function (e) {
+        console.log(e);
+        window.alert("データの取得に失敗しました");
+      });
     },
-    newTodoOpen: function newTodoOpen() {
-      this.newDialog = true;
-    },
+
+    /**
+     * ステータスに応じた配色適用
+     */
     color: function color(todo) {
       switch (todo.state) {
         case 0:
@@ -240,23 +195,74 @@ __webpack_require__.r(__webpack_exports__);
         default:
       }
     },
-    // 戻る押下時に入力内容リセット
-    back: function back() {
-      var _this = this;
 
+    /**
+     * 新規登録ダイアログを表示
+     */
+    newTodoOpen: function newTodoOpen() {
+      this.newDialog = true;
+    },
+
+    /**
+     * 新規登録ダイアログを非表示
+     */
+    newTodoClose: function newTodoClose() {
+      this.newDialog = false;
+    },
+
+    /**
+     * 各ダイアログから戻る
+     */
+    back: function back() {
       if (this.newDialog = true) {
-        Object.keys(this.newTodo).forEach(function (key) {
-          return delete _this.newTodo[key];
-        });
-        this.newDialog = false;
+        // Object.keys(this.newTodo).forEach(key => delete this.newTodo[key])
+        this.newTodoClose();
       }
     },
-    getTodos: function getTodos() {
+
+    /**
+     * todo新規登録
+     */
+    todoRegister: function todoRegister(newTodo) {
       var _this2 = this;
 
-      axios.get('/api/todos').then(function (res) {
-        _this2.todos = res.data;
+      axios.post('/api/todos', newTodo).then(function (res) {
+        _this2.newTodoClose();
+
+        _this2.getTodos();
+      })["catch"](function (e) {
+        console.log(e);
+        window.alert("データの更新に失敗しました");
       });
+    },
+
+    /**
+     * todo削除
+     */
+    todoDelete: function todoDelete(todo) {
+      var _this3 = this;
+
+      if (window.confirm("削除して良いですか？")) {
+        axios["delete"]("/api/todos/".concat(todo.id)).then(function (res) {
+          _this3.getTodos();
+        })["catch"](function (e) {
+          console.log(e);
+        });
+      } else {
+        return;
+      }
+    },
+
+    /**
+     * todo編集
+     */
+    todoEdit: function todoEdit(todo) {
+      this.editDialog = true;
+      this.editTodo.id = todo.id;
+      this.editTodo.title = todo.title;
+      this.editTodo.content = todo.content;
+      this.editTodo.state = todo.state;
+      this.editTodo.bookMark = false;
     }
   }
 });
@@ -284,6 +290,134 @@ __webpack_require__.r(__webpack_exports__);
   name: 'TOP',
   data: function data() {
     return {};
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/todoComponents/newTodo.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/todoComponents/newTodo.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      // 新規登録todo
+      newTodo: {
+        user_id: 1,
+        title: '',
+        content: '',
+        state: '',
+        bookMark: false
+      }
+    };
+  },
+  methods: {
+    /**
+     * 登録
+     */
+    todoRegister: function todoRegister() {
+      this.$emit('todo-register', this.newTodo);
+      this.initialize();
+    },
+
+    /**
+     * 戻る
+     */
+    backTodos: function backTodos() {
+      this.initialize();
+      this.$emit('back-todos');
+    },
+
+    /**
+     * データ初期化
+     */
+    initialize: function initialize() {
+      var _this = this;
+
+      Object.keys(this.newTodo).forEach(function (key) {
+        return _this.newTodo[key] = '';
+      });
+    }
   }
 });
 
@@ -514,7 +648,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#plus-circle[data-v-56644c31]{\n    position: fixed;\n    right: 5%;\n    bottom: 5%;\n    transform: scale(2, 2);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#plus-circle[data-v-56644c31]{\n    position: fixed;\n    right: 5%;\n    bottom: 5%;\n    transform: scale(2, 2);\n}\n.trash[data-v-56644c31]{\n    position: absolute;\n    right: 0;\n    top: 2%;\n}\n.edit[data-v-56644c31]{\n    position: absolute;\n    right: 20px;\n    top: 2%;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1187,6 +1321,45 @@ component.options.__file = "resources/js/components/Top.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/todoComponents/newTodo.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/todoComponents/newTodo.vue ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _newTodo_vue_vue_type_template_id_3e368d04___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./newTodo.vue?vue&type=template&id=3e368d04& */ "./resources/js/components/todoComponents/newTodo.vue?vue&type=template&id=3e368d04&");
+/* harmony import */ var _newTodo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./newTodo.vue?vue&type=script&lang=js& */ "./resources/js/components/todoComponents/newTodo.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _newTodo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _newTodo_vue_vue_type_template_id_3e368d04___WEBPACK_IMPORTED_MODULE_0__.render,
+  _newTodo_vue_vue_type_template_id_3e368d04___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/todoComponents/newTodo.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/global/Header.vue":
 /*!****************************************!*\
   !*** ./resources/js/global/Header.vue ***!
@@ -1274,6 +1447,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/todoComponents/newTodo.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/todoComponents/newTodo.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_newTodo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./newTodo.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/todoComponents/newTodo.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_newTodo_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/global/Header.vue?vue&type=script&lang=js&":
 /*!*****************************************************************!*\
   !*** ./resources/js/global/Header.vue?vue&type=script&lang=js& ***!
@@ -1350,6 +1539,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Top_vue_vue_type_template_id_5c6cb28c___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Top_vue_vue_type_template_id_5c6cb28c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Top.vue?vue&type=template&id=5c6cb28c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Top.vue?vue&type=template&id=5c6cb28c&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/todoComponents/newTodo.vue?vue&type=template&id=3e368d04&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/todoComponents/newTodo.vue?vue&type=template&id=3e368d04& ***!
+  \*******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_newTodo_vue_vue_type_template_id_3e368d04___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_newTodo_vue_vue_type_template_id_3e368d04___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_newTodo_vue_vue_type_template_id_3e368d04___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./newTodo.vue?vue&type=template&id=3e368d04& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/todoComponents/newTodo.vue?vue&type=template&id=3e368d04&");
 
 
 /***/ }),
@@ -1433,7 +1639,7 @@ var render = function () {
             _vm._l(_vm.todos, function (todo, index) {
               return _c(
                 "v-col",
-                { key: index, attrs: { cols: "6" } },
+                { key: index, attrs: { cols: "4" } },
                 [
                   _c(
                     "v-card",
@@ -1441,13 +1647,36 @@ var render = function () {
                       staticClass: "mx-auto",
                       style: { backgroundColor: _vm.color(todo) },
                       attrs: { outlined: "" },
-                      on: {
-                        click: function ($event) {
-                          return _vm.edit(todo)
-                        },
-                      },
                     },
                     [
+                      _c(
+                        "v-icon",
+                        {
+                          staticClass: "edit",
+                          attrs: { color: "green" },
+                          on: {
+                            click: function ($event) {
+                              return _vm.todoEdit(todo)
+                            },
+                          },
+                        },
+                        [_vm._v("\n          mdi-clipboard-edit\n        ")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-icon",
+                        {
+                          staticClass: "trash",
+                          attrs: { color: "red" },
+                          on: {
+                            click: function ($event) {
+                              return _vm.todoDelete(todo)
+                            },
+                          },
+                        },
+                        [_vm._v("\n          mdi-delete\n        ")]
+                      ),
+                      _vm._v(" "),
                       _c("v-card-title", [_vm._v(_vm._s(todo.title))]),
                       _vm._v(" "),
                       _c("v-card-subtitle", [
@@ -1459,8 +1688,10 @@ var render = function () {
                           ? _c("span", [
                               _vm._v("\n          対応中\n          "),
                             ])
+                          : todo.state === 3
+                          ? _c("span", [_vm._v("\n          保留\n          ")])
                           : _c("span", [
-                              _vm._v("\n          保留\n          "),
+                              _vm._v("\n          完了\n          "),
                             ]),
                       ]),
                       _vm._v(" "),
@@ -1482,7 +1713,7 @@ var render = function () {
           _c(
             "v-icon",
             { attrs: { id: "plus-circle" }, on: { click: _vm.newTodoOpen } },
-            [_vm._v("mdi-plus-circle")]
+            [_vm._v("mdi-plus-circle\n    ")]
           ),
         ],
         1
@@ -1501,208 +1732,9 @@ var render = function () {
           },
         },
         [
-          _c(
-            "v-card",
-            { attrs: { py: "3" } },
-            [
-              _c("v-card-title", { staticClass: "justify-center" }, [
-                _vm._v("Todo追加"),
-              ]),
-              _vm._v(" "),
-              _c(
-                "v-form",
-                { ref: "form" },
-                [
-                  _c(
-                    "v-row",
-                    { staticClass: "px-6" },
-                    [
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12" } },
-                        [
-                          _c("v-text-field", {
-                            attrs: {
-                              counter: 15,
-                              label: "タイトル",
-                              required: "",
-                            },
-                            model: {
-                              value: _vm.newTodo.title,
-                              callback: function ($$v) {
-                                _vm.$set(_vm.newTodo, "title", $$v)
-                              },
-                              expression: "newTodo.title",
-                            },
-                          }),
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12" } },
-                        [
-                          _c("v-textarea", {
-                            attrs: { counter: 255, label: "コンテンツ" },
-                            model: {
-                              value: _vm.newTodo.content,
-                              callback: function ($$v) {
-                                _vm.$set(_vm.newTodo, "content", $$v)
-                              },
-                              expression: "newTodo.content",
-                            },
-                          }),
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12", height: "10%" } },
-                        [
-                          _c(
-                            "v-radio-group",
-                            {
-                              staticClass: "my-0",
-                              attrs: { row: "", label: "ステータス" },
-                              model: {
-                                value: _vm.newTodo.state,
-                                callback: function ($$v) {
-                                  _vm.$set(_vm.newTodo, "state", $$v)
-                                },
-                                expression: "newTodo.state",
-                              },
-                            },
-                            [
-                              _c("v-radio", {
-                                attrs: { label: "未対応", value: "1" },
-                              }),
-                              _vm._v(" "),
-                              _c("v-radio", {
-                                attrs: { label: "対応中", value: "2" },
-                              }),
-                              _vm._v(" "),
-                              _c("v-radio", {
-                                attrs: { label: "保留", value: "3" },
-                              }),
-                              _vm._v(" "),
-                              _c("v-radio", {
-                                attrs: { label: "完了", value: "4" },
-                              }),
-                            ],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12", height: "10%" } },
-                        [
-                          _c("v-checkbox", {
-                            staticClass: "my-0",
-                            attrs: { label: "ブックマーク登録" },
-                            model: {
-                              value: _vm.newTodo.bookMark,
-                              callback: function ($$v) {
-                                _vm.$set(_vm.newTodo, "bookMark", $$v)
-                              },
-                              expression: "newTodo.bookMark",
-                            },
-                          }),
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12" } },
-                        [
-                          _c(
-                            "v-row",
-                            { attrs: { justify: "center" } },
-                            [
-                              _c(
-                                "v-col",
-                                { attrs: { cols: "2", justify: "center" } },
-                                [
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      attrs: { color: "blue lighten-4" },
-                                      on: { click: _vm.back },
-                                    },
-                                    [
-                                      _vm._v(
-                                        "\n                戻る\n              "
-                                      ),
-                                    ]
-                                  ),
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                { attrs: { cols: "2", justify: "center" } },
-                                [
-                                  _c(
-                                    "v-btn",
-                                    { attrs: { color: "orange lighten-4" } },
-                                    [
-                                      _vm._v(
-                                        "\n                登録\n              "
-                                      ),
-                                    ]
-                                  ),
-                                ],
-                                1
-                              ),
-                            ],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                    ],
-                    1
-                  ),
-                ],
-                1
-              ),
-            ],
-            1
-          ),
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-dialog",
-        {
-          attrs: { "max-width": "70%" },
-          model: {
-            value: _vm.editDialog,
-            callback: function ($$v) {
-              _vm.editDialog = $$v
-            },
-            expression: "editDialog",
-          },
-        },
-        [
-          _c(
-            "v-card",
-            { staticClass: "mx-auto", attrs: { outlined: "" } },
-            [
-              _c("v-card-title", [_vm._v(_vm._s(_vm.editTodo.title))]),
-              _vm._v(" "),
-              _c("v-card-subtitle"),
-              _vm._v("å\n            "),
-            ],
-            1
-          ),
+          _c("new-todo", {
+            on: { "back-todos": _vm.back, "todo-register": _vm.todoRegister },
+          }),
         ],
         1
       ),
@@ -1743,6 +1775,187 @@ var staticRenderFns = [
     return _c("div", [_c("h1", [_vm._v("TOP")])])
   },
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/todoComponents/newTodo.vue?vue&type=template&id=3e368d04&":
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/todoComponents/newTodo.vue?vue&type=template&id=3e368d04& ***!
+  \**********************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-card",
+    { attrs: { py: "3" } },
+    [
+      _c("v-card-title", { staticClass: "justify-center" }, [
+        _vm._v("Todo追加"),
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-form",
+        { ref: "form" },
+        [
+          _c(
+            "v-row",
+            { staticClass: "px-6" },
+            [
+              _c(
+                "v-col",
+                { attrs: { cols: "12" } },
+                [
+                  _c("v-text-field", {
+                    attrs: { counter: 15, label: "タイトル", required: "" },
+                    model: {
+                      value: _vm.newTodo.title,
+                      callback: function ($$v) {
+                        _vm.$set(_vm.newTodo, "title", $$v)
+                      },
+                      expression: "newTodo.title",
+                    },
+                  }),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12" } },
+                [
+                  _c("v-textarea", {
+                    attrs: { counter: 255, label: "コンテンツ" },
+                    model: {
+                      value: _vm.newTodo.content,
+                      callback: function ($$v) {
+                        _vm.$set(_vm.newTodo, "content", $$v)
+                      },
+                      expression: "newTodo.content",
+                    },
+                  }),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", height: "10%" } },
+                [
+                  _c(
+                    "v-radio-group",
+                    {
+                      staticClass: "my-0",
+                      attrs: { row: "", label: "ステータス" },
+                      model: {
+                        value: _vm.newTodo.state,
+                        callback: function ($$v) {
+                          _vm.$set(_vm.newTodo, "state", $$v)
+                        },
+                        expression: "newTodo.state",
+                      },
+                    },
+                    [
+                      _c("v-radio", { attrs: { label: "未対応", value: "1" } }),
+                      _vm._v(" "),
+                      _c("v-radio", { attrs: { label: "対応中", value: "2" } }),
+                      _vm._v(" "),
+                      _c("v-radio", { attrs: { label: "保留", value: "3" } }),
+                    ],
+                    1
+                  ),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", height: "10%" } },
+                [
+                  _c("v-checkbox", {
+                    staticClass: "my-0",
+                    attrs: { label: "ブックマーク登録" },
+                    model: {
+                      value: _vm.newTodo.bookMark,
+                      callback: function ($$v) {
+                        _vm.$set(_vm.newTodo, "bookMark", $$v)
+                      },
+                      expression: "newTodo.bookMark",
+                    },
+                  }),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12" } },
+                [
+                  _c(
+                    "v-row",
+                    { attrs: { justify: "center" } },
+                    [
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "1" } },
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "blue lighten-4" },
+                              on: { click: _vm.backTodos },
+                            },
+                            [_vm._v("\n            戻る\n          ")]
+                          ),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("v-col", { attrs: { cols: "auto" } }),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "1" } },
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: { color: "orange lighten-4" },
+                              on: { click: _vm.todoRegister },
+                            },
+                            [_vm._v("\n            登録\n          ")]
+                          ),
+                        ],
+                        1
+                      ),
+                    ],
+                    1
+                  ),
+                ],
+                1
+              ),
+            ],
+            1
+          ),
+        ],
+        1
+      ),
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
