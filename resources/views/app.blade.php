@@ -10,6 +10,7 @@
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     {{-- axios --}}
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 </head>
 <body>
 
