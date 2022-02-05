@@ -1,14 +1,30 @@
 <template>
   <v-card py="3">
-    <v-card-title class="justify-center">Todo追加</v-card-title>
+    <v-card-title class="justify-center title">Todo追加</v-card-title>
+    <v-row
+      class="mt-3"
+      v-if="this.errors.length"
+      justify="center" >
+      <v-alert
+        v-for="(error, index) in this.errors" :key=index
+        dense
+        text
+        border="left"
+        type="error"
+        class="px-6"
+        width="70%"
+      >
+        {{error}}
+      </v-alert>
+    </v-row>
     <v-form ref="form">
     <v-row class="px-6">
       <v-col cols="12">
       <v-text-field
+        required
         v-model="newTodo.title"
         :counter="15"
-        label="タイトル"
-        required
+        label="タイトル(必須)"
       ></v-text-field>
       </v-col>
       <v-col cols="12">
@@ -22,7 +38,7 @@
       <v-radio-group
         v-model="newTodo.state"
         row
-        label="ステータス"
+        label="ステータス(必須)"
         class="my-0"
       >
         <v-radio
@@ -46,27 +62,32 @@
         class="my-0"
       ></v-checkbox>
       </v-col>
-      <v-col cols="12">
-        <v-row justify="center">
-          <v-col cols="1">
-            <v-btn
-              @click="backTodos"
-              color="blue lighten-4">
-              戻る
-            </v-btn>
-          </v-col>
-          <v-col cols="auto"></v-col>
-          <v-col cols="1">
-            <v-btn
-              color="orange lighten-4"
-              @click="todoRegister">
-              登録
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-col>
     </v-row>
     </v-form>
+    <v-card-actions class="actions">
+      <v-row justify="center" class="mb-auto">
+        <v-col cols="6" align="right">
+          <v-btn
+            color="grey lighten-1"
+            width="40%"
+            @click="backTodos"
+            rounded
+            elevation="20">
+            戻る
+          </v-btn>
+        </v-col>
+        <v-col cols="6">
+          <v-btn
+            width="40%"
+            color="orange lighten-2"
+            @click="todoRegister"
+            elevation="20"
+            rounded>
+            登録
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -79,18 +100,39 @@ export default {
         user_id: 1,
         title: '',
         content: '',
-        state:'',
+        state: '',
         bookMark: false
       },
+      // フォームバリデーションエラー
+      errors:[]
     }
   },
   methods: {
     /**
      * 登録
      */
-    todoRegister(){
-      this.$emit('todo-register',this.newTodo);
-      this.initialize();
+    todoRegister() {
+      this.errors = [];
+      axios.post('/api/todos', this.newTodo).then((res) => {
+        if(res.data.validateState === false) {
+          this.errors = this.changeErrors(res.data.message);
+          return;
+        }
+        this.initialize();
+        this.$emit('todo-register');
+      }).catch((e) => {
+        console.log(e);
+        window.alert("データの更新に失敗しました")
+      });
+    },
+    /**
+     * エラーメッセージをオブジェクトから配列へ変換
+     */
+    changeErrors(message) {
+      for (let [key, value] of Object.entries(message)) {
+        this.errors.push(value[0]);
+      }
+      return this.errors;
     },
     /**
      * 戻る
@@ -104,11 +146,36 @@ export default {
      */
     initialize(){
       Object.keys(this.newTodo).forEach(key => this.newTodo[key] = '');
+      this.errors = [];
     }
   },
+  // computed: {
+    /**
+     * 登録ボタン活性判定
+     */
+    // isDisabled(){
+    //   if(!this.newTodo.title || this.newTodo.title.length > 15){
+    //     return true;
+    //   }
+    //   if(!this.newTodo.state){
+    //     return true;
+    //   }
+    //     return false;
+    // }
+  // }
 }
 </script>
 
-<style>
+<style scoped>
+.card {
+  padding: 10px;
+}
+.title {
+  background-color: #8ec6ff;
+  font-weight: bold;
+}
+.actions {
+  background-color: #8ec6ff;
+}
 
 </style>

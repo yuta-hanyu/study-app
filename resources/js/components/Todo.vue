@@ -44,22 +44,56 @@
           </v-card>
         </v-col>
       </v-row>
-      <!-- 新規登録ボタン -->
-      <v-icon
-        id="plus-circle"
-        @click="newTodoOpen"
-        >mdi-plus-circle
-      </v-icon>
     </v-container>
+    <!-- 新規登録ボタン -->
+    <v-tooltip bottom color="primary">
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon
+          color="primary"
+          v-bind="attrs"
+          v-on="on"
+          id="plus-circle"
+          @click="newTodoOpen"
+        >
+        mdi-plus-circle
+        </v-icon>
+      </template>
+      <span>todo追加</span>
+    </v-tooltip>
+    <!-- 一括削除ボタン -->
+    <v-tooltip bottom color="red">
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon
+          color="red"
+          id="delete-alert"
+          @click="allDeleteOpen"
+          v-bind="attrs"
+          v-on="on"
+        >
+        mdi-delete-alert
+        </v-icon>
+      </template>
+      <span>todo一括削除</span>
+    </v-tooltip>
     <!-- 新規作成ダイアログ -->
     <v-dialog
       v-model="newDialog"
-      width=70%
-      height="80%">
+      width=70%>
       <new-todo
         @back-todos="back"
         @todo-register="todoRegister">
       </new-todo>
+    </v-dialog>
+    <!-- 一括削除 -->
+    <v-dialog
+      v-model="allDeleteDialog"
+      height="300px"
+      width="400px"
+      transition="dialog-top-transition"
+    >
+      <all-delete-todo
+        @back-todos="back">
+      </all-delete-todo>
     </v-dialog>
       <!-- 編集ダイアログ -->
       <!-- <v-dialog
@@ -80,19 +114,24 @@
 </template>
 
 <script>
+import allDeleteTodo from './todoComponents/allDeleteTodo.vue'
 import newTodo from './todoComponents/newTodo.vue'
 
 export default {
-  components: { newTodo },
+  components: {
+    newTodo,
+    allDeleteTodo },
   name: 'Todo',
   data(){
     return{
       // 新規登録ダイアログ表示フラグ
       newDialog: false,
+      // 新規登録ダイアログ表示フラグ
+      allDeleteDialog: false,
       // 編集ダイアログ表示フラグ
       editDialog: false,
       // todo一覧
-      todos:[],
+      todos: '',
       editTodo: {
         id: '',
         title: '',
@@ -144,6 +183,12 @@ export default {
       this.newDialog = false;
     },
     /**
+     * 全削除ダイアログを表示
+     */
+    allDeleteOpen(){
+      this.allDeleteDialog = true;
+    },
+    /**
      * 各ダイアログから戻る
      */
     back(){
@@ -155,14 +200,9 @@ export default {
     /**
      * todo新規登録
      */
-    todoRegister(newTodo) {
-      axios.post('/api/todos', newTodo).then((res) => {
-        this.newTodoClose();
-        this.getTodos();
-      }).catch((e) => {
-        console.log(e);
-        window.alert("データの更新に失敗しました")
-      });
+    todoRegister() {
+      this.newTodoClose();
+      this.getTodos();
     },
     /**
      * todo削除
@@ -195,19 +235,25 @@ export default {
 
 <style scoped>
 #plus-circle{
-    position: fixed;
-    right: 5%;
-    bottom: 5%;
-    transform: scale(2, 2);
+  position: fixed;
+  right: 10%;
+  bottom: 5%;
+  transform: scale(2, 2);
+}
+#delete-alert {
+  position: fixed;
+  right: 5%;
+  bottom: 5%;
+  transform: scale(2, 2);
 }
 .trash{
-    position: absolute;
-    right: 0;
-    top: 2%;
+  position: absolute;
+  right: 0;
+  top: 2%;
 }
 .edit{
-    position: absolute;
-    right: 20px;
-    top: 2%;
+  position: absolute;
+  right: 20px;
+  top: 2%;
 }
 </style>
