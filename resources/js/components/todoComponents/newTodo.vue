@@ -1,6 +1,6 @@
 <template>
   <v-card py="3">
-    <v-card-title class="justify-center title">Todo追加</v-card-title>
+    <v-card-title class="justify-center title text-h4">Todo追加</v-card-title>
     <v-row
       class="mt-3"
       v-if="this.errors.length"
@@ -59,6 +59,7 @@
       <v-checkbox
         v-model="newTodo.bookMark"
         label="ブックマーク登録"
+        value=1
         class="my-0"
       ></v-checkbox>
       </v-col>
@@ -93,18 +94,24 @@
 
 <script>
 export default {
+  props: {
+    userId: Number
+  },
   data(){
     return {
+      // ログインユーザーID
+      // userId: '1',
       // 新規登録todo
       newTodo: {
-        user_id: 1,
         title: '',
         content: '',
         state: '',
-        bookMark: false
+        bookMark: ''
       },
       // フォームバリデーションエラー
-      errors:[]
+      errors:[],
+      // 削除成功時MSG
+      succueseMsg: ''
     }
   },
   methods: {
@@ -112,14 +119,25 @@ export default {
      * 登録
      */
     todoRegister() {
+      // エラーMSGリセット
       this.errors = [];
-      axios.post('/api/todos', this.newTodo).then((res) => {
+      // 成功MSGリセット
+      this.succueseMsg = '',
+      console.log(this.userId);
+      axios.post('/api/todos', {
+        title: this.newTodo.title,
+        content: this.newTodo.content,
+        state: this.newTodo.state,
+        bookMark: this.newTodo.bookMark,
+        userId : this.userId
+      }).then((res) => {
         if(res.data.validateState === false) {
           this.errors = this.changeErrors(res.data.message);
           return;
         }
+        this.succueseMsg = 'todoを登録しました'
         this.initialize();
-        this.$emit('todo-register');
+        this.$emit('todo-register', this.succueseMsg);
       }).catch((e) => {
         console.log(e);
         window.alert("データの更新に失敗しました")
