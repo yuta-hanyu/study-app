@@ -43,22 +43,22 @@
       >
         <v-radio
           label="未対応"
-          value=1
+          value=0
         ></v-radio>
         <v-radio
           label="対応中"
-          value=2
+          value=1
         ></v-radio>
         <v-radio
           label="保留"
-          value=3
+          value=2
         ></v-radio>
       </v-radio-group>
       </v-col>
       <v-col cols="12" height='10%'>
       <v-checkbox
         v-model="newTodo.bookMark"
-        label="ブックマーク登録"
+        label="上部へ固定"
         value=1
         class="my-0"
       ></v-checkbox>

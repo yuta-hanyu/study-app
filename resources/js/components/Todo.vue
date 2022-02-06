@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container>
+    <v-container fluid>
       <v-row v-if="this.succueseMsg" justify="center">
         <v-alert
           width="70%"
@@ -11,17 +11,29 @@
           {{this.succueseMsg}}
         </v-alert>
       </v-row>
-      <v-row>
-        <v-col cols="4"
-          v-for="(todo,index) in todos"
+      <v-row id="switch">
+        <v-switch
+          v-model="finishFlag"
+          label="完了を表示する"
+          @click="getTodos()"
+          color="info"
+        ></v-switch>
+      </v-row>
+      <!-- ブックマークあり -->
+      <v-row justify="center">
+        <div class="mt-5" align="left">固定済み</div>
+        <v-banner single-line></v-banner>
+        <v-col cols="3"
+          v-for="(todo,index) in bookMarkTodos"
           :key=index
-        >
+          v-show="todo.book_mark === 1">
           <v-card
+            @click="todoDetail(todo)"
+            elevation="10"
             class="mx-auto"
             outlined
-            :style="{backgroundColor: color(todo)}"
-          >
-          <v-icon
+            :style="{backgroundColor: color(todo)}">
+          <!-- <v-icon
             color="green"
             class="edit"
             @click="todoEdit(todo)">
@@ -32,22 +44,70 @@
             class="trash"
             @click="todoDelete(todo)">
             mdi-delete
-          </v-icon>
+          </v-icon> -->
           <v-card-title>{{todo.title}}</v-card-title>
-          <v-card-subtitle>
-            <span v-if="todo.state === 1">
+          <v-card-subtitle class="mb-n7">
+            <span v-if="todo.state === 0">
             未対応
             </span>
-            <span v-else-if="todo.state === 2">
+            <span v-else-if="todo.state === 1">
             対応中
             </span>
-            <span v-else-if="todo.state === 3">
+            <span v-else-if="todo.state === 2">
             保留
             </span>
             <span v-else>
             完了
             </span>
           </v-card-subtitle>
+          <v-banner single-line></v-banner>
+          <v-card-text>
+            {{todo.content}}
+          </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+      <!-- ブックマークなし -->
+      <v-row justify="center">
+        <div class="mt-5" align="left">その他</div>
+        <v-banner single-line></v-banner>
+        <v-col cols="3"
+          v-for="(todo,index) in todos"
+          :key=index
+          v-show="todo.book_mark !== 1">
+          <v-card
+            elevation="10"
+            class="mx-auto"
+            outlined
+            :style="{backgroundColor: color(todo)}">
+          <!-- <v-icon
+            color="green"
+            class="edit"
+            @click="todoEdit(todo)">
+            mdi-clipboard-edit
+          </v-icon>
+          <v-icon
+            color="red"
+            class="trash"
+            @click="todoDelete(todo)">
+            mdi-delete
+          </v-icon> -->
+          <v-card-title>{{todo.title}}</v-card-title>
+          <v-card-subtitle class="mb-n7">
+            <span v-if="todo.state === 0">
+            未対応
+            </span>
+            <span v-else-if="todo.state === 1">
+            対応中
+            </span>
+            <span v-else-if="todo.state === 2">
+            保留
+            </span>
+            <span v-else>
+            完了
+            </span>
+          </v-card-subtitle>
+          <v-banner single-line></v-banner>
           <v-card-text>
             {{todo.content}}
           </v-card-text>
@@ -123,7 +183,6 @@
               </v-card>
       </v-dialog> -->
   </div>
-
 </template>
 
 <script>
@@ -140,14 +199,18 @@ export default {
     return{
       // ユーザーID
       userId: 1,
+      // 固定表示一覧
+      bookMarkTodos: [],
+      // その他一覧
+      todos: [],
       // 新規登録ダイアログ表示フラグ
       newDialog: false,
       // 新規登録ダイアログ表示フラグ
       allDeleteDialog: false,
-      // 編集ダイアログ表示フラグ
-      editDialog: false,
-      // todo一覧
-      todos: [],
+      // 詳細ダイアログ表示フラグ
+      detailDialog: false,
+      // ステータス完了表示フラグ
+      finishFlag: false,
       // 処理成功MSG
       succueseMsg: '',
       editTodo: {
@@ -167,9 +230,35 @@ export default {
      * todo一覧表示
      */
     getTodos() {
+      this.bookMarkTodos = [];
+      this.todos = [];
       axios.get(`/api/todos/${this.userId}`).then((res) => {
         console.log(res.data.result);
-        this.todos = res.data.result;
+        let todos = [];
+        todos = res.data.result;
+        // 固定表示とその他を分別（ステータス完了非表示）
+        if (this.finishFlag === false) {
+          for (let todo of todos) {
+            if (todo.state !== 3 && todo.book_mark === 1) {
+              this.bookMarkTodos.push(todo);
+            } else if(todo.state !== 3) {
+              this.todos.push(todo);
+            } else {
+              continue;
+            }
+          }
+          return;
+        }
+        // 固定表示とその他を分別（ステータス完了表示）
+        if (this.finishFlag === true) {
+          for (let todo of todos) {
+            if (todo.book_mark === 1) {
+              this.bookMarkTodos.push(todo);
+            } else {
+              this.todos.push(todo);
+            }
+          }
+        }
       }).catch((e) => {
         console.log(e);
         window.alert("データの取得に失敗しました")
@@ -180,13 +269,18 @@ export default {
      */
     color(todo){
       switch (todo.state){
+      // 未対応
       case 0:
-        return "#FFCDD2"
+        return "#FFCCBC"
+      // 対応中
       case 1:
-        return "#BBDEFB"
+        return "#E1F5FE"
+      // 保留
       case 2:
-        return "#80CBC4"
+        return "#EDE7F6"
+      // 対応済み
       default:
+        return "#E0E0E0"
       }
     },
     /**
@@ -249,21 +343,21 @@ export default {
     /**
      * todo削除
      */
-    todoDelete(todo) {
-      if(window.confirm("削除して良いですか？")){
-        axios.delete(`/api/todo/${todo.id}`).then((res) => {
-          this.getTodos();
-        }).catch((e) => {
-          console.log(e);
-        });
-      } else {
-        return;
-      }
-    },
+    // todoDelete(todo) {
+    //   if(window.confirm("削除して良いですか？")){
+    //     axios.delete(`/api/todo/${todo.id}`).then((res) => {
+    //       this.getTodos();
+    //     }).catch((e) => {
+    //       console.log(e);
+    //     });
+    //   } else {
+    //     return;
+    //   }
+    // },
     /**
-     * todo編集
+     * todo詳細
      */
-    todoEdit(todo){
+    todoDetail(todo){
       this.editDialog = true
       this.editTodo.id = todo.id
       this.editTodo.title = todo.title
@@ -276,6 +370,11 @@ export default {
 </script>
 
 <style scoped>
+#switch{
+  position: fixed;
+  right: 5%;
+  top: 10%;
+}
 #plus-circle{
   position: fixed;
   right: 10%;
