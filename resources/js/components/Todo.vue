@@ -1,6 +1,16 @@
 <template>
   <div>
     <v-container>
+      <v-row v-if="this.succueseMsg" justify="center">
+        <v-alert
+          width="70%"
+          align="center"
+          dense
+          text
+          type="success">
+          {{this.succueseMsg}}
+        </v-alert>
+      </v-row>
       <v-row>
         <v-col cols="4"
           v-for="(todo,index) in todos"
@@ -81,18 +91,21 @@
       width=70%>
       <new-todo
         @back-todos="back"
-        @todo-register="todoRegister">
+        @todo-register="todoRegister"
+        :userId=userId>
       </new-todo>
     </v-dialog>
     <!-- 一括削除 -->
     <v-dialog
       v-model="allDeleteDialog"
-      height="300px"
+      height="200px"
       width="400px"
       transition="dialog-top-transition"
     >
       <all-delete-todo
-        @back-todos="back">
+        @back-todos="back"
+        @remove-all="removeAll"
+        :userId=userId>
       </all-delete-todo>
     </v-dialog>
       <!-- 編集ダイアログ -->
@@ -120,10 +133,13 @@ import newTodo from './todoComponents/newTodo.vue'
 export default {
   components: {
     newTodo,
-    allDeleteTodo },
+    allDeleteTodo
+  },
   name: 'Todo',
   data(){
     return{
+      // ユーザーID
+      userId: 1,
       // 新規登録ダイアログ表示フラグ
       newDialog: false,
       // 新規登録ダイアログ表示フラグ
@@ -131,7 +147,9 @@ export default {
       // 編集ダイアログ表示フラグ
       editDialog: false,
       // todo一覧
-      todos: '',
+      todos: [],
+      // 処理成功MSG
+      succueseMsg: '',
       editTodo: {
         id: '',
         title: '',
@@ -149,8 +167,9 @@ export default {
      * todo一覧表示
      */
     getTodos() {
-      axios.get('/api/todos').then((res) => {
-        this.todos = res.data;
+      axios.get(`/api/todos/${this.userId}`).then((res) => {
+        console.log(res.data.result);
+        this.todos = res.data.result;
       }).catch((e) => {
         console.log(e);
         window.alert("データの取得に失敗しました")
@@ -183,33 +202,56 @@ export default {
       this.newDialog = false;
     },
     /**
+     * todo新規登録
+     */
+    todoRegister(succueseMsg) {
+      console.log(succueseMsg);
+      this.newTodoClose();
+      this.succueseMsg = succueseMsg;
+      setTimeout(() => {
+        this.succueseMsg = '';
+      }, 3000);
+      this.getTodos();
+    },
+    /**
      * 全削除ダイアログを表示
      */
     allDeleteOpen(){
       this.allDeleteDialog = true;
     },
     /**
+     * 全削除ダイアログを非表示
+     */
+    allDeleteClose(){
+      this.allDeleteDialog = false;
+    },
+    /**
+     * 全削除成功
+     */
+    removeAll(succueseMsg){
+      this.succueseMsg = succueseMsg;
+      setTimeout(() => {
+        this.succueseMsg = '';
+      }, 3000);
+      this.getTodos();
+    },
+    /**
      * 各ダイアログから戻る
      */
     back(){
       if(this.newDialog = true){
-        // Object.keys(this.newTodo).forEach(key => delete this.newTodo[key])
         this.newTodoClose();
       }
-    },
-    /**
-     * todo新規登録
-     */
-    todoRegister() {
-      this.newTodoClose();
-      this.getTodos();
+      if(this.allDeleteDialog = true){
+        this.allDeleteClose();
+      }
     },
     /**
      * todo削除
      */
     todoDelete(todo) {
       if(window.confirm("削除して良いですか？")){
-        axios.delete(`/api/todos/${todo.id}`).then((res) => {
+        axios.delete(`/api/todo/${todo.id}`).then((res) => {
           this.getTodos();
         }).catch((e) => {
           console.log(e);
