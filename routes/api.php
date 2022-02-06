@@ -14,11 +14,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+* todo一覧表示
+*/
+Route::get('/todos/{user_id}', 'App\Http\Controllers\TodoController@index');
+/**
+* todo新規登録
+*/
 Route::post('/todos', 'App\Http\Controllers\TodoController@store');
-Route::get('/todos', 'App\Http\Controllers\TodoController@index');
-Route::delete('/todos/{id}', 'App\Http\Controllers\TodoController@destroy');
+/**
+ * todo編集
+ */
 Route::put('/todos/{id}', 'App\Http\Controllers\TodoController@update');
-
+/**
+* todo削除
+*/
+Route::delete('/todo/{id}', 'App\Http\Controllers\TodoController@destroy');
+/**
+* todo全削除
+*/
+Route::delete('/todos/{user_id}', 'App\Http\Controllers\TodoController@allDestroy');
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //   return $request->user();
