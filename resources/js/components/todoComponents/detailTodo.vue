@@ -1,7 +1,7 @@
 <template>
   <v-card py="3">
-    <v-card-title class="justify-center title text-h4">Todo追加</v-card-title>
-    <v-row
+    <v-card-title class="justify-center title text-h4">Todo編集・削除</v-card-title>
+    <!-- <v-row
       class="mt-3"
       v-if="this.errors.length"
       justify="center" >
@@ -16,27 +16,28 @@
       >
         {{error}}
       </v-alert>
-    </v-row>
+    </v-row> -->
     <v-form ref="form">
     <v-row class="px-6">
       <v-col cols="12">
       <v-text-field
         required
-        v-model="newTodo.title"
+        v-model="editTodo.title"
         :counter="15"
         label="タイトル(必須)"
       ></v-text-field>
       </v-col>
       <v-col cols="12">
       <v-textarea
-        v-model="newTodo.content"
+        v-model="editTodo.content"
         :counter="255"
         label="コンテンツ"
       ></v-textarea>
       </v-col>
       <v-col cols="12" height='10%'>
       <v-radio-group
-        v-model="newTodo.state"
+        value="editTodo.state"
+        v-model="editTodo.state"
         row
         label="ステータス(必須)"
         class="my-0"
@@ -57,7 +58,7 @@
       </v-col>
       <v-col cols="12" height='10%'>
       <v-checkbox
-        v-model="newTodo.bookMark"
+        v-model="editTodo.bookMark"
         label="上部へ固定"
         value=1
         class="my-0"
@@ -81,7 +82,6 @@
           <v-btn
             width="40%"
             color="orange lighten-2"
-            @click="todoRegister"
             elevation="20"
             rounded>
             登録
@@ -95,105 +95,49 @@
 <script>
 export default {
   props: {
-    userId: Number
+    detailTodo: Object
   },
-  data(){
+  data() {
     return {
-      // ログインユーザーID
-      // userId: '1',
-      // 新規登録todo
-      newTodo: {
+      editTodo: {
+        userId:'',
         title: '',
         content: '',
         state: '',
-        bookMark: ''
-      },
-      // フォームバリデーションエラー
-      errors:[],
-      // 削除成功時MSG
-      succueseMsg: ''
+        bookMark: '',
+      }
     }
   },
+  mounted() {
+    this.editTodo.userId = this.detailTodo.user_id,
+    this.editTodo.title = this.detailTodo.title,
+    this.editTodo.content = this.detailTodo.content,
+    this.editTodo.state = this.detailTodo.state,
+    this.editTodo.bookMark = this.detailTodo.book_mark
+  },
   methods: {
-    /**
-     * 登録
-     */
-    todoRegister() {
-      // エラーMSGリセット
-      this.errors = [];
-      // 成功MSGリセット
-      this.succueseMsg = '',
-      console.log(this.userId);
-      axios.post('/api/todos', {
-        title: this.newTodo.title,
-        content: this.newTodo.content,
-        state: this.newTodo.state,
-        bookMark: this.newTodo.bookMark,
-        userId : this.userId
-      }).then((res) => {
-        if(res.data.validateState === false) {
-          this.errors = this.changeErrors(res.data.message);
-          return;
-        }
-        this.succueseMsg = 'todoを登録しました'
-        this.initialize();
-        this.$emit('todo-register', this.succueseMsg);
-      }).catch((e) => {
-        console.log(e);
-        window.alert("データの更新に失敗しました")
-      });
-    },
-    /**
-     * エラーメッセージをオブジェクトから配列へ変換
-     */
-    changeErrors(message) {
-      for (let [key, value] of Object.entries(message)) {
-        this.errors.push(value[0]);
-      }
-      return this.errors;
-    },
     /**
      * 戻る
      */
     backTodos(){
-      this.initialize();
+      // this.initialize();
       this.$emit('back-todos');
     },
-    /**
-     * データ初期化
-     */
-    initialize(){
-      Object.keys(this.newTodo).forEach(key => this.newTodo[key] = '');
-      this.errors = [];
-    }
-  },
-  // computed: {
-    /**
-     * 登録ボタン活性判定
-     */
-    // isDisabled(){
-    //   if(!this.newTodo.title || this.newTodo.title.length > 15){
-    //     return true;
-    //   }
-    //   if(!this.newTodo.state){
-    //     return true;
-    //   }
-    //     return false;
-    // }
-  // }
+  }
 }
 </script>
+
+
 
 <style scoped>
 .card {
   padding: 10px;
 }
 .title {
-  background-color: #a8ffff;
+  background-color: #a8ffd3;
   font-weight: bold;
 }
 .actions {
-  background-color: #a8ffff;
+  background-color: #a8ffd3;
 }
-
 </style>

@@ -27,44 +27,51 @@
           v-for="(todo,index) in bookMarkTodos"
           :key=index
           v-show="todo.book_mark === 1">
-          <v-card
-            @click="todoDetail(todo)"
-            elevation="10"
-            class="mx-auto"
-            outlined
-            :style="{backgroundColor: color(todo)}">
-          <!-- <v-icon
-            color="green"
-            class="edit"
-            @click="todoEdit(todo)">
-            mdi-clipboard-edit
-          </v-icon>
-          <v-icon
-            color="red"
-            class="trash"
-            @click="todoDelete(todo)">
-            mdi-delete
-          </v-icon> -->
-          <v-card-title>{{todo.title}}</v-card-title>
-          <v-card-subtitle class="mb-n7">
-            <span v-if="todo.state === 0">
-            未対応
-            </span>
-            <span v-else-if="todo.state === 1">
-            対応中
-            </span>
-            <span v-else-if="todo.state === 2">
-            保留
-            </span>
-            <span v-else>
-            完了
-            </span>
-          </v-card-subtitle>
-          <v-banner single-line></v-banner>
-          <v-card-text>
-            {{todo.content}}
-          </v-card-text>
-          </v-card>
+          <v-tooltip bottom color="deep-orange lighten-2">
+            <template v-slot:activator="{ on, attrs }">
+              <v-card
+                @click="todoDetail(todo)"
+                elevation="10"
+                class="mx-auto"
+                outlined
+                :style="{backgroundColor: color(todo)}"
+                v-bind="attrs"
+                v-on="on">
+                <!-- <v-icon
+                color="green"
+                class="edit"
+                @click="todoEdit(todo)">
+                mdi-clipboard-edit
+                </v-icon>
+                <v-icon
+                  color="red"
+                  class="trash"
+                  @click="todoDelete(todo)">
+                  mdi-delete
+                </v-icon> -->
+                <v-card-title>{{todo.title}}</v-card-title>
+                <v-card-subtitle class="mb-n7">
+                  <span v-if="todo.state === 0">
+                  未対応
+                  </span>
+                  <span v-else-if="todo.state === 1">
+                  対応中
+                  </span>
+                  <span v-else-if="todo.state === 2">
+                  保留
+                  </span>
+                  <span v-else>
+                  完了
+                  </span>
+                </v-card-subtitle>
+                <v-banner single-line></v-banner>
+                <v-card-text>
+                  {{todo.content}}
+                </v-card-text>
+              </v-card>
+            </template>
+            <span>todo編集・削除</span>
+          </v-tooltip>
         </v-col>
       </v-row>
       <!-- ブックマークなし -->
@@ -75,43 +82,51 @@
           v-for="(todo,index) in todos"
           :key=index
           v-show="todo.book_mark !== 1">
-          <v-card
-            elevation="10"
-            class="mx-auto"
-            outlined
-            :style="{backgroundColor: color(todo)}">
-          <!-- <v-icon
-            color="green"
-            class="edit"
-            @click="todoEdit(todo)">
-            mdi-clipboard-edit
-          </v-icon>
-          <v-icon
-            color="red"
-            class="trash"
-            @click="todoDelete(todo)">
-            mdi-delete
-          </v-icon> -->
-          <v-card-title>{{todo.title}}</v-card-title>
-          <v-card-subtitle class="mb-n7">
-            <span v-if="todo.state === 0">
-            未対応
-            </span>
-            <span v-else-if="todo.state === 1">
-            対応中
-            </span>
-            <span v-else-if="todo.state === 2">
-            保留
-            </span>
-            <span v-else>
-            完了
-            </span>
-          </v-card-subtitle>
-          <v-banner single-line></v-banner>
-          <v-card-text>
-            {{todo.content}}
-          </v-card-text>
-          </v-card>
+          <v-tooltip bottom color="deep-orange lighten-2">
+            <template v-slot:activator="{ on, attrs }">
+              <v-card
+                @click="todoDetail(todo)"
+                elevation="10"
+                class="mx-auto"
+                outlined
+                :style="{backgroundColor: color(todo)}"
+                v-bind="attrs"
+                v-on="on">
+                <!-- <v-icon
+                color="green"
+                class="edit"
+                @click="todoEdit(todo)">
+                mdi-clipboard-edit
+                </v-icon>
+                <v-icon
+                color="red"
+                class="trash"
+                @click="todoDelete(todo)">
+                mdi-delete
+                </v-icon> -->
+                <v-card-title>{{todo.title}}</v-card-title>
+                <v-card-subtitle class="mb-n7">
+                  <span v-if="todo.state === 0">
+                  未対応
+                  </span>
+                  <span v-else-if="todo.state === 1">
+                  対応中
+                  </span>
+                  <span v-else-if="todo.state === 2">
+                  保留
+                  </span>
+                  <span v-else>
+                  完了
+                  </span>
+                </v-card-subtitle>
+                <v-banner single-line></v-banner>
+                <v-card-text>
+                  {{todo.content}}
+                </v-card-text>
+              </v-card>
+            </template>
+            <span>todo編集・削除</span>
+          </v-tooltip>
         </v-col>
       </v-row>
     </v-container>
@@ -148,7 +163,8 @@
     <!-- 新規作成ダイアログ -->
     <v-dialog
       v-model="newDialog"
-      width=70%>
+      height="200px"
+      width="400px">
       <new-todo
         @back-todos="back"
         @todo-register="todoRegister"
@@ -160,13 +176,22 @@
       v-model="allDeleteDialog"
       height="200px"
       width="400px"
-      transition="dialog-top-transition"
-    >
+      transition="dialog-top-transition">
       <all-delete-todo
         @back-todos="back"
         @remove-all="removeAll"
         :userId=userId>
       </all-delete-todo>
+    </v-dialog>
+      <!-- 詳細 -->
+    <v-dialog
+      v-model="detailDialog"
+      height="200px"
+      width="400px">
+      <detail-todo
+        @back-todos="back"
+        :detailTodo=detailTodo>
+      </detail-todo>
     </v-dialog>
       <!-- 編集ダイアログ -->
       <!-- <v-dialog
@@ -188,11 +213,13 @@
 <script>
 import allDeleteTodo from './todoComponents/allDeleteTodo.vue'
 import newTodo from './todoComponents/newTodo.vue'
+import detailTodo from './todoComponents/detailTodo.vue'
 
 export default {
   components: {
     newTodo,
-    allDeleteTodo
+    allDeleteTodo,
+    detailTodo,
   },
   name: 'Todo',
   data(){
@@ -209,6 +236,8 @@ export default {
       allDeleteDialog: false,
       // 詳細ダイアログ表示フラグ
       detailDialog: false,
+      // 詳細todo
+      detailTodo: [],
       // ステータス完了表示フラグ
       finishFlag: false,
       // 処理成功MSG
@@ -233,7 +262,6 @@ export default {
       this.bookMarkTodos = [];
       this.todos = [];
       axios.get(`/api/todos/${this.userId}`).then((res) => {
-        console.log(res.data.result);
         let todos = [];
         todos = res.data.result;
         // 固定表示とその他を分別（ステータス完了非表示）
@@ -358,12 +386,8 @@ export default {
      * todo詳細
      */
     todoDetail(todo){
-      this.editDialog = true
-      this.editTodo.id = todo.id
-      this.editTodo.title = todo.title
-      this.editTodo.content = todo.content
-      this.editTodo.state = todo.state
-      this.editTodo.bookMark =  false
+      this.detailDialog = true;
+      this.detailTodo = todo;
     },
   }
 }
