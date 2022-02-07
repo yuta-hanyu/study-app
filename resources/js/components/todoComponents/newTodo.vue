@@ -110,7 +110,7 @@ export default {
       },
       // フォームバリデーションエラー
       errors:[],
-      // 削除成功時MSG
+      // 登録成功時MSG
       succueseMsg: ''
     }
   },

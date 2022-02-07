@@ -36,7 +36,6 @@
       </v-col>
       <v-col cols="12" height='10%'>
       <v-radio-group
-        value="editTodo.state"
         v-model="editTodo.state"
         row
         label="ステータス(必須)"
@@ -44,15 +43,15 @@
       >
         <v-radio
           label="未対応"
-          value=0
+          :value=0
         ></v-radio>
         <v-radio
           label="対応中"
-          value=1
+          :value=1
         ></v-radio>
         <v-radio
           label="保留"
-          value=2
+          :value=2
         ></v-radio>
       </v-radio-group>
       </v-col>
@@ -60,7 +59,7 @@
       <v-checkbox
         v-model="editTodo.bookMark"
         label="上部へ固定"
-        value=1
+        :value=1
         class="my-0"
       ></v-checkbox>
       </v-col>
@@ -68,23 +67,33 @@
     </v-form>
     <v-card-actions class="actions">
       <v-row justify="center" class="mb-auto">
-        <v-col cols="6" align="right">
+        <v-col cols="3" align="right">
           <v-btn
             color="grey lighten-1"
-            width="40%"
+            width="25%"
             @click="backTodos"
             rounded
             elevation="20">
             戻る
           </v-btn>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="3" align="center">
           <v-btn
-            width="40%"
+            width="25%"
             color="orange lighten-2"
             elevation="20"
             rounded>
             登録
+          </v-btn>
+        </v-col>
+        <v-col cols="3">
+          <v-btn
+            color="red lighten-1"
+            width="25%"
+            @click="removeTodo"
+            rounded
+            elevation="20">
+            削除
           </v-btn>
         </v-col>
       </v-row>
@@ -100,34 +109,58 @@ export default {
   data() {
     return {
       editTodo: {
-        userId:'',
-        title: '',
-        content: '',
-        state: '',
-        bookMark: '',
-      }
+        userId: this.detailTodo.user_id,
+        title: this.detailTodo.title,
+        content: this.detailTodo.content,
+        state: this.detailTodo.state,
+        bookMark: this.detailTodo.book_mark
+      },
+      // 削除成功時MSG
+      succueseMsg: ''
     }
-  },
-  mounted() {
-    this.editTodo.userId = this.detailTodo.user_id,
-    this.editTodo.title = this.detailTodo.title,
-    this.editTodo.content = this.detailTodo.content,
-    this.editTodo.state = this.detailTodo.state,
-    this.editTodo.bookMark = this.detailTodo.book_mark
   },
   methods: {
     /**
      * 戻る
      */
     backTodos(){
-      // this.initialize();
+      this.initialize();
       this.$emit('back-todos');
     },
+    /**
+     * データ初期化
+     */
+    initialize(){
+      Object.keys(this.editTodo).forEach(key => this.editTodo[key] = '');
+      this.errors = [];
+    },
+    /**
+     * 初期データセット
+     */
+    setVal(){
+        this.editTodo.userId = this.detailTodo.user_id,
+        this.editTodo.title = this.detailTodo.title,
+        this.editTodo.content = this.detailTodo.content,
+        this.editTodo.state = this.detailTodo.state,
+        this.editTodo.bookMark = this.detailTodo.book_mark
+    },
+    /**
+     * 初期データセット
+     */
+    removeTodo(){
+      axios.delete(`/api/todo/${this.detailTodo.id}`).then((res) => {
+        // this.getTodos();
+        this.succueseMsg = `"${this.editTodo.title}"を削除しました`
+        this.initialize();
+        this.$emit('delete-todo', this.succueseMsg);
+      }).catch((e) => {
+        console.log(e);
+        window.alert("データの更新に失敗しました");
+      });
+    }
   }
 }
 </script>
-
-
 
 <style scoped>
 .card {

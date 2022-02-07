@@ -162,6 +162,7 @@
     </v-tooltip>
     <!-- 新規作成ダイアログ -->
     <v-dialog
+      persistent
       v-model="newDialog"
       height="200px"
       width="400px">
@@ -171,24 +172,27 @@
         :userId=userId>
       </new-todo>
     </v-dialog>
-    <!-- 一括削除 -->
+    <!-- 一括削除ダイアログ -->
     <v-dialog
+      persistent
       v-model="allDeleteDialog"
       height="200px"
-      width="400px"
-      transition="dialog-top-transition">
+      width="400px">
       <all-delete-todo
         @back-todos="back"
         @remove-all="removeAll"
         :userId=userId>
       </all-delete-todo>
     </v-dialog>
-      <!-- 詳細 -->
+    <!-- 詳細ダイアログ -->
     <v-dialog
+      persistent
       v-model="detailDialog"
       height="200px"
       width="400px">
       <detail-todo
+        ref="child"
+        @delete-todo="deleteTodo"
         @back-todos="back"
         :detailTodo=detailTodo>
       </detail-todo>
@@ -358,6 +362,34 @@ export default {
       this.getTodos();
     },
     /**
+     * todo詳細
+     */
+    async todoDetail(todo){
+      // 子コンポーネント生成後、初期をセット
+      await (
+        this.detailDialog = true,
+        this.detailTodo = todo)
+        // コンポーネントに初期をセット
+        this.$refs.child.setVal();
+    },
+    /**
+     * 削除成功
+     */
+    deleteTodo(succueseMsg){
+      this.detailDialogClose();
+      this.succueseMsg = succueseMsg;
+      setTimeout(() => {
+        this.succueseMsg = '';
+      }, 3000);
+      this.getTodos();
+    },
+    /**
+     * 詳細ダイアログを非表示
+     */
+    detailDialogClose(){
+      this.detailDialog = false;
+    },
+    /**
      * 各ダイアログから戻る
      */
     back(){
@@ -366,6 +398,9 @@ export default {
       }
       if(this.allDeleteDialog = true){
         this.allDeleteClose();
+      }
+      if(this.detailDialog = true){
+        this.detailDialogClose();
       }
     },
     /**
@@ -382,13 +417,7 @@ export default {
     //     return;
     //   }
     // },
-    /**
-     * todo詳細
-     */
-    todoDetail(todo){
-      this.detailDialog = true;
-      this.detailTodo = todo;
-    },
+
   }
 }
 </script>

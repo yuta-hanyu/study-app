@@ -75,9 +75,13 @@ class TodoController extends Controller
   /**
   * 削除
   */
-  public function destroy(Todo $id)
+  public function destroy(Request $request)
   {
-    return $id->delete();
+    Log::info('todo削除開始');
+    $todo = new Todo();
+    $todo->where('id', '=', $request->id)->delete();
+    Log::info('todo削除終了');
+    return;
   }
   /**
   * 全削除
