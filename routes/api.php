@@ -25,7 +25,7 @@ Route::post('/todos', 'App\Http\Controllers\TodoController@store');
 /**
  * todo編集
  */
-Route::put('/todos/{id}', 'App\Http\Controllers\TodoController@update');
+Route::put('/todo/update', 'App\Http\Controllers\TodoController@update');
 /**
 * todo削除
 */

@@ -123,7 +123,6 @@ export default {
       this.errors = [];
       // 成功MSGリセット
       this.succueseMsg = '',
-      console.log(this.userId);
       axios.post('/api/todos', {
         title: this.newTodo.title,
         content: this.newTodo.content,

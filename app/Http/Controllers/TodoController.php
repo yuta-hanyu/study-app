@@ -34,10 +34,10 @@ class TodoController extends Controller
   public function store(Request $request)
   {
     Log::info('todo新規登録開始');
-    Log::info($request);
     // バリデーション
     $validate = Validator::make($request->all(), [
       'title' => 'required|max:15',
+      'content' => 'max:255',
       'state' => 'required',
     ]);
     if ($validate->fails()) {
@@ -67,10 +67,40 @@ class TodoController extends Controller
   /**
    * 更新
    */
-  public function update(Request $request, Todo $id)
+  public function update(Request $request)
   {
-    $id->update($request->all());
-    return $id;
+    // $id->update($request->all());
+    Log::info($request);
+    Log::info('todo更新開始');
+    // バリデーション
+    $validate = Validator::make($request->all(), [
+      'title' => 'required|max:15',
+      'content' => 'max:255',
+      'state' => 'required',
+    ]);
+    if ($validate->fails()) {
+      // バリデーションエラーメッセージ
+      $message = $validate->errors();
+      // エラー判定
+      $validateState = false;
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 更新開始
+    DB::beginTransaction();
+    try{
+      $todo = new Todo();
+      $updateTodo = $todo->where('id', $request->id)->first();
+      $updateTodo->title = $request->title;
+      $updateTodo->content = $request->content;
+      $updateTodo->state = $request->state;
+      $updateTodo->book_mark = $request->bookMark;
+      $updateTodo->save();
+      DB::commit();
+    } catch (\Exception $e) {
+      DB::rollback();
+    }
+    Log::info('todo更新終了');
+    return;
   }
   /**
   * 削除

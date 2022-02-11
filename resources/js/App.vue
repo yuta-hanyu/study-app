@@ -13,12 +13,14 @@
 import Header from './global/Header.vue';
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
+import Login from './components/Login.vue';
 
 export default {
   components: {
     Header,
     Todo,
-    Top
+    Top,
+    Login
   },
   name: 'App',
   data() {

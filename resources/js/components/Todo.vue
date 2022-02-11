@@ -37,18 +37,6 @@
                 :style="{backgroundColor: color(todo)}"
                 v-bind="attrs"
                 v-on="on">
-                <!-- <v-icon
-                color="green"
-                class="edit"
-                @click="todoEdit(todo)">
-                mdi-clipboard-edit
-                </v-icon>
-                <v-icon
-                  color="red"
-                  class="trash"
-                  @click="todoDelete(todo)">
-                  mdi-delete
-                </v-icon> -->
                 <v-card-title>{{todo.title}}</v-card-title>
                 <v-card-subtitle class="mb-n7">
                   <span v-if="todo.state === 0">
@@ -65,8 +53,7 @@
                   </span>
                 </v-card-subtitle>
                 <v-banner single-line></v-banner>
-                <v-card-text>
-                  {{todo.content}}
+                <v-card-text class="new_line" v-text="todo.content">
                 </v-card-text>
               </v-card>
             </template>
@@ -92,18 +79,6 @@
                 :style="{backgroundColor: color(todo)}"
                 v-bind="attrs"
                 v-on="on">
-                <!-- <v-icon
-                color="green"
-                class="edit"
-                @click="todoEdit(todo)">
-                mdi-clipboard-edit
-                </v-icon>
-                <v-icon
-                color="red"
-                class="trash"
-                @click="todoDelete(todo)">
-                mdi-delete
-                </v-icon> -->
                 <v-card-title>{{todo.title}}</v-card-title>
                 <v-card-subtitle class="mb-n7">
                   <span v-if="todo.state === 0">
@@ -120,8 +95,7 @@
                   </span>
                 </v-card-subtitle>
                 <v-banner single-line></v-banner>
-                <v-card-text>
-                  {{todo.content}}
+                <v-card-text class="new_line" v-text="todo.content">
                 </v-card-text>
               </v-card>
             </template>
@@ -192,25 +166,12 @@
       width="400px">
       <detail-todo
         ref="child"
+        @todo-update="updateTodo"
         @delete-todo="deleteTodo"
         @back-todos="back"
         :detailTodo=detailTodo>
       </detail-todo>
     </v-dialog>
-      <!-- 編集ダイアログ -->
-      <!-- <v-dialog
-      v-model="editDialog"
-      max-width=70%
-      >
-        <v-card
-          class="mx-auto"
-          outlined
-        >
-        <v-card-title>{{editTodo.title}}</v-card-title>
-        <v-card-subtitle>
-        </v-card-subtitle>å
-              </v-card>
-      </v-dialog> -->
   </div>
 </template>
 
@@ -373,6 +334,17 @@ export default {
         this.$refs.child.setVal();
     },
     /**
+     * todo編集完了
+     */
+    updateTodo(succueseMsg) {
+      this.detailDialogClose();
+      this.succueseMsg = succueseMsg;
+      setTimeout(() => {
+        this.succueseMsg = '';
+      }, 3000);
+      this.getTodos();
+    },
+    /**
      * 削除成功
      */
     deleteTodo(succueseMsg){
@@ -403,21 +375,6 @@ export default {
         this.detailDialogClose();
       }
     },
-    /**
-     * todo削除
-     */
-    // todoDelete(todo) {
-    //   if(window.confirm("削除して良いですか？")){
-    //     axios.delete(`/api/todo/${todo.id}`).then((res) => {
-    //       this.getTodos();
-    //     }).catch((e) => {
-    //       console.log(e);
-    //     });
-    //   } else {
-    //     return;
-    //   }
-    // },
-
   }
 }
 </script>
@@ -449,5 +406,9 @@ export default {
   position: absolute;
   right: 20px;
   top: 2%;
+}
+.new_line {
+  white-space: pre-wrap;
+  text-align: left;
 }
 </style>

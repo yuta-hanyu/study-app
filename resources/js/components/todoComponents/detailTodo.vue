@@ -1,7 +1,7 @@
 <template>
   <v-card py="3">
     <v-card-title class="justify-center title text-h4">Todo編集・削除</v-card-title>
-    <!-- <v-row
+    <v-row
       class="mt-3"
       v-if="this.errors.length"
       justify="center" >
@@ -16,7 +16,7 @@
       >
         {{error}}
       </v-alert>
-    </v-row> -->
+    </v-row>
     <v-form ref="form">
     <v-row class="px-6">
       <v-col cols="12">
@@ -79,11 +79,12 @@
         </v-col>
         <v-col cols="3" align="center">
           <v-btn
+            @click="updateTodo"
             width="25%"
             color="orange lighten-2"
             elevation="20"
             rounded>
-            登録
+            編集
           </v-btn>
         </v-col>
         <v-col cols="3">
@@ -115,11 +116,50 @@ export default {
         state: this.detailTodo.state,
         bookMark: this.detailTodo.book_mark
       },
-      // 削除成功時MSG
-      succueseMsg: ''
+      // 処理成功時MSG
+      succueseMsg: '',
+      // フォームバリデーションエラー
+      errors:[],
     }
   },
   methods: {
+    /**
+     * 編集ボタン押下
+     */
+    updateTodo(){
+      // エラーMSGリセット
+      this.errors = [];
+      // 成功MSGリセット
+      this.succueseMsg = '',
+      console.log(this.detailTodo.id);
+      axios.put(`/api/todo/update`, {
+        id: this.detailTodo.id,
+        title: this.editTodo.title,
+        content: this.editTodo.content,
+        state: this.editTodo.state,
+        bookMark: this.editTodo.bookMark,
+      }).then((res) => {
+        if(res.data.validateState === false) {
+          this.errors = this.changeErrors(res.data.message);
+          return;
+        }
+        this.succueseMsg = `"${this.editTodo.title}"を編集しました`
+        this.initialize();
+        this.$emit('todo-update', this.succueseMsg);
+      }).catch((e) => {
+        console.log(e);
+        window.alert("データの更新に失敗しました")
+      });
+    },
+    /**
+     * エラーメッセージをオブジェクトから配列へ変換
+     */
+    changeErrors(message) {
+      for (let [key, value] of Object.entries(message)) {
+        this.errors.push(value[0]);
+      }
+      return this.errors;
+    },
     /**
      * 戻る
      */
@@ -145,11 +185,10 @@ export default {
         this.editTodo.bookMark = this.detailTodo.book_mark
     },
     /**
-     * 初期データセット
+     * 削除ボタン押下
      */
     removeTodo(){
       axios.delete(`/api/todo/${this.detailTodo.id}`).then((res) => {
-        // this.getTodos();
         this.succueseMsg = `"${this.editTodo.title}"を削除しました`
         this.initialize();
         this.$emit('delete-todo', this.succueseMsg);
