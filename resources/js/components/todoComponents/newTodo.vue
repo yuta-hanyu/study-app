@@ -4,7 +4,7 @@
     <v-row
       class="mt-3"
       v-if="this.errors.length"
-      justify="center" >
+      justify="center">
       <v-alert
         v-for="(error, index) in this.errors" :key=index
         dense
@@ -38,7 +38,7 @@
       <v-radio-group
         v-model="newTodo.state"
         row
-        label="ステータス(必須)"
+        label="ステータス(必須)　　　　　　　　　　　　　"
         class="my-0"
       >
         <v-radio

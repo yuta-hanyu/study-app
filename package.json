@@ -27,7 +27,7 @@
         "@mdi/font": "^6.5.95",
         "vue-axios": "^3.4.0",
         "vue-router": "^3.5.3",
-        "vuetify": "^2.6.2",
+        "vuetify": "^2.6.3",
         "vuex": "^3.6.2"
     }
 }

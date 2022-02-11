@@ -2,14 +2,15 @@
   <div>
     <v-container fluid>
       <v-row v-if="this.succueseMsg" justify="center">
+        <v-col cols="8">
         <v-alert
-          width="70%"
           align="center"
           dense
           text
           type="success">
           {{this.succueseMsg}}
         </v-alert>
+        </v-col>
       </v-row>
       <v-row id="switch">
         <v-switch
@@ -21,8 +22,10 @@
       </v-row>
       <!-- ブックマークあり -->
       <v-row justify="center">
-        <div class="mt-5" align="left">固定済み</div>
-        <v-banner single-line></v-banner>
+        <v-col cols="10">
+          <div class="mt-5" align="left">固定済み</div>
+          <v-banner single-line></v-banner>
+        </v-col>
         <v-col cols="3"
           v-for="(todo,index) in bookMarkTodos"
           :key=index
@@ -63,8 +66,10 @@
       </v-row>
       <!-- ブックマークなし -->
       <v-row justify="center">
-        <div class="mt-5" align="left">その他</div>
-        <v-banner single-line></v-banner>
+        <v-col cols="10">
+          <div class="mt-5" align="left">その他</div>
+          <v-banner single-line></v-banner>
+        </v-col>
         <v-col cols="3"
           v-for="(todo,index) in todos"
           :key=index

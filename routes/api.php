@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix('auth')->group(function () {
+  Route::post('/login', 'App\Http\Controllers\LoginController@login');
+  Route::post('/logout', 'App\Http\Controllers\LoginController@logout');
+});
+
 /**
 * todo一覧表示
 */

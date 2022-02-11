@@ -17,54 +17,53 @@
         {{error}}
       </v-alert>
     </v-row>
-    <v-form ref="form">
     <v-row class="px-6">
-      <v-col cols="12">
-      <v-text-field
-        required
-        v-model="editTodo.title"
-        :counter="15"
-        label="タイトル(必須)"
-      ></v-text-field>
-      </v-col>
-      <v-col cols="12">
-      <v-textarea
-        v-model="editTodo.content"
-        :counter="255"
-        label="コンテンツ"
-      ></v-textarea>
-      </v-col>
-      <v-col cols="12" height='10%'>
-      <v-radio-group
-        v-model="editTodo.state"
-        row
-        label="ステータス(必須)"
-        class="my-0"
-      >
-        <v-radio
-          label="未対応"
-          :value=0
-        ></v-radio>
-        <v-radio
-          label="対応中"
-          :value=1
-        ></v-radio>
-        <v-radio
-          label="保留"
-          :value=2
-        ></v-radio>
-      </v-radio-group>
-      </v-col>
-      <v-col cols="12" height='10%'>
-      <v-checkbox
-        v-model="editTodo.bookMark"
-        label="上部へ固定"
-        :value=1
-        class="my-0"
-      ></v-checkbox>
-      </v-col>
+      <v-form ref="form">
+        <v-col cols="12">
+          <v-text-field
+            required
+            v-model="editTodo.title"
+            :counter="15"
+            label="タイトル(必須)"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12">
+          <v-textarea
+            v-model="editTodo.content"
+            :counter="255"
+            label="コンテンツ"
+          ></v-textarea>
+        </v-col>
+        <v-col cols="12" height='10%'>
+          <v-radio-group
+            v-model="editTodo.state"
+            row
+            label="ステータス(必須)　　　　　　　　　　　　　"
+            class="my-0">
+            <v-radio
+              label="未対応"
+              :value=0
+            ></v-radio>
+            <v-radio
+              label="対応中"
+              :value=1
+            ></v-radio>
+            <v-radio
+              label="保留"
+              :value=2
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+        <v-col cols="12" height='10%'>
+          <v-checkbox
+            v-model="editTodo.bookMark"
+            label="上部へ固定"
+            :value=1
+            class="my-0"
+          ></v-checkbox>
+        </v-col>
+      </v-form>
     </v-row>
-    </v-form>
     <v-card-actions class="actions">
       <v-row justify="center" class="mb-auto">
         <v-col cols="3" align="right">
