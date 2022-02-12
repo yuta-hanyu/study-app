@@ -159,7 +159,9 @@ return [
 
     'attributes' => [
       'title' => 'タイトル',
-      'state' => 'ステータス'
+      'state' => 'ステータス',
+      'email' => 'メールアドレス',
+      'password' => 'パスワード',
     ],
 
 ];

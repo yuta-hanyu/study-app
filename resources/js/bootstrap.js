@@ -1,4 +1,5 @@
 window._ = require('lodash');
+axios.defaults.withCredentials = true;
 
 try {
     require('bootstrap');

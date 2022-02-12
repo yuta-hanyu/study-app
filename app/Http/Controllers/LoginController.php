@@ -2,31 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Auth;
+
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+// use Illuminate\Validation\ValidationException;
+// use Illuminate\Support\Facades\Validator;
+// use App\Models\User;
+use Exception;
+// use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Contracts\Auth\StatefulGuard;
+// use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
+
+
+use Illuminate\Contracts\Auth\Authenticatable;
 
 
 class LoginController extends Controller
 {
+  /**
+   * ログイン認証
+   * @return Http response
+   */
   public function login(Request $request)
   {
-    Log::info('ログイン認証開始');
-    Log::info($request);
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
+    // 認証判定フラグ
+    $retultFlag = false;
+    // バリデーションMSG
+    $validatMessage = '';
 
+    Log::info('ログイン認証開始');
+    // バリデーション
+    $validate = Validator::make($request->all(), [
+      'email' => 'required',
+      'password' => 'required',
+    ]);
+    if ($validate->fails()) {
+      $validatMessage = $validate->errors();
+      $retultFlag = false;
+      return response()->json(['validatMessage' => $validatMessage, 'retultFlag' => $retultFlag]);
+    };
+
+    // 認証情報
+    $credentials = $request->only('email', 'password');
+
+    // 認証開始
     if (Auth::attempt($credentials)) {
-      return response()->json(['message' => 'Login successful'], 200);
-      Log::info('ログイン認証終了');
+      $retultFlag = true;
+      Log::info('ログイン認証成功');
+      return response()->json(['retultFlag' => $retultFlag]);
     }
-    return response()->json(['message' => 'User not found'], 422);
+    $retultFlag = false;
     Log::info('ログイン認証失敗');
+    return response()->json(['retultFlag' => $retultFlag]);
   }
 
 

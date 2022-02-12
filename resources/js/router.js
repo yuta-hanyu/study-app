@@ -21,7 +21,10 @@ const router = new VueRouter({
         {
           path: '/',
           name: 'Top',
-          component: Top
+          component: Top,
+          meta: {
+            isAuthenticated: true,
+          },
         },
         {
           path: '/todo',
@@ -30,6 +33,17 @@ const router = new VueRouter({
         },
     ]
 });
+
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some(record => record.meta.isAuthenticated)) {
+//     if (!Store.state.auth.isAuth) {
+//       next({ name: 'Login' });
+//     } else {
+//       next();
+//     }
+//   }
+//   next();
+// });
 
 
 // VueRouterインスタンスをエクスポートする

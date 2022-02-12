@@ -833,6 +833,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _store_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store/auth.js */ "./resources/js/store/auth.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 //
 //
 //
@@ -878,29 +891,126 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      email: "",
-      password: "",
-      invalid: false
+      // 認証メールアドレス
+      email: '',
+      // 認証パスワード
+      password: '',
+      // ログインボタン無効化フラグ
+      invalid: false,
+      // バリデーションMSG
+      validatMessage: [],
+      // 結果MSG
+      message: ''
     };
   },
   methods: {
+    /**
+     * エラーメッセージをオブジェクトから配列へ変換
+     */
+    changeErrors: function changeErrors(message) {
+      var errors = [];
+
+      for (var _i = 0, _Object$entries = Object.entries(message); _i < _Object$entries.length; _i++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+            key = _Object$entries$_i[0],
+            value = _Object$entries$_i[1];
+
+        errors.push(value[0]);
+      }
+
+      return errors;
+    },
+
+    /**
+     * ログインボタン押下
+     */
     login: function login() {
-      axios.get('/api/login', {
-        email: this.email,
-        password: this.password
+      var _this = this;
+
+      // エラーメッセージ初期化;
+      this.validatMessage = [];
+      this.message = ''; // クッキー認証
+
+      axios.get('/api/csrf-cookie', {
+        withCredentials: true
       }).then(function (res) {
-        console.log(res);
-        console.log("成功");
+        // ログイン認証開始
+        axios.post('/api/login', {
+          email: _this.email,
+          password: _this.password
+        }, {
+          withCredentials: true
+        }).then(function (res) {
+          if (res.data.retultFlag == true) {
+            _this.$router.push("/");
+          }
+
+          ;
+          _this.validatMessage = _this.changeErrors(res.data.validatMessage);
+        })["catch"](function (e) {
+          console.log(e);
+          _this.message = 'ログインに失敗しました';
+        });
       })["catch"](function (e) {
+        window.alert("認証エラーです");
         console.log(e);
-        window.alert("データの送信に失敗しました");
       });
     }
   }
-});
+}); // ...mapActions({
+//   login: 'auth/login',
+// }),
+// async submit() {
+//   await this.login(this.form);
+//   this.$router.replace({ name: 'Top' });
+// },
+// login(){
+//   axios.get('/api/loginPost',{
+//     email: this.email,
+//     password: this.password
+//   }).then((res) => {
+//     this.message = res.data.message;
+//     console.log(res);
+//     console.log("成功");
+//     // this.$router.replace({ name: 'Top' });
+//   }).catch((e) => {
+//     console.log(e);
+//     window.alert("データの送信に失敗しました")
+//   });
+// },
 
 /***/ }),
 
@@ -2031,21 +2141,24 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
 /* harmony import */ var _App_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.vue */ "./resources/js/App.vue");
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
-/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
+/* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _mdi_font_css_materialdesignicons_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mdi/font/css/materialdesignicons.css */ "./node_modules/@mdi/font/css/materialdesignicons.css");
+/* harmony import */ var _store_auth__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./store/auth */ "./resources/js/store/auth.js");
 
 
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_3__["default"].use((vuetify__WEBPACK_IMPORTED_MODULE_4___default()));
-new vue__WEBPACK_IMPORTED_MODULE_3__["default"]({
+
+vue__WEBPACK_IMPORTED_MODULE_4__["default"].use((vuetify__WEBPACK_IMPORTED_MODULE_5___default()));
+new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   el: '#app',
-  vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_4___default())(),
+  storeAuth: _store_auth__WEBPACK_IMPORTED_MODULE_3__["default"],
+  vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_5___default())(),
   router: _router__WEBPACK_IMPORTED_MODULE_0__["default"],
   // ルーティングの定義を読み込む
   components: {
@@ -2127,16 +2240,125 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]({
   }, {
     path: '/',
     name: 'Top',
-    component: _components_Top_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    component: _components_Top_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    meta: {
+      isAuthenticated: true
+    }
   }, {
     path: '/todo',
     name: 'Todo',
     component: _components_Todo_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   }]
-}); // VueRouterインスタンスをエクスポートする
+}); // router.beforeEach((to, from, next) => {
+//   if (to.matched.some(record => record.meta.isAuthenticated)) {
+//     if (!Store.state.auth.isAuth) {
+//       next({ name: 'Login' });
+//     } else {
+//       next();
+//     }
+//   }
+//   next();
+// });
+// VueRouterインスタンスをエクスポートする
 // app.jsでインポートするため
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
+
+/***/ }),
+
+/***/ "./resources/js/store/auth.js":
+/*!************************************!*\
+  !*** ./resources/js/store/auth.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+// import axios from 'axios';
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: {
+    isAuth: false,
+    user: null
+  },
+  getters: {
+    isAuth: function isAuth(state) {
+      return state.isAuth;
+    },
+    user: function user(state) {
+      return state.user;
+    }
+  },
+  mutations: {
+    SET_IS_AUTH: function SET_IS_AUTH(state, value) {
+      state.isAuth = value;
+    },
+    SET_USER: function SET_USER(state, value) {
+      state.user = value;
+    }
+  },
+  actions: {
+    setLogin: function setLogin(_ref, credentials) {// await axios.get('/sanctum/csrf-cookie');
+      // await axios.post('/api/auth/login', credentials);
+      // return await dispatch('me');
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var dispatch;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                dispatch = _ref.dispatch;
+
+              case 1:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    me: function me(_ref2) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var commit;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                _context2.next = 3;
+                return axios.get('/api/user').then(function (response) {
+                  commit('SET_IS_AUTH', true);
+                  commit('SET_USER', response.data);
+                })["catch"](function () {
+                  commit('SET_IS_AUTH', false);
+                  commit('SET_USER', null);
+                });
+
+              case 3:
+                return _context2.abrupt("return", _context2.sent);
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    }
+  }
+});
 
 /***/ }),
 
@@ -3558,6 +3780,76 @@ var render = function () {
                         _vm._v("ログイン"),
                       ]),
                       _vm._v(" "),
+                      this.validatMessage.length
+                        ? _c(
+                            "v-row",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { justify: "center" },
+                            },
+                            _vm._l(
+                              this.validatMessage,
+                              function (message, index) {
+                                return _c(
+                                  "v-alert",
+                                  {
+                                    key: index,
+                                    staticClass: "px-6",
+                                    attrs: {
+                                      dense: "",
+                                      text: "",
+                                      border: "left",
+                                      type: "error",
+                                      width: "70%",
+                                    },
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n            " +
+                                        _vm._s(message) +
+                                        "\n          "
+                                    ),
+                                  ]
+                                )
+                              }
+                            ),
+                            1
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      this.message
+                        ? _c(
+                            "v-row",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { justify: "center" },
+                            },
+                            [
+                              _c(
+                                "v-alert",
+                                {
+                                  staticClass: "px-6",
+                                  attrs: {
+                                    dense: "",
+                                    text: "",
+                                    border: "left",
+                                    type: "error",
+                                    width: "70%",
+                                  },
+                                },
+                                [
+                                  _vm._v(
+                                    "\n            " +
+                                      _vm._s(_vm.message) +
+                                      "\n          "
+                                  ),
+                                ]
+                              ),
+                            ],
+                            1
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
                       _c(
                         "v-form",
                         [
@@ -3623,7 +3915,7 @@ var render = function () {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                ログイン\n              "
+                                    "\n              ログイン\n            "
                                   ),
                                 ]
                               ),

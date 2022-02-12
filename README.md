@@ -13,6 +13,12 @@ php artisan make:seeder TodosTableSeeder
 # seed実行
 php artisan db:seed --class=TodosTableSeeder
 
+# コマンドラインからデータ投入
+php artisan tinker
+
+\App\Models\User::factory()->create(['name' => 'ccc', 'email' => 'ccc@gmail.com', 'password' => bcrypt('ccc')]);
+
+
 <!-- <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
