@@ -2,7 +2,10 @@
   <div>
     <v-app>
       <header>
-      <Header/>
+      <Header
+        :isDark=isDark
+        @change-Isdark="changeIsDark">
+      </Header>
       </header>
       <main class="body">
       <RouterView />
@@ -27,48 +30,57 @@ export default {
   name: 'App',
   data() {
     return {
-      isDark: true,
+      // ダークモードフラグ
+      isDark: this.$store.state.userInfo.isDark,
     }
   },
   mounted() {
-    this.darkModeMediaQuery();
+    this.changeDarkMode();
   },
   methods:{
-    darkModeMediaQuery() {
-      // console.log(window.matchMedia('(prefers-color-scheme: light)'));
-      // console.log(window.matchMedia('(prefers-color-scheme: light)').matches)
-      // let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (this.isDark) { // Dark
-        console.log('ダークモード');
-        console.log(document.getElementById('app'))
-          document.getElementById('app').classList.remove('theme--light');
-          document.getElementById('app').classList.add('theme--dark')
-      } else { // Light
-        console.log('ライトモード');
-          document.getElementById('app').classList.remove('theme--dark');
-          document.getElementById('app').classList.add('theme--light')
+    /**
+     * ダークモード切替処理
+     */
+    changeDarkMode() {
+      if (this.isDark) {
+        document.getElementById('app').classList.remove('theme--light');
+        document.getElementById('app').classList.add('theme--dark');
+        // vuexに値をセット
+        this.$store.dispatch('userInfo/setIsDark',{
+          isDark: this.isDark
+        });
+      } else {
+        document.getElementById('app').classList.remove('theme--dark');
+        document.getElementById('app').classList.add('theme--light');
+        // vuexに値をセット
+        this.$store.dispatch('userInfo/setIsDark',{
+          isDark: this.isDark
+        });
       }
+    },
+    /**
+     * ダークモードボタン押下
+     */
+    changeIsDark() {
+      this.isDark = !this.isDark;
     }
   },
   computed: {
   },
+  /**
+   * ダークモードフラグの変化によって変換処理を実施
+   */
   watch: {
     isDark: function() {
-      this.darkModeMediaQuery();
+      this.changeDarkMode();
     }
   }
 };
 </script>
 
 <style scoped>
-/* @media (prefers-color-scheme: dark) {
-  body {
-    background-color: #666666;
-    color: #fff;
-  }
-} */
 .theme--dark {
-    background-color: #666666;
-    color: #fff;
+  background-color: #666666;
+  color: #fff;
 }
 </style>
