@@ -195,7 +195,7 @@ export default {
   data(){
     return{
       // ユーザーID
-      userId: 1,
+      userId: this.$store.state.userInfo.userId,
       // 固定表示一覧
       bookMarkTodos: [],
       // その他一覧

@@ -17,13 +17,9 @@ use Exception;
 use Illuminate\Contracts\Auth\StatefulGuard;
 // use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-
-
 use Illuminate\Contracts\Auth\Authenticatable;
-
 
 class LoginController extends Controller
 {
@@ -54,10 +50,21 @@ class LoginController extends Controller
     $credentials = $request->only('email', 'password');
 
     // 認証開始
-    if (Auth::attempt($credentials)) {
+    if(Auth::attempt($credentials)) {
+      // 論理削除は認証失敗
+      if(Auth::user()->is_deleted === 1) {
+        $retultFlag = false;
+        Log::info('ログイン認証失敗');
+        return response()->json(['retultFlag' => $retultFlag]);
+      }
       $retultFlag = true;
+      // ユーザー情報作成
+      $userInfo = [
+        'userId' => Auth::user()->id,
+        'name' => Auth::user()->name,
+      ];
       Log::info('ログイン認証成功');
-      return response()->json(['retultFlag' => $retultFlag]);
+      return response()->json(['retultFlag' => $retultFlag, 'userInfo' => $userInfo]);
     }
     $retultFlag = false;
     Log::info('ログイン認証失敗');

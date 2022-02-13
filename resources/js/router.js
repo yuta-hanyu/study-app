@@ -3,13 +3,11 @@ import VueRouter from 'vue-router'
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
 import Login from './components/Login.vue';
+import Store from './store/index.js';
 
 
-// VueRouterプラグインを使用する
-// これによって<RouterView />コンポーネントなどを使うことができる
 Vue.use(VueRouter)
 
-// パスとコンポーネントのマッピング
 const router = new VueRouter({
     mode: 'history',
     routes: [
@@ -22,30 +20,26 @@ const router = new VueRouter({
           path: '/',
           name: 'Top',
           component: Top,
-          meta: {
-            isAuthenticated: true,
-          },
+          meta: {isAuthenticated: true},
         },
         {
           path: '/todo',
           name: 'Todo',
-          component: Todo
+          component: Todo,
+          meta: {isAuthenticated: true},
         },
     ]
 });
+//ログイン認証していない場合はリダイレクト
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.isAuthenticated)) {
+    if (Store.state.userInfo.isAuth === false) {
+      next({ name: 'Login' });
+    } else {
+      next();
+    }
+  }
+  next();
+});
 
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.some(record => record.meta.isAuthenticated)) {
-//     if (!Store.state.auth.isAuth) {
-//       next({ name: 'Login' });
-//     } else {
-//       next();
-//     }
-//   }
-//   next();
-// });
-
-
-// VueRouterインスタンスをエクスポートする
-// app.jsでインポートするため
 export default router

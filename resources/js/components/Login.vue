@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-container>
+      {{$store.state.userInfo.isAuth}}
       <v-row justify="center" align-content="center" style="height: 600px;">
         <v-col cols="8" align="center">
         <v-sheet
@@ -73,7 +74,7 @@
 </template>
 
 <script>
-import storeAuth from '../store/auth.js';
+
 export default {
   data() {
     return{
@@ -115,9 +116,15 @@ export default {
           password: this.password,
         },{withCredentials:true}).then((res) => {
           if( res.data.retultFlag == true ) {
+            // vuexに値をセット
+            this.$store.dispatch('userInfo/setLoginUser',{
+              name: res.data.userInfo.name,
+              userId: res.data.userInfo.userId,
+            });
             this.$router.push("/");
+          } else {
+            this.validatMessage = this.changeErrors(res.data.validatMessage);
           };
-          this.validatMessage = this.changeErrors(res.data.validatMessage);
         }).catch((e) => {
           console.log(e);
           this.message = 'ログインに失敗しました'
@@ -129,27 +136,6 @@ export default {
     }
   }
 }
-    // ...mapActions({
-    //   login: 'auth/login',
-    // }),
-    // async submit() {
-    //   await this.login(this.form);
-    //   this.$router.replace({ name: 'Top' });
-    // },
-    // login(){
-    //   axios.get('/api/loginPost',{
-    //     email: this.email,
-    //     password: this.password
-    //   }).then((res) => {
-    //     this.message = res.data.message;
-    //     console.log(res);
-    //     console.log("成功");
-    //     // this.$router.replace({ name: 'Top' });
-    //   }).catch((e) => {
-    //     console.log(e);
-    //     window.alert("データの送信に失敗しました")
-    //   });
-    // },
 
 </script>
 

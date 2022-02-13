@@ -99,8 +99,6 @@ export default {
   },
   data(){
     return {
-      // ログインユーザーID
-      // userId: '1',
       // 新規登録todo
       newTodo: {
         title: '',
@@ -128,8 +126,9 @@ export default {
         content: this.newTodo.content,
         state: this.newTodo.state,
         bookMark: this.newTodo.bookMark,
-        userId : this.userId
+        userId: this.userId
       }).then((res) => {
+                console.log(this.userId);
         if(res.data.validateState === false) {
           this.errors = this.changeErrors(res.data.message);
           return;

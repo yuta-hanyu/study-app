@@ -5,17 +5,32 @@
       dark
     >
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
-    <v-toolbar-title>MyPortfolioSite</v-toolbar-title>
+    <v-toolbar-title>MyStudyApp</v-toolbar-title>
+
+    <!-- ダークモード変換ボタン -->
+    <v-tooltip bottom color="primary">
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon
+          color="primary"
+          v-bind="attrs"
+          v-on="on"
+          id="plus-circle"
+          @click="newTodoOpen"
+        >
+        mdi-plus-circle
+        </v-icon>
+      </template>
+      <span>todo追加</span>
+    </v-tooltip>
+
     </v-app-bar>
       <v-navigation-drawer
         v-model="drawer"
         fixed
-        temporary
-      >
+        temporary>
         <v-list
           nav
-          dense
-        >
+          dense>
           <v-list-item-group>
             <v-list-item
             v-for="(menu, index) in munes"
