@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-container fluid>
+    <!-- {{consts.ERROR_MSG.EXPAIRED_SESSION}} -->
       <v-row v-if="this.succueseMsg" justify="center">
         <v-col cols="8">
         <v-alert
@@ -181,6 +182,7 @@
 </template>
 
 <script>
+import consts from '../common/const.js'
 import allDeleteTodo from './todoComponents/allDeleteTodo.vue'
 import newTodo from './todoComponents/newTodo.vue'
 import detailTodo from './todoComponents/detailTodo.vue'
@@ -232,6 +234,7 @@ export default {
       this.bookMarkTodos = [];
       this.todos = [];
       axios.get(`/api/todos/${this.userId}`).then((res) => {
+        console.log(res);
         let todos = [];
         todos = res.data.result;
         // 固定表示とその他を分別（ステータス完了非表示）
@@ -258,8 +261,13 @@ export default {
           }
         }
       }).catch((e) => {
+        //認証エラー
+        if(e.response.status === 401) {
+          alert(consts.ERROR_MSG.EXPAIRED_SESSION);
+          this.$store.dispatch('userInfo/resetUserInfo');
+          this.$router.push("/login");
+        };
         console.log(e);
-        window.alert("データの取得に失敗しました")
       });
     },
     /**

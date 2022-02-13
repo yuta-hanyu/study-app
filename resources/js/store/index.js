@@ -30,6 +30,13 @@ export default new Vuex.Store({
         'userInfo.isDark',
       ],
       storage: window.localStorage
+    }),
+    createPersistedState({
+      key: 'study_app_omitEmail',
+      paths: [
+        'userInfo.omitEmail',
+      ],
+      storage: window.localStorage
     })
   ]
 })

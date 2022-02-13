@@ -19,6 +19,15 @@ php artisan tinker
 \App\Models\User::factory()->create(['name' => 'ccc', 'email' => 'ccc@gmail.com', 'password' => bcrypt('ccc')]);
 \App\Models\User::factory()->create(['name' => 'aaa', 'email' => 'aaa@gmail.com', 'password' => bcrypt('aaa')]);
 
+# 認証エラーハンドリング
+import consts from '../common/const.js'
+
+if(e.response.status === 401) {
+  alert(consts.ERROR_MSG.EXPAIRED_SESSION);
+  this.$store.dispatch('userInfo/resetUserInfo');
+  this.$router.push("/login");
+};
+
 
 
 <!-- <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>

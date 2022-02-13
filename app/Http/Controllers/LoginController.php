@@ -63,18 +63,31 @@ class LoginController extends Controller
         'userId' => Auth::user()->id,
         'name' => Auth::user()->name,
       ];
-      Log::info('ログイン認証成功');
+      Log::info('ログイン認証終了（成功）');
       return response()->json(['retultFlag' => $retultFlag, 'userInfo' => $userInfo]);
     }
     $retultFlag = false;
-    Log::info('ログイン認証失敗');
+    Log::info('ログイン認証終了（失敗）');
     return response()->json(['retultFlag' => $retultFlag]);
   }
-
-
+  /**
+   * ログアウト処理
+   * @return Http response
+   */
   public function logout()
   {
+    Log::info('ログアウト開始');
+    // ログアウト判定フラグ
+    $retultFlag = false;
+    // ログアウト処理
     Auth::logout();
-    return response()->json(['message' => 'Logged out'], 200);
+    // ログアウト成功チェック
+    if(Auth::check()) {
+      $retultFlag = false;
+      return response()->json(['retultFlag' => $retultFlag]);
+    };
+    $retultFlag = true;
+    return response()->json(['retultFlag' => $retultFlag]);
+    Log::info('ログアウト完了');
   }
 }

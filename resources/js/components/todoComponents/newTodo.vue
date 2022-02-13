@@ -128,7 +128,6 @@ export default {
         bookMark: this.newTodo.bookMark,
         userId: this.userId
       }).then((res) => {
-                console.log(this.userId);
         if(res.data.validateState === false) {
           this.errors = this.changeErrors(res.data.message);
           return;

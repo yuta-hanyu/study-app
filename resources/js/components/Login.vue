@@ -55,6 +55,14 @@
                 required
               ></v-text-field>
             </v-col>
+            <v-col cols="9" align="center">
+              <v-checkbox
+                v-model="omitEmailSend"
+                label="次回以降、メールアドレスの入力をスキップ"
+                color="red"
+                dense
+            ></v-checkbox>
+            </v-col>
             <v-col cols="10" align="center">
               <v-btn
                 class="mr-4"
@@ -73,12 +81,12 @@
 </template>
 
 <script>
-
+import consts from '../common/const.js'
 export default {
   data() {
     return{
       // 認証メールアドレス
-      email: '',
+      email: this.$store.state.userInfo.omitEmail,
       // 認証パスワード
       password: '',
       // ログインボタン無効化フラグ
@@ -86,7 +94,9 @@ export default {
       // バリデーションMSG
       validatMessage: [],
       // 結果MSG
-      message: ''
+      message: '',
+      // メールアドレススキップ
+      omitEmailSend: false,
     }
   },
   methods: {
@@ -115,21 +125,29 @@ export default {
           password: this.password,
         },{withCredentials:true}).then((res) => {
           if( res.data.retultFlag == true ) {
-            // vuexに値をセット
-            this.$store.dispatch('userInfo/setLoginUser',{
+            // vuexにユーザー情報をセット
+            this.$store.dispatch('userInfo/setLoginUser', {
               name: res.data.userInfo.name,
               userId: res.data.userInfo.userId,
             });
+            // vuexにメールアドレスをセット
+            if(this.omitEmailSend == true) {
+              this.$store.dispatch('userInfo/setOmitEmail', {
+                omitEmail: this.email
+              });
+            };
             this.$router.push("/");
           } else {
             this.validatMessage = this.changeErrors(res.data.validatMessage);
           };
         }).catch((e) => {
+          //認証エラー
           console.log(e);
-          this.message = 'ログインに失敗しました'
+          this.message = consts.ERROR_MSG.LOGIN_FAILD
         });
       }).catch((e) => {
-        window.alert("認証エラーです");
+        //認証エラー
+        window.alert(consts.ERROR_MSG.AUTH_FAILD);
         console.log(e);
       });
     }

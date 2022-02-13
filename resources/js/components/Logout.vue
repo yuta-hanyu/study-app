@@ -17,6 +17,7 @@
           </v-col>
           <v-col cols="6">
             <v-btn
+              @click="logout"
               width="100px"
               color="orange lighten-2"
               elevation="20"
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import consts from '../common/const.js'
 export default {
   name: 'Logout',
   data() {
@@ -40,6 +42,26 @@ export default {
     // 戻るボタン押下
     back() {
       this.$emit('back-logout');
+    },
+    /**
+     * ログアウト
+     */
+    logout() {
+      axios.post('/api/logout').then((res) => {
+        // ログアウト処理ができていなかった場合
+        if(res.data.retultFlag == false) {
+          window.alert(consts.ERROR_MSG.LOGOUT_FAILD);
+          return;
+        };
+        // storeのuserInfoを初期値へリセット
+        this.$store.dispatch('userInfo/resetUserInfo');
+        // ログアウトダイアログを閉じる
+        this.back();
+        this.$router.push("/login");
+      }).catch((e) => {
+        window.alert(consts.ERROR_MSG.SERVER_ERROR);
+        console.log(e);
+      });
     }
   }
 }
