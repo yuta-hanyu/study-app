@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-container>
-      {{$store.state.userInfo.isAuth}}
       <v-row justify="center" align-content="center" style="height: 600px;">
         <v-col cols="8" align="center">
         <v-sheet

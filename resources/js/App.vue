@@ -4,11 +4,23 @@
       <header>
       <Header
         :isDark=isDark
-        @change-Isdark="changeIsDark">
+        @change-Isdark="changeIsDark"
+        @logout-dialog="logoutDialogOpen">
       </Header>
       </header>
       <main class="body">
       <RouterView />
+
+      <v-dialog
+        persistent
+        v-model="LogoutDialog"
+        height="200px"
+        width="300px">
+        <logout
+          @back-logout="backLogout">
+        </logout>
+      </v-dialog>
+
       </main>
     </v-app>
   </div>
@@ -19,25 +31,41 @@ import Header from './global/Header.vue';
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
 import Login from './components/Login.vue';
+import Logout from './components/Logout.vue';
 
 export default {
   components: {
     Header,
     Todo,
     Top,
-    Login
+    Login,
+    Logout
   },
   name: 'App',
   data() {
     return {
       // ダークモードフラグ
       isDark: this.$store.state.userInfo.isDark,
+      // ログアウトダイアログ
+      LogoutDialog: false,
     }
   },
   mounted() {
     this.changeDarkMode();
   },
   methods:{
+    /**
+     * ログアウトダイアログを表示
+     */
+    logoutDialogOpen() {
+      this.LogoutDialog = true;
+    },
+    /**
+     * ログアウトダイアログを非表示
+     */
+    backLogout() {
+      this.LogoutDialog = false;
+    },
     /**
      * ダークモード切替処理
      */
@@ -79,8 +107,8 @@ export default {
 </script>
 
 <style scoped>
-.theme--dark {
-  background-color: #666666;
-  color: #fff;
-}
+  .theme--dark {
+    background-color: #666666;
+    color: #fff;
+  }
 </style>

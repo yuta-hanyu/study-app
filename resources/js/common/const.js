@@ -1,7 +1,7 @@
 export default {
     menuItems: [
       {
-        name: 'TOP',
+        name: 'トップ',
         url: '/'
       },
       {
@@ -20,9 +20,10 @@ export default {
         name: 'BLOG',
         url: '#'
       },
-      {
-        name: 'ACCESS',
-        url: '#'
-      }
+      // {
+        // name: 'ログアウト',
+        // url: '/logout'
+        // url: '#'
+      // }
     ]
   }

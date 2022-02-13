@@ -29,9 +29,13 @@
           dense>
           <v-list-item-group>
             <v-list-item
-            v-for="(menu, index) in munes"
-            :key=index>
-            <router-link :to="menu.url">{{menu.name}}</router-link>
+              v-for="(menu, index) in munes"
+              :key=index>
+              <router-link :to="menu.url">{{menu.name}}</router-link>
+            </v-list-item>
+            <v-list-item
+              @click="LogoutDialog">
+              <router-link to="#">ログアウト</router-link>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -54,6 +58,15 @@ export default {
     }
   },
   methods: {
+    /**
+     * ダークモード切替処理
+     */
+    LogoutDialog() {
+      this.$emit('logout-dialog');
+    },
+    /**
+     * ダークモード切替処理
+     */
     changeIsDark() {
       this.$emit('change-Isdark');
     }

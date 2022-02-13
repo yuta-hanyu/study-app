@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
 import Login from './components/Login.vue';
+import Logout from './components/Logout.vue';
 import Store from './store/index.js';
 
 
@@ -15,6 +16,12 @@ const router = new VueRouter({
           path: '/login',
           name: 'Login',
           component: Login
+        },
+        {
+          path: '/logout',
+          name: 'Logout',
+          component: Logout,
+          meta: {isAuthenticated: true},
         },
         {
           path: '/',
