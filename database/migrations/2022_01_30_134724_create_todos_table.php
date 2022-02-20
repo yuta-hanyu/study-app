@@ -21,6 +21,7 @@ class CreateTodosTable extends Migration
             $table->string('content');
             $table->tinyInteger('state')->nullable();
             $table->tinyInteger('book_mark')->nullable()->default(0);
+            $table->dateTime('deadline');
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });

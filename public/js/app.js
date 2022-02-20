@@ -913,6 +913,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _common_const_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/const.js */ "./resources/js/common/const.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -999,11 +1000,20 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       // 認証メールアドレス
-      email: '',
+      email: this.$store.state.userInfo.omitEmail,
       // 認証パスワード
       password: '',
       // ログインボタン無効化フラグ
@@ -1011,7 +1021,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       // バリデーションMSG
       validatMessage: [],
       // 結果MSG
-      message: ''
+      message: '',
+      // メールアドレススキップ
+      omitEmailSend: false
     };
   },
   methods: {
@@ -1053,11 +1065,20 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           withCredentials: true
         }).then(function (res) {
           if (res.data.retultFlag == true) {
-            // vuexに値をセット
+            // vuexにユーザー情報をセット
             _this.$store.dispatch('userInfo/setLoginUser', {
               name: res.data.userInfo.name,
               userId: res.data.userInfo.userId
-            });
+            }); // vuexにメールアドレスをセット
+
+
+            if (_this.omitEmailSend == true) {
+              _this.$store.dispatch('userInfo/setOmitEmail', {
+                omitEmail: _this.email
+              });
+            }
+
+            ;
 
             _this.$router.push("/");
           } else {
@@ -1066,11 +1087,13 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
           ;
         })["catch"](function (e) {
+          //認証エラー
           console.log(e);
-          _this.message = 'ログインに失敗しました';
+          _this.message = _common_const_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERROR_MSG.LOGIN_FAILD;
         });
       })["catch"](function (e) {
-        window.alert("認証エラーです");
+        //認証エラー
+        window.alert(_common_const_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERROR_MSG.AUTH_FAILD);
         console.log(e);
       });
     }
@@ -1090,6 +1113,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _common_const_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/const.js */ "./resources/js/common/const.js");
 //
 //
 //
@@ -1122,6 +1146,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Logout',
   data: function data() {
@@ -1131,6 +1157,33 @@ __webpack_require__.r(__webpack_exports__);
     // 戻るボタン押下
     back: function back() {
       this.$emit('back-logout');
+    },
+
+    /**
+     * ログアウト
+     */
+    logout: function logout() {
+      var _this = this;
+
+      axios.post('/api/logout').then(function (res) {
+        // ログアウト処理ができていなかった場合
+        if (res.data.retultFlag == false) {
+          window.alert(_common_const_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERROR_MSG.LOGOUT_FAILD);
+          return;
+        }
+
+        ; // storeのuserInfoを初期値へリセット
+
+        _this.$store.dispatch('userInfo/resetUserInfo'); // ログアウトダイアログを閉じる
+
+
+        _this.back();
+
+        _this.$router.push("/login");
+      })["catch"](function (e) {
+        window.alert(_common_const_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERROR_MSG.SERVER_ERROR);
+        console.log(e);
+      });
     }
   }
 });
@@ -1150,9 +1203,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _todoComponents_allDeleteTodo_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todoComponents/allDeleteTodo.vue */ "./resources/js/components/todoComponents/allDeleteTodo.vue");
-/* harmony import */ var _todoComponents_newTodo_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./todoComponents/newTodo.vue */ "./resources/js/components/todoComponents/newTodo.vue");
-/* harmony import */ var _todoComponents_detailTodo_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./todoComponents/detailTodo.vue */ "./resources/js/components/todoComponents/detailTodo.vue");
+/* harmony import */ var _common_const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/const.js */ "./resources/js/common/const.js");
+/* harmony import */ var _todoComponents_allDeleteTodo_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./todoComponents/allDeleteTodo.vue */ "./resources/js/components/todoComponents/allDeleteTodo.vue");
+/* harmony import */ var _todoComponents_newTodo_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./todoComponents/newTodo.vue */ "./resources/js/components/todoComponents/newTodo.vue");
+/* harmony import */ var _todoComponents_detailTodo_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./todoComponents/detailTodo.vue */ "./resources/js/components/todoComponents/detailTodo.vue");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -1347,14 +1401,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    newTodo: _todoComponents_newTodo_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-    allDeleteTodo: _todoComponents_allDeleteTodo_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-    detailTodo: _todoComponents_detailTodo_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    newTodo: _todoComponents_newTodo_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    allDeleteTodo: _todoComponents_allDeleteTodo_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+    detailTodo: _todoComponents_detailTodo_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   name: 'Todo',
   data: function data() {
@@ -1399,6 +1455,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.bookMarkTodos = [];
       this.todos = [];
       axios.get("/api/todos/".concat(this.userId)).then(function (res) {
+        console.log(res);
         var todos = [];
         todos = res.data.result; // 固定表示とその他を分別（ステータス完了非表示）
 
@@ -1449,8 +1506,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           }
         }
       })["catch"](function (e) {
+        //認証エラー
+        if (e.response.status === 401) {
+          alert(_common_const_js__WEBPACK_IMPORTED_MODULE_1__["default"].ERROR_MSG.EXPAIRED_SESSION);
+
+          _this.$store.dispatch('userInfo/resetUserInfo');
+
+          _this.$router.push("/login");
+        }
+
+        ;
         console.log(e);
-        window.alert("データの取得に失敗しました");
       });
     },
 
@@ -1859,6 +1925,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     detailTodo: Object
@@ -2093,6 +2163,18 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     userId: Number
@@ -2129,8 +2211,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         bookMark: this.newTodo.bookMark,
         userId: this.userId
       }).then(function (res) {
-        console.log(_this.userId);
-
         if (res.data.validateState === false) {
           _this.errors = _this.changeErrors(res.data.message);
           return;
@@ -2368,7 +2448,14 @@ __webpack_require__.r(__webpack_exports__);
   // url: '/logout'
   // url: '#'
   // }
-  ]
+  ],
+  ERROR_MSG: {
+    EXPAIRED_SESSION: 'セッションの有効期間が切れています。再度、ログインしてください',
+    SERVER_ERROR: 'サーバーエラーが発生しました',
+    LOGOUT_FAILD: 'ログアウトに失敗しました',
+    LOGIN_FAILD: 'ログインに失敗しました',
+    AUTH_FAILD: '認証エラーです'
+  }
 });
 
 /***/ }),
@@ -2485,6 +2572,10 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3_
     key: 'study_app_isDark',
     paths: ['userInfo.isDark'],
     storage: window.localStorage
+  }), (0,vuex_persistedstate__WEBPACK_IMPORTED_MODULE_1__["default"])({
+    key: 'study_app_omitEmail',
+    paths: ['userInfo.omitEmail'],
+    storage: window.localStorage
   })]
 }));
 
@@ -2501,11 +2592,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/**
+ * ログインユーザー情報の初期値
+ * @param any state
+ * @param any userInfo
+ */
+var getDefaultState = function getDefaultState() {
+  return {
+    loginUserName: '',
+    userId: '',
+    isAuth: false
+  };
+}; // ユーザー情報は初期値をセット
+
+
 var state = {
-  loginUserName: '',
-  userId: '',
-  isAuth: false,
-  isDark: false
+  getDefaultState: getDefaultState,
+  isDark: false,
+  omitEmail: ''
 };
 var mutations = {
   /**
@@ -2519,12 +2623,30 @@ var mutations = {
   },
 
   /**
+   * ユーザー情報を初期値へリセット
+   * @param any state
+   * @param any userInfo
+   */
+  resetUserInfo: function resetUserInfo(state) {
+    Object.assign(state, getDefaultState());
+  },
+
+  /**
    * ダークモードの設定値を保存
    * @param any state
    * @param any isDark
    */
   setIsDark: function setIsDark(state, isDark) {
     state.isDark = isDark.isDark;
+  },
+
+  /**
+   * メールアドレスを保存
+   * @param any state
+   * @param any omitEmail
+   */
+  setOmitEmail: function setOmitEmail(state, omitEmail) {
+    state.omitEmail = omitEmail.omitEmail;
   }
 };
 var actions = {
@@ -2533,6 +2655,12 @@ var actions = {
   },
   setIsDark: function setIsDark(context, isDark) {
     context.commit('setIsDark', isDark);
+  },
+  resetUserInfo: function resetUserInfo(context) {
+    context.commit('resetUserInfo');
+  },
+  setOmitEmail: function setOmitEmail(context, omitEmail) {
+    context.commit('setOmitEmail', omitEmail);
   }
 };
 var getters = {};
@@ -2605,7 +2733,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.theme--dark[data-v-f348271a] {\n  background-color: #666666;\n  color: #fff;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.theme--dark[data-v-f348271a] {\n    background-color: #666666;\n    color: #fff;\n}\nbody[data-v-f348271a] {\nbackground-color: #666666;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4330,6 +4458,29 @@ var render = function () {
                           _vm._v(" "),
                           _c(
                             "v-col",
+                            { attrs: { cols: "6" } },
+                            [
+                              _c("v-checkbox", {
+                                attrs: {
+                                  label:
+                                    "次回以降、メールアドレスの入力をスキップ",
+                                  color: "red",
+                                  dense: "",
+                                },
+                                model: {
+                                  value: _vm.omitEmailSend,
+                                  callback: function ($$v) {
+                                    _vm.omitEmailSend = $$v
+                                  },
+                                  expression: "omitEmailSend",
+                                },
+                              }),
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
                             { attrs: { cols: "10", align: "center" } },
                             [
                               _c(
@@ -4445,6 +4596,7 @@ var render = function () {
                             elevation: "20",
                             rounded: "",
                           },
+                          on: { click: _vm.logout },
                         },
                         [_vm._v("\n            ログアウト\n          ")]
                       ),
@@ -5218,7 +5370,7 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "v-col",
-                { attrs: { cols: "12", height: "10%" } },
+                { staticClass: "my-n5", attrs: { cols: "12", height: "10%" } },
                 [
                   _c(
                     "v-radio-group",
@@ -5242,6 +5394,8 @@ var render = function () {
                       _c("v-radio", { attrs: { label: "対応中", value: 1 } }),
                       _vm._v(" "),
                       _c("v-radio", { attrs: { label: "保留", value: 2 } }),
+                      _vm._v(" "),
+                      _c("v-radio", { attrs: { label: "完了", value: 3 } }),
                     ],
                     1
                   ),
@@ -5251,7 +5405,7 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "v-col",
-                { attrs: { cols: "12", height: "10%" } },
+                { staticClass: "mt-n3", attrs: { cols: "12", height: "10%" } },
                 [
                   _c("v-checkbox", {
                     staticClass: "my-0",
@@ -5460,7 +5614,7 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "v-col",
-                { attrs: { cols: "12", height: "10%" } },
+                { staticClass: "my-n5", attrs: { cols: "12", height: "10%" } },
                 [
                   _c(
                     "v-radio-group",
@@ -5493,19 +5647,32 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "v-col",
-                { attrs: { cols: "12", height: "10%" } },
+                { staticClass: "mt-n3", attrs: { cols: "12", height: "10%" } },
                 [
-                  _c("v-checkbox", {
-                    staticClass: "my-0",
-                    attrs: { label: "上部へ固定", value: "1" },
-                    model: {
-                      value: _vm.newTodo.bookMark,
-                      callback: function ($$v) {
-                        _vm.$set(_vm.newTodo, "bookMark", $$v)
-                      },
-                      expression: "newTodo.bookMark",
-                    },
-                  }),
+                  _c(
+                    "v-row",
+                    [
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "6" } },
+                        [
+                          _c("v-checkbox", {
+                            staticClass: "my-0",
+                            attrs: { label: "上部へ固定", value: "1" },
+                            model: {
+                              value: _vm.newTodo.bookMark,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.newTodo, "bookMark", $$v)
+                              },
+                              expression: "newTodo.bookMark",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                    ],
+                    1
+                  ),
                 ],
                 1
               ),

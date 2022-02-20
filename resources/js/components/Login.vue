@@ -55,7 +55,7 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col cols="9" align="center">
+            <v-col cols="6">
               <v-checkbox
                 v-model="omitEmailSend"
                 label="次回以降、メールアドレスの入力をスキップ"

@@ -34,7 +34,7 @@
             label="コンテンツ"
           ></v-textarea>
         </v-col>
-        <v-col cols="12" height='10%'>
+        <v-col cols="12" height='10%' class="my-n5">
           <v-radio-group
             v-model="editTodo.state"
             row
@@ -52,9 +52,13 @@
               label="保留"
               :value=2
             ></v-radio>
+            <v-radio
+              label="完了"
+              :value=3
+            ></v-radio>
           </v-radio-group>
         </v-col>
-        <v-col cols="12" height='10%'>
+        <v-col cols="12" height='10%' class="mt-n3">
           <v-checkbox
             v-model="editTodo.bookMark"
             label="上部へ固定"

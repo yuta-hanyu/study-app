@@ -12,8 +12,7 @@
         border="left"
         type="error"
         class="px-6"
-        width="70%"
-      >
+        width="70%">
         {{error}}
       </v-alert>
     </v-row>
@@ -34,13 +33,12 @@
         label="コンテンツ"
       ></v-textarea>
       </v-col>
-      <v-col cols="12" height='10%'>
+      <v-col cols="12" height='10%' class="my-n5">
       <v-radio-group
         v-model="newTodo.state"
         row
         label="ステータス(必須)　　　　　　　　　　　　　"
-        class="my-0"
-      >
+        class="my-0">
         <v-radio
           label="未対応"
           value=0
@@ -55,13 +53,27 @@
         ></v-radio>
       </v-radio-group>
       </v-col>
-      <v-col cols="12" height='10%'>
-      <v-checkbox
-        v-model="newTodo.bookMark"
-        label="上部へ固定"
-        value=1
-        class="my-0"
-      ></v-checkbox>
+      <v-col cols="12" height='10%' class="mt-n3">
+        <v-row>
+          <v-col cols="6">
+            <v-checkbox
+              v-model="newTodo.bookMark"
+              label="上部へ固定"
+              value=1
+              class="my-0"
+            ></v-checkbox>
+          </v-col>
+          <!-- <v-col cols="6">
+            <v-btn
+              class="ma-2">
+            <v-icon
+              color="primary"
+              id="plus-circle">
+              mdi-calendar-range
+            </v-icon>締切を設定する
+          </v-btn>
+          </v-col> -->
+        </v-row>
       </v-col>
     </v-row>
     </v-form>

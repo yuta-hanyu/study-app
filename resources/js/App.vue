@@ -111,4 +111,7 @@ export default {
     background-color: #666666;
     color: #fff;
   }
+  body {
+background-color: #666666;
+  }
 </style>
