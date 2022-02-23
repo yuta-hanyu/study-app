@@ -3,13 +3,17 @@ import router from './router'
 import App from './App.vue'
 import Vuetify from 'vuetify'
 import '@mdi/font/css/materialdesignicons.css'
+import store from './store'
 
 Vue.use(Vuetify);
+
 
 new Vue({
   el: '#app',
   vuetify: new Vuetify(),
-  router, // ルーティングの定義を読み込む
+  router,
+  store,
   components: { App }, // ルートコンポーネントの使用を宣言する
   template: '<App />' // ルートコンポーネントを描画する
 })
+

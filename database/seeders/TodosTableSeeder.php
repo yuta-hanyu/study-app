@@ -31,7 +31,7 @@ class TodosTableSeeder extends Seeder
         'is_deleted' => 1,
       ]);
       DB::table('todos')->insert([
-        'user_id' => 1,
+        'user_id' => 2,
         'title' => 'ううう',
         'content' => 'うううううううううううううう',
         'state' => 3,

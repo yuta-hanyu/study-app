@@ -10,14 +10,15 @@
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     {{-- axios --}}
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-</head>
-<body>
 
-<div id="app">
-    <example-component></example-component>
-    {{-- <header-component></header-component> --}}
-</div>
-<!-- Scripts -->
-<script src="{{ mix('js/app.js') }}" defer></script>
+</head>
+  <head>
+    <title>MyStudyApp</title>
+    <!-- Scripts -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
+  </head>
+<body>
+  <div id="app">
+  </div>
 </body>
 </html>

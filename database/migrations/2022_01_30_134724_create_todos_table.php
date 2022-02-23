@@ -16,10 +16,12 @@ class CreateTodosTable extends Migration
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            // $table->foreignId('user_id');
             $table->string('title');
             $table->string('content');
-            $table->tinyInteger('state')->nullable();;
-            $table->tinyInteger('book_mark')->nullable();;
+            $table->tinyInteger('state')->nullable();
+            $table->tinyInteger('book_mark')->nullable()->default(0);
+            $table->dateTime('deadline');
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });
