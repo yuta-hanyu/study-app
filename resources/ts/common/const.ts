@@ -1,14 +1,14 @@
 import { Component } from 'vue-property-decorator';
 import Vue from 'vue';
 
-@Component
+@Component({
+  name: "Const",
+})
 export default class constant extends Vue {
   // サイドメニュー
   MENU_ITEMS = Object.freeze([
-    Object.freeze({name: 'トップ', url: '/'}),
-    Object.freeze({name: 'TODO', url: '/todo'}),
-    // Object.freeze({name: 'ログアウト', url: '/logout'}),
-    // Object.freeze({name: 'トップ', url: '/'})
+    {name: 'トップ', url: '/'},
+    {name: 'TODO', url: '/todo'},
   ]);
   // エラーMSG
   ERROR_MSG = Object.freeze({

@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "noImplicitAny": false,
+    "noImplicitThis": false,
     "outDir": "./public/",
     "sourceMap": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
     "module": "es2020",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -12,7 +13,7 @@
     "target": "es2020",
     "lib": [
       "es2020",
-      "dom"
+      "dom",
     ]
   },
   "include": [
@@ -20,7 +21,7 @@
     "resources/ts/**/*.vue",
     "resources/ts/**/*.tsx",
   ],
-  "exclude": [ //①対象外フォルダを指定する。
+  "exclude": [
     "vendor"
   ],
 }

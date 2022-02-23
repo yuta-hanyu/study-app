@@ -31,38 +31,38 @@
   </div>
 </template>
 
-<script>
-import consts from '../common/const.js'
-export default {
-  name: 'Logout',
-  data() {
-    return {}
-  },
-  methods: {
-    // 戻るボタン押下
-    back() {
-      this.$emit('back-logout');
-    },
-    /**
-     * ログアウト
-     */
-    logout() {
-      axios.post('/api/logout').then((res) => {
-        // ログアウト処理ができていなかった場合
-        if(res.data.retultFlag == false) {
-          window.alert(consts.ERROR_MSG.LOGOUT_FAILD);
-          return;
-        };
-        // storeのuserInfoを初期値へリセット
-        this.$store.dispatch('userInfo/resetUserInfo');
-        // ログアウトダイアログを閉じる
-        this.back();
-        this.$router.push("/login");
-      }).catch((e) => {
-        window.alert(consts.ERROR_MSG.SERVER_ERROR);
-        console.log(e);
-      });
-    }
+<script lang="ts">
+import {Component, Mixins, Emit} from 'vue-property-decorator';
+import Const from '../common/const'
+import Axios from 'axios';
+
+@Component({
+  name: "Logout",
+})
+
+export default class Logout extends Mixins(Const){
+  // 戻るボタン押下
+  @Emit('back-logout')
+  back(): void {};
+  /**
+   * ログアウト
+  */
+  private logout(): void {
+    Axios.post('/api/logout').then((res) => {
+      // ログアウト処理ができていなかった場合
+      if(res.data.retultFlag == false) {
+        window.alert(this.ERROR_MSG.LOGOUT_FAILD);
+        return;
+      };
+      // storeのuserInfoを初期値へリセット
+      this.$store.dispatch('resetUserInfo');
+      // ログアウトダイアログを閉じる
+      this.back();
+      this.$router.push("/login");
+    }).catch((e) => {
+      window.alert(this.ERROR_MSG.SERVER_ERROR);
+      console.log(e);
+    });
   }
 }
 </script>

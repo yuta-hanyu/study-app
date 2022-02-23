@@ -4,13 +4,12 @@
       <header>
       <Header
         :isDark=isDark
-        @change-Isdark="changeIsDark"
+        @change-isdark="changeIsDark"
         @logout-dialog="logoutDialogOpen">
       </Header>
       </header>
       <main class="body">
-      <!-- <RouterView /> -->
-        {{msg}}
+      <RouterView />
       <v-dialog
         persistent
         v-model="LogoutDialog"
@@ -31,7 +30,7 @@ import Vue from 'vue';
 import Header from './global/Header.vue';
 // import Todo from './components/Todo.vue';
 // import Top from './components/Top.vue';
-// import Login from './components/Login.vue';
+import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 
 @Component({
@@ -39,57 +38,55 @@ import Logout from './components/Logout.vue';
     Header,
     // Todo,
     // Top,
-    // Login,
+    Login,
     Logout
   },
 })
 
 export default class App extends Vue {
-  private msg: string = "Hello TS";
   // ダークモードフラグ
   isDark: boolean = this.$store.state.userInfo.isDark;
   // ログアウトダイアログ
-  LogoutDialog: false;
-
+  LogoutDialog: boolean = false;
   mounted() {
     this.changeDarkMode();
   }
-    /**
-     * ログアウトダイアログを表示
-     */
-    logoutDialogOpen() {
-      this.LogoutDialog = true;
-    },
-    /**
-     * ログアウトダイアログを非表示
-     */
-    backLogout() {
-      this.LogoutDialog = false;
-    },
   /**
-   * ダークモード切替処理
-   */
-  private changeDarkMode(): void {
+  * ログアウトダイアログを表示
+  */
+  logoutDialogOpen(): void {
+    this.LogoutDialog = true;
+  };
+  /**
+  * ログアウトダイアログを非表示
+  */
+  backLogout(): void {
+    this.LogoutDialog = false;
+  };
+  /**
+  * ダークモード切替処理
+  */
+  changeDarkMode(): void {
     if(this.isDark) {
       document.getElementById('app')!.classList.remove('theme--light');
       document.getElementById('app')!.classList.add('theme--dark');
       // vuexに値をセット
-      this.$store.dispatch('userInfo/setIsDark',{
+      this.$store.dispatch('setIsDark',{
         isDark: this.isDark
       });
     } else {
       document.getElementById('app')!.classList.remove('theme--dark');
       document.getElementById('app')!.classList.add('theme--light');
       // vuexに値をセット
-      this.$store.dispatch('userInfo/setIsDark',{
+      this.$store.dispatch('setIsDark',{
         isDark: this.isDark
       });
     }
   }
   /**
-   * ダークモードボタン押下
-   */
-  private changeIsDark(): void {
+  * ダークモードボタン押下
+  */
+  changeIsDark(): void {
     this.isDark = !this.isDark;
   }
   /**

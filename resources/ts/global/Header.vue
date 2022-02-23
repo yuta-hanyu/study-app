@@ -27,9 +27,9 @@
         <v-list
           nav
           dense>
-          <v-list-item-group>
+          <v-list-item-group >
             <v-list-item
-              v-for="(menu, index) in munes"
+              v-for="(menu, index) in this.MENU_ITEMS"
               :key=index>
               <router-link :to="menu.url">{{menu.name}}</router-link>
             </v-list-item>
@@ -44,8 +44,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Emit} from 'vue-property-decorator';
-import Const from '../common/const'
+import {Component, Mixins, Prop, Emit} from 'vue-property-decorator';
+import Const from '../common/const';
+
+@Component({
+  name: "Header",
+})
 
 export default class Header extends Mixins(Const){
   @Prop({type: Boolean, default: false})
@@ -53,8 +57,10 @@ export default class Header extends Mixins(Const){
   /**
    * ダークモード切替処理
    */
-  @Emit('change-Isdark')
-  changeIsDark(): void{};
+  @Emit('change-isdark')
+  changeIsDark(): void{
+      console.log("a");
+  };
   /**
    * ログアウト
    */
@@ -62,11 +68,6 @@ export default class Header extends Mixins(Const){
   LogoutDialog(): void{};
   // サイドメニュー閉じる開く
   private drawer: Boolean = false;
-  // サイドメニュー
-  private munes: readonly Readonly<{
-    name: string;
-    url: string;
-  }>[]  = this.MENU_ITEMS;
   // ツールチップtext変換
   get isDarkMode(): String {
     return this.isDark === true ? "ライト" : "ダーク";

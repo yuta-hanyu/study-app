@@ -9,18 +9,17 @@ interface Context {
  * @param any state
  * @param any userInfo
 */
-const getDefaultState = (): User => {
-  return {
-    loginUserName: '',
-    userId: '',
-    isAuth: false,
-  }
-};
+// const getDefaultState = (): User => {
+//   return {
+//     loginUserName: '',
+//     userId: '',
+//     isAuth: false,
+//   }
+// };
 // ログイン情報(State)
 type UserState = User & {
   isDark: boolean;
   omitEmail: string;
-  // isAuth: boolean;
 };
 // ログイン情報(param）
 interface userInfoParam {
@@ -32,11 +31,13 @@ interface userInfoParam {
 };
 
 const userInfo = {
-  // ユーザー情報は初期値をセット
   state: {
-    getDefaultState,
+    // getDefaultState,
     isDark: false,
     omitEmail: '',
+    loginUserName: '',
+    userId: '',
+    isAuth: false,
   },
   mutations: {
     /**
@@ -55,7 +56,12 @@ const userInfo = {
      * @param any userInfo
      */
     resetUserInfo(state: UserState) {
-      Object.assign(state, getDefaultState());
+      Object.assign(state,
+        {
+          loginUserName: '',
+          userId: '',
+          isAuth: false,
+        });
     },
     /**
      * ダークモードの設定値を保存

@@ -87,7 +87,7 @@ class LoginController extends Controller
       return response()->json(['retultFlag' => $retultFlag]);
     };
     $retultFlag = true;
-    return response()->json(['retultFlag' => $retultFlag]);
     Log::info('ログアウト完了');
+    return response()->json(['retultFlag' => $retultFlag]);
   }
 }
