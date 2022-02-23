@@ -12,11 +12,13 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 </head>
+  <head>
+    <title>MyStudyApp</title>
+    <!-- Scripts -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
+  </head>
 <body>
-
-<div id="app">
-</div>
-<!-- Scripts -->
-<script src="{{ mix('js/app.js') }}" defer></script>
+  <div id="app">
+  </div>
 </body>
 </html>
