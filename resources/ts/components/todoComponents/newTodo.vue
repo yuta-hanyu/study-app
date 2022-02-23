@@ -104,105 +104,97 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  props: {
-    userId: Number
-  },
-  data(){
-    return {
-      // 新規登録todo
-      newTodo: {
-        title: '',
-        content: '',
-        state: '',
-        bookMark: ''
-      },
-      // フォームバリデーションエラー
-      errors:[],
-      // 登録成功時MSG
-      succueseMsg: ''
-    }
-  },
-  methods: {
-    /**
-     * 登録
-     */
-    todoRegister() {
-      // エラーMSGリセット
-      this.errors = [];
-      // 成功MSGリセット
-      this.succueseMsg = '',
-      axios.post('/api/todos', {
-        title: this.newTodo.title,
-        content: this.newTodo.content,
-        state: this.newTodo.state,
-        bookMark: this.newTodo.bookMark,
-        userId: this.userId
-      }).then((res) => {
-        if(res.data.validateState === false) {
-          this.errors = this.changeErrors(res.data.message);
-          return;
-        }
-        this.succueseMsg = 'todoを登録しました'
-        this.initialize();
-        this.$emit('todo-register', this.succueseMsg);
-      }).catch((e) => {
-        console.log(e);
-        window.alert("データの更新に失敗しました")
-      });
-    },
-    /**
-     * エラーメッセージをオブジェクトから配列へ変換
-     */
-    changeErrors(message) {
-      for (let [key, value] of Object.entries(message)) {
-        this.errors.push(value[0]);
+<script lang="ts">
+import {Component, Mixins, Emit, Prop} from 'vue-property-decorator';
+import Const from '../../common/const';
+import Axios from 'axios';
+import { User } from '../../interfaces/User';
+import { Todos } from '../../interfaces/Todos';
+
+@Component({
+  name: 'newTodo',
+})
+
+export default class newTodo extends Mixins(Const) {
+  @Prop({type: Number, default: false})
+  userId!: number;
+  // 新規登録todo
+  private newTodo: Todos = {
+    title: '',
+    content: '',
+    state: null,
+    book_mark: null,
+    deadline: "2022-03-21 00:00:00"
+  };
+  // フォームバリデーションエラー
+  private errors: string[] = [];
+  // 登録成功時MSG
+  private succueseMsg: string =  '';
+
+  /**
+   * 登録
+   */
+  private todoRegister(): void {
+    // エラーMSGリセット
+    this.errors = [];
+    // 成功MSGリセット
+    this.succueseMsg = '',
+    Axios.post('/api/todos', {
+      title: this.newTodo.title,
+      content: this.newTodo.content,
+      state: this.newTodo.state,
+      book_mark: this.newTodo.book_mark,
+      // deadline: this.newTodo.deadline,
+      deadline: this.newTodo.deadline,
+      userId: this.userId,
+    }).then((res) => {
+      if(res.data.validateState === false) {
+        this.errors = this.changeErrors(res.data.message);
+        return;
       }
-      return this.errors;
-    },
-    /**
-     * 戻る
-     */
-    backTodos(){
+      this.succueseMsg = 'todoを登録しました'
       this.initialize();
-      this.$emit('back-todos');
-    },
-    /**
-     * データ初期化
-     */
-    initialize(){
-      Object.keys(this.newTodo).forEach(key => this.newTodo[key] = '');
-      this.errors = [];
+      this.$emit('todo-register', this.succueseMsg);
+    }).catch((e) => {
+      console.log(e);
+      window.alert("データの更新に失敗しました")
+    });
+  };
+  /**
+   * エラーメッセージをオブジェクトから配列へ変換
+   */
+  private changeErrors(message: string): string[] {
+    for (let [key, value] of Object.entries(message)) {
+      this.errors.push(value[0]);
     }
-  },
-  // computed: {
-    /**
-     * 登録ボタン活性判定
-     */
-    // isDisabled(){
-    //   if(!this.newTodo.title || this.newTodo.title.length > 15){
-    //     return true;
-    //   }
-    //   if(!this.newTodo.state){
-    //     return true;
-    //   }
-    //     return false;
-    // }
-  // }
+    return this.errors;
+  };
+  /**
+   * 戻る
+   */
+  private backTodos(): void {
+    this.initialize();
+    this.$emit('back-todos');
+  };
+  /**
+   * データ初期化
+   */
+  private initialize(): void {
+    Object.keys(this.newTodo).forEach(key => this.newTodo[key] = '');
+    this.errors = [];
+  };
 }
 </script>
 
 <style scoped>
-.card {
-  padding: 10px;
-}
-.title {
-  background-color: #a8ffff;
-  font-weight: bold;
-}
-.actions {
-  background-color: #a8ffff;
-}
-
+  .card {
+    padding: 10px;
+  }
+  .title {
+    background-color: #a8ffff;
+    font-weight: bold;
+  }
+  .actions {
+    background-color: #a8ffff;
+  }
 </style>

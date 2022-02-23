@@ -4,7 +4,6 @@ import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
-import {User} from './interfaces/User';
 
 Vue.use(VueRouter)
 
@@ -28,12 +27,12 @@ const router = new VueRouter({
       component: Top,
       meta: {isAuthenticated: true},
     },
-    // {
-    //   path: '/todo',
-    //   name: 'Todo',
-    //   component: Todo,
-    //   meta: {isAuthenticated: true},
-    // },
+    {
+      path: '/todo',
+      name: 'Todo',
+      component: Todo,
+      meta: {isAuthenticated: true},
+    },
   ]
 });
 //ログイン認証していない場合はリダイレクト
