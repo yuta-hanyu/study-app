@@ -4,13 +4,16 @@
 </div>
 </template>
 
-<script>
-export default {
-    name: 'TOP',
-    data(){
-        return{
-        }
-    },
+<script lang="ts">
+import {Component, Mixins, Emit} from 'vue-property-decorator';
+import Const from '../common/const';
+
+@Component ({
+  name: 'TOP'
+})
+
+export default class Top extends Mixins(Const){
+
 }
 </script>
 <style>
