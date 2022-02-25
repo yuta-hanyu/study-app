@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-container fluid>
-    <!-- {{consts.ERROR_MSG.EXPAIRED_SESSION}} -->
       <v-row v-if="this.succueseMsg" justify="center">
         <v-col cols="8">
         <v-alert
@@ -34,6 +33,7 @@
           <v-tooltip bottom color="deep-orange lighten-2">
             <template v-slot:activator="{ on, attrs }">
               <v-card
+                dark
                 @click="todoDetail(todo)"
                 elevation="10"
                 class="mx-auto"
@@ -78,6 +78,7 @@
           <v-tooltip bottom color="deep-orange lighten-2">
             <template v-slot:activator="{ on, attrs }">
               <v-card
+                dark
                 @click="todoDetail(todo)"
                 elevation="10"
                 class="mx-auto"
@@ -180,10 +181,10 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Emit} from 'vue-property-decorator';
-import allDeleteTodo from './todoComponents/allDeleteTodo.vue'
-import newTodo from './todoComponents/newTodo.vue';
-import detailTodo from './todoComponents/detailTodo.vue';
+import {Component, Mixins} from 'vue-property-decorator';
+import AllDeleteTodo from './todoComponents/AllDeleteTodo.vue'
+import NewTodo from './todoComponents/NewTodo.vue';
+import DetailTodo from './todoComponents/DetailTodo.vue';
 import Const from '../common/const';
 import Axios from 'axios';
 import { User } from '../interfaces/User';
@@ -192,13 +193,14 @@ import { Todos } from '../interfaces/Todos';
 @Component({
   name: 'Todo',
   components: {
-    newTodo,
-    allDeleteTodo,
-    detailTodo,
+    NewTodo,
+    AllDeleteTodo,
+    DetailTodo,
   },
 })
 
-export default class Todo extends Mixins(Const){
+export default class Todo extends Mixins(Const) {
+  $refs: any = {}
   // ユーザーID
   private userId: User = this.$store.state.userInfo.userId;
   // 固定表示一覧
@@ -212,7 +214,7 @@ export default class Todo extends Mixins(Const){
   // 詳細ダイアログ表示フラグ
   private detailDialog: boolean = false;
   // 詳細todo
-  // private detailTodo: [];
+  private detailTodo: Todos | null = null;
   // ステータス完了表示フラグ
   private finishFlag: boolean = false;
   // 処理成功MSG
@@ -265,7 +267,7 @@ export default class Todo extends Mixins(Const){
       //認証エラー
       if(e.response.status === 401) {
         alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('userInfo/resetUserInfo');
+        this.$store.dispatch('resetUserInfo');
         this.$router.push("/login");
       };
       console.log(e);
@@ -278,34 +280,34 @@ export default class Todo extends Mixins(Const){
     switch (todo.state){
     // 未対応
     case 0:
-      return "#FFCCBC"
+      return "#990000"
     // 対応中
     case 1:
-      return "#E1F5FE"
+      return "#003366"
     // 保留
     case 2:
-      return "#EDE7F6"
+      return "#006600"
     // 対応済み
     default:
-      return "#E0E0E0"
+      return "#020202"
     }
   }
   /**
    * 新規登録ダイアログを表示
    */
-  private newTodoOpen(): void{
+  private newTodoOpen(): void {
     this.newDialog = true;
   }
   /**
    * 新規登録ダイアログを非表示
    */
-  private newTodoClose(): void{
+  private newTodoClose(): void {
     this.newDialog = false;
   }
   /**
    * todo新規登録
    */
-  private todoRegister(succueseMsg: string): void{
+  private todoRegister(succueseMsg: string): void {
     this.newTodoClose();
     this.succueseMsg = succueseMsg;
     setTimeout(() => {
@@ -316,19 +318,19 @@ export default class Todo extends Mixins(Const){
   /**
    * 全削除ダイアログを表示
    */
-  private allDeleteOpen(): void{
+  private allDeleteOpen(): void {
     this.allDeleteDialog = true;
   }
   /**
    * 全削除ダイアログを非表示
    */
-  private allDeleteClose(): void{
+  private allDeleteClose(): void {
     this.allDeleteDialog = false;
   }
   /**
    * 全削除成功
    */
-  private removeAll(succueseMsg: string): void{
+  private removeAll(succueseMsg: string): void {
     this.succueseMsg = succueseMsg;
     setTimeout(() => {
       this.succueseMsg = '';
@@ -338,14 +340,15 @@ export default class Todo extends Mixins(Const){
   /**
    * todo詳細
    */
-  // private async todoDetail(todo){
-  //   // 子コンポーネント生成後、初期をセット
-  //   await (
-  //     this.detailDialog = true,
-  //     this.detailTodo = todo)
-  //     // コンポーネントに初期をセット
-  //     this.$refs.child.setVal();
-  // }
+  private async todoDetail(todo: Todos): Promise<void> {
+    // 子コンポーネント生成後、初期をセット
+      await (
+        this.detailDialog = true,
+        this.detailTodo = todo
+      );
+      // コンポーネントに初期をセット
+      this.$refs.child.setVal();
+  }
   /**
    * todo編集完了
    */
@@ -360,7 +363,7 @@ export default class Todo extends Mixins(Const){
   /**
    * 削除成功
    */
-  private deleteTodo(succueseMsg: string): void{
+  private deleteTodo(succueseMsg: string): void {
     this.detailDialogClose();
     this.succueseMsg = succueseMsg;
     setTimeout(() => {
@@ -371,20 +374,20 @@ export default class Todo extends Mixins(Const){
   /**
    * 詳細ダイアログを非表示
    */
-  private detailDialogClose(): void{
+  private detailDialogClose(): void {
     this.detailDialog = false;
   }
   /**
    * 各ダイアログから戻る
    */
-  private back(): void{
-    if(this.newDialog = true){
+  private back(): void {
+    if(this.newDialog = true) {
       this.newTodoClose();
     }
-    if(this.allDeleteDialog = true){
+    if(this.allDeleteDialog = true) {
       this.allDeleteClose();
     }
-    if(this.detailDialog = true){
+    if(this.detailDialog = true) {
       this.detailDialogClose();
     }
   }
@@ -392,35 +395,35 @@ export default class Todo extends Mixins(Const){
 </script>
 
 <style scoped>
-#switch{
-  position: fixed;
-  right: 5%;
-  top: 10%;
-}
-#plus-circle{
-  position: fixed;
-  right: 10%;
-  bottom: 5%;
-  transform: scale(2, 2);
-}
-#delete-alert {
-  position: fixed;
-  right: 5%;
-  bottom: 5%;
-  transform: scale(2, 2);
-}
-.trash{
-  position: absolute;
-  right: 0;
-  top: 2%;
-}
-.edit{
-  position: absolute;
-  right: 20px;
-  top: 2%;
-}
-.new_line {
-  white-space: pre-wrap;
-  text-align: left;
-}
+  #switch{
+    position: fixed;
+    right: 5%;
+    top: 10%;
+  }
+  #plus-circle{
+    position: fixed;
+    right: 10%;
+    bottom: 5%;
+    transform: scale(2, 2);
+  }
+  #delete-alert {
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    transform: scale(2, 2);
+  }
+  .trash{
+    position: absolute;
+    right: 0;
+    top: 2%;
+  }
+  .edit{
+    position: absolute;
+    right: 20px;
+    top: 2%;
+  }
+  .new_line {
+    white-space: pre-wrap;
+    text-align: left;
+  }
 </style>

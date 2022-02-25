@@ -57,7 +57,7 @@
         <v-row>
           <v-col cols="6">
             <v-checkbox
-              v-model="newTodo.bookMark"
+              v-model="newTodo.book_mark"
               label="上部へ固定"
               value=1
               class="my-0"
@@ -105,17 +105,16 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Emit, Prop} from 'vue-property-decorator';
+import {Component, Mixins, Prop} from 'vue-property-decorator';
 import Const from '../../common/const';
 import Axios from 'axios';
-import { User } from '../../interfaces/User';
 import { Todos } from '../../interfaces/Todos';
 
 @Component({
-  name: 'newTodo',
+  name: 'NewTodo',
 })
 
-export default class newTodo extends Mixins(Const) {
+export default class NewTodo extends Mixins(Const) {
   @Prop({type: Number, default: false})
   userId!: number;
   // 新規登録todo
@@ -130,7 +129,6 @@ export default class newTodo extends Mixins(Const) {
   private errors: string[] = [];
   // 登録成功時MSG
   private succueseMsg: string =  '';
-
   /**
    * 登録
    */

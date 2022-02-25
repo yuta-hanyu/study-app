@@ -59,7 +59,6 @@ export default class Header extends Mixins(Const){
    */
   @Emit('change-isdark')
   changeIsDark(): void{
-      console.log("a");
   };
   /**
    * ログアウト

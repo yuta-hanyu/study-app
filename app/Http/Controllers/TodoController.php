@@ -99,6 +99,7 @@ class TodoController extends Controller
       $updateTodo->save();
       DB::commit();
     } catch (\Exception $e) {
+      Log::info('todo更新失敗');
       DB::rollback();
     }
     Log::info('todo更新終了');

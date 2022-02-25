@@ -60,7 +60,7 @@
         </v-col>
         <v-col cols="12" height='10%' class="mt-n3">
           <v-checkbox
-            v-model="editTodo.bookMark"
+            v-model="editTodo.book_mark"
             label="上部へ固定"
             :value=1
             class="my-0"
@@ -105,114 +105,132 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  props: {
-    detailTodo: Object
-  },
-  data() {
-    return {
-      editTodo: {
-        userId: this.detailTodo.user_id,
-        title: this.detailTodo.title,
-        content: this.detailTodo.content,
-        state: this.detailTodo.state,
-        bookMark: this.detailTodo.book_mark
-      },
-      // 処理成功時MSG
-      succueseMsg: '',
-      // フォームバリデーションエラー
-      errors:[],
-    }
-  },
-  methods: {
-    /**
-     * 編集ボタン押下
-     */
-    updateTodo(){
-      // エラーMSGリセット
-      this.errors = [];
-      // 成功MSGリセット
-      this.succueseMsg = '',
-      console.log(this.detailTodo.id);
-      axios.put(`/api/todo/update`, {
-        id: this.detailTodo.id,
-        title: this.editTodo.title,
-        content: this.editTodo.content,
-        state: this.editTodo.state,
-        bookMark: this.editTodo.bookMark,
-      }).then((res) => {
-        if(res.data.validateState === false) {
-          this.errors = this.changeErrors(res.data.message);
-          return;
-        }
-        this.succueseMsg = `"${this.editTodo.title}"を編集しました`
-        this.initialize();
-        this.$emit('todo-update', this.succueseMsg);
-      }).catch((e) => {
-        console.log(e);
-        window.alert("データの更新に失敗しました")
-      });
-    },
-    /**
-     * エラーメッセージをオブジェクトから配列へ変換
-     */
-    changeErrors(message) {
-      for (let [key, value] of Object.entries(message)) {
-        this.errors.push(value[0]);
+<script lang="ts">
+import {Component, Mixins, Prop, Emit} from 'vue-property-decorator';
+import Const from '../../common/const';
+import { Todos } from '../../interfaces/Todos';
+import Axios from 'axios';
+// Todo型にuserIdを付与
+type typeEditTodo = Todos & {
+  userId: number;
+};
+
+@Component({
+  name: 'DetailTodo',
+})
+
+export default class DetailTodo extends Mixins(Const) {
+  @Prop({type: Object, default: false})
+    detailTodo!: typeEditTodo;
+  // 戻るボタン押下
+  @Emit('back-todos')
+    emitBackTodos(): void {
+  };
+  // 削除ボタン押下
+  @Emit('delete-todo')
+    emitDeleteTodos(succueseMsg: string): void {
+  };
+  // 編集ボタン押下
+  @Emit('todo-update')
+    emitUpdateTodos(succueseMsg: string): void {
+  };
+  // 編集todo
+  private editTodo: typeEditTodo = {
+    userId: this.detailTodo.userId,
+    title: this.detailTodo.title,
+    content: this.detailTodo.content,
+    state: this.detailTodo.state,
+    book_mark: this.detailTodo.book_mark
+  };
+  // 処理成功時MSG
+  private succueseMsg: string =  '';
+  // フォームバリデーションエラー
+  private errors: string[] = [];
+  /**
+   * 編集ボタン押下
+   */
+  private updateTodo(): void {
+    // エラーMSGリセット
+    this.errors = [];
+    // 成功MSGリセット
+    this.succueseMsg = '',
+    Axios.put(`/api/todo/update`, {
+      id: this.detailTodo.id,
+      title: this.editTodo.title,
+      content: this.editTodo.content,
+      state: this.editTodo.state,
+      book_mark: this.editTodo.book_mark,
+    }).then((res) => {
+      if(res.data.validateState === false) {
+        this.errors = this.changeErrors(res.data.message);
+        return;
       }
-      return this.errors;
-    },
-    /**
-     * 戻る
-     */
-    backTodos(){
+      this.succueseMsg = `"${this.editTodo.title}"を編集しました`
       this.initialize();
-      this.$emit('back-todos');
-    },
-    /**
-     * データ初期化
-     */
-    initialize(){
-      Object.keys(this.editTodo).forEach(key => this.editTodo[key] = '');
-      this.errors = [];
-    },
-    /**
-     * 初期データセット
-     */
-    setVal(){
-        this.editTodo.userId = this.detailTodo.user_id,
-        this.editTodo.title = this.detailTodo.title,
-        this.editTodo.content = this.detailTodo.content,
-        this.editTodo.state = this.detailTodo.state,
-        this.editTodo.bookMark = this.detailTodo.book_mark
-    },
-    /**
-     * 削除ボタン押下
-     */
-    removeTodo(){
-      axios.delete(`/api/todo/${this.detailTodo.id}`).then((res) => {
-        this.succueseMsg = `"${this.editTodo.title}"を削除しました`
-        this.initialize();
-        this.$emit('delete-todo', this.succueseMsg);
-      }).catch((e) => {
-        console.log(e);
-        window.alert("データの更新に失敗しました");
-      });
+      this.emitUpdateTodos(this.succueseMsg);
+    }).catch((e) => {
+      console.log(e);
+      window.alert("データの更新に失敗しました")
+    });
+  };
+  /**
+   * エラーメッセージをオブジェクトから配列へ変換
+   */
+  private changeErrors(message: string[]): string[] {
+    for (let [key, value] of Object.entries(message)) {
+      this.errors.push(value[0]);
     }
+    return this.errors;
+  }
+  /**
+   * 戻る
+   */
+  private backTodos(): void {
+    this.initialize();
+    this.emitBackTodos();
+  }
+  /**
+   * データ初期化
+   */
+  private initialize(): void {
+    Object.keys(this.editTodo).forEach(key => this.editTodo[key] = '');
+    this.errors = [];
+  }
+  /**
+   * 初期データセット
+   */
+  private setVal(): void {
+    this.editTodo.userId = this.detailTodo.userId,
+    this.editTodo.title = this.detailTodo.title,
+    this.editTodo.content = this.detailTodo.content,
+    this.editTodo.state = this.detailTodo.state,
+    this.editTodo.book_mark = this.detailTodo.book_mark
+  }
+  /**
+   * 削除ボタン押下
+   */
+  private removeTodo(): void {
+    Axios.delete(`/api/todo/${this.detailTodo.id}`).then((res) => {
+      this.succueseMsg = `"${this.editTodo.title}"を削除しました`
+      this.initialize();
+      this.emitDeleteTodos(this.succueseMsg);
+    }).catch((e) => {
+      console.log(e);
+      window.alert("データの更新に失敗しました");
+    });
   }
 }
 </script>
 
 <style scoped>
-.card {
-  padding: 10px;
-}
-.title {
-  background-color: #a8ffd3;
-  font-weight: bold;
-}
-.actions {
-  background-color: #a8ffd3;
-}
+  .card {
+    padding: 10px;
+  }
+  .title {
+    background-color: #a8ffd3;
+    font-weight: bold;
+  }
+  .actions {
+    background-color: #a8ffd3;
+  }
 </style>
