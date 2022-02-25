@@ -28,16 +28,16 @@
 import { Component, Ref, Watch} from 'vue-property-decorator';
 import Vue from 'vue';
 import Header from './global/Header.vue';
-// import Todo from './components/Todo.vue';
-// import Top from './components/Top.vue';
+import Todo from './components/Todo.vue';
+import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 
 @Component({
   components: {
     Header,
-    // Todo,
-    // Top,
+    Todo,
+    Top,
     Login,
     Logout
   },

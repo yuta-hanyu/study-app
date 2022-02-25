@@ -55,11 +55,13 @@ class TodoController extends Controller
       $todo->title = $request->title;
       $todo->content = $request->content;
       $todo->state = $request->state;
-      $todo->book_mark = $request->bookMark;
+      $todo->book_mark = $request->book_mark;
+      $todo->deadline = $request->deadline;
       $todo->save();
       DB::commit();
     } catch (\Exception $e) {
       DB::rollback();
+      Log::info('todo新規登録失敗');
     }
     Log::info('todo新規登録終了');
     return;
@@ -93,10 +95,11 @@ class TodoController extends Controller
       $updateTodo->title = $request->title;
       $updateTodo->content = $request->content;
       $updateTodo->state = $request->state;
-      $updateTodo->book_mark = $request->bookMark;
+      $updateTodo->book_mark = $request->book_mark;
       $updateTodo->save();
       DB::commit();
     } catch (\Exception $e) {
+      Log::info('todo更新失敗');
       DB::rollback();
     }
     Log::info('todo更新終了');

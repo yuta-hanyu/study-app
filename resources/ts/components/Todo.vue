@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-container fluid>
-    <!-- {{consts.ERROR_MSG.EXPAIRED_SESSION}} -->
       <v-row v-if="this.succueseMsg" justify="center">
         <v-col cols="8">
         <v-alert
@@ -34,6 +33,7 @@
           <v-tooltip bottom color="deep-orange lighten-2">
             <template v-slot:activator="{ on, attrs }">
               <v-card
+                dark
                 @click="todoDetail(todo)"
                 elevation="10"
                 class="mx-auto"
@@ -78,6 +78,7 @@
           <v-tooltip bottom color="deep-orange lighten-2">
             <template v-slot:activator="{ on, attrs }">
               <v-card
+                dark
                 @click="todoDetail(todo)"
                 elevation="10"
                 class="mx-auto"
@@ -118,8 +119,7 @@
           v-bind="attrs"
           v-on="on"
           id="plus-circle"
-          @click="newTodoOpen"
-        >
+          @click="newTodoOpen">
         mdi-plus-circle
         </v-icon>
       </template>
@@ -133,8 +133,7 @@
           id="delete-alert"
           @click="allDeleteOpen"
           v-bind="attrs"
-          v-on="on"
-        >
+          v-on="on">
         mdi-delete-alert
         </v-icon>
       </template>
@@ -181,247 +180,250 @@
   </div>
 </template>
 
-<script>
-import consts from '../common/const.js'
-import allDeleteTodo from './todoComponents/allDeleteTodo.vue'
-import newTodo from './todoComponents/newTodo.vue'
-import detailTodo from './todoComponents/detailTodo.vue'
+<script lang="ts">
+import {Component, Mixins} from 'vue-property-decorator';
+import AllDeleteTodo from './todoComponents/AllDeleteTodo.vue'
+import NewTodo from './todoComponents/NewTodo.vue';
+import DetailTodo from './todoComponents/DetailTodo.vue';
+import Const from '../common/const';
+import Axios from 'axios';
+import { User } from '../interfaces/User';
+import { Todos } from '../interfaces/Todos';
 
-export default {
-  components: {
-    newTodo,
-    allDeleteTodo,
-    detailTodo,
-  },
+@Component({
   name: 'Todo',
-  data(){
-    return{
-      // ユーザーID
-      userId: this.$store.state.userInfo.userId,
-      // 固定表示一覧
-      bookMarkTodos: [],
-      // その他一覧
-      todos: [],
-      // 新規登録ダイアログ表示フラグ
-      newDialog: false,
-      // 新規登録ダイアログ表示フラグ
-      allDeleteDialog: false,
-      // 詳細ダイアログ表示フラグ
-      detailDialog: false,
-      // 詳細todo
-      detailTodo: [],
-      // ステータス完了表示フラグ
-      finishFlag: false,
-      // 処理成功MSG
-      succueseMsg: '',
-      editTodo: {
-        id: '',
-        title: '',
-        content: '',
-        state:'',
-        bookMark: false
-      }
-    }
+  components: {
+    NewTodo,
+    AllDeleteTodo,
+    DetailTodo,
   },
+})
+
+export default class Todo extends Mixins(Const) {
+  $refs: any = {}
+  // ユーザーID
+  private userId: User = this.$store.state.userInfo.userId;
+  // 固定表示一覧
+  private bookMarkTodos: Todos[] = [];
+  // その他一覧
+  private todos: Todos[] = [];
+  // 新規登録ダイアログ表示フラグ
+  private newDialog: boolean = false;
+  // 新規登録ダイアログ表示フラグ
+  private allDeleteDialog: boolean = false;
+  // 詳細ダイアログ表示フラグ
+  private detailDialog: boolean = false;
+  // 詳細todo
+  private detailTodo: Todos | null = null;
+  // ステータス完了表示フラグ
+  private finishFlag: boolean = false;
+  // 処理成功MSG
+  private succueseMsg: string = '';
+  // todo編集初期データ
+  private editTodo: Todos = {
+    id: null,
+    title: '',
+    content: '',
+    state: null,
+    book_mark: null,
+  };
   mounted() {
     this.getTodos();
-  },
-  methods:{
-    /**
-     * todo一覧表示
-     */
-    getTodos() {
-      this.bookMarkTodos = [];
-      this.todos = [];
-      axios.get(`/api/todos/${this.userId}`).then((res) => {
-        console.log(res);
-        let todos = [];
-        todos = res.data.result;
-        // 固定表示とその他を分別（ステータス完了非表示）
-        if (this.finishFlag === false) {
-          for (let todo of todos) {
-            if (todo.state !== 3 && todo.book_mark === 1) {
-              this.bookMarkTodos.push(todo);
-            } else if(todo.state !== 3) {
-              this.todos.push(todo);
-            } else {
-              continue;
-            }
-          }
-          return;
-        }
-        // 固定表示とその他を分別（ステータス完了表示）
-        if (this.finishFlag === true) {
-          for (let todo of todos) {
-            if (todo.book_mark === 1) {
-              this.bookMarkTodos.push(todo);
-            } else {
-              this.todos.push(todo);
-            }
+  }
+  /**
+   * todo一覧表示
+   */
+  private getTodos(): void {
+    this.bookMarkTodos = [];
+    this.todos = [];
+    Axios.get(`/api/todos/${this.userId}`).then((res) => {
+      let todos: Todos[] = [];
+      todos = res.data.result;
+      console.log(todos);
+      // 固定表示とその他を分別（ステータス完了非表示）
+      if (this.finishFlag === false) {
+        for (let todo of todos) {
+          if (todo.state !== 3 && todo.book_mark === 1) {
+            this.bookMarkTodos.push(todo);
+          } else if(todo.state !== 3) {
+            this.todos.push(todo);
+          } else {
+            continue;
           }
         }
-      }).catch((e) => {
-        //認証エラー
-        if(e.response.status === 401) {
-          alert(consts.ERROR_MSG.EXPAIRED_SESSION);
-          this.$store.dispatch('userInfo/resetUserInfo');
-          this.$router.push("/login");
-        };
-        console.log(e);
-      });
-    },
-    /**
-     * ステータスに応じた配色適用
-     */
-    color(todo){
-      switch (todo.state){
-      // 未対応
-      case 0:
-        return "#FFCCBC"
-      // 対応中
-      case 1:
-        return "#E1F5FE"
-      // 保留
-      case 2:
-        return "#EDE7F6"
-      // 対応済み
-      default:
-        return "#E0E0E0"
+        return;
       }
-    },
-    /**
-     * 新規登録ダイアログを表示
-     */
-    newTodoOpen(){
-      this.newDialog = true;
-    },
-    /**
-     * 新規登録ダイアログを非表示
-     */
-    newTodoClose(){
-      this.newDialog = false;
-    },
-    /**
-     * todo新規登録
-     */
-    todoRegister(succueseMsg) {
-      console.log(succueseMsg);
-      this.newTodoClose();
-      this.succueseMsg = succueseMsg;
-      setTimeout(() => {
-        this.succueseMsg = '';
-      }, 3000);
-      this.getTodos();
-    },
-    /**
-     * 全削除ダイアログを表示
-     */
-    allDeleteOpen(){
-      this.allDeleteDialog = true;
-    },
-    /**
-     * 全削除ダイアログを非表示
-     */
-    allDeleteClose(){
-      this.allDeleteDialog = false;
-    },
-    /**
-     * 全削除成功
-     */
-    removeAll(succueseMsg){
-      this.succueseMsg = succueseMsg;
-      setTimeout(() => {
-        this.succueseMsg = '';
-      }, 3000);
-      this.getTodos();
-    },
-    /**
-     * todo詳細
-     */
-    async todoDetail(todo){
-      // 子コンポーネント生成後、初期をセット
+      // 固定表示とその他を分別（ステータス完了表示）
+      if (this.finishFlag === true) {
+        for (let todo of todos) {
+          if (todo.book_mark === 1) {
+            this.bookMarkTodos.push(todo);
+          } else {
+            this.todos.push(todo);
+          }
+        }
+      }
+    }).catch((e) => {
+      //認証エラー
+      if(e.response.status === 401) {
+        alert(this.ERROR_MSG.EXPAIRED_SESSION);
+        this.$store.dispatch('resetUserInfo');
+        this.$router.push("/login");
+      };
+      console.log(e);
+    });
+  }
+  /**
+   * ステータスに応じた配色適用
+   */
+  private color(todo: Todos){
+    switch (todo.state){
+    // 未対応
+    case 0:
+      return "#990000"
+    // 対応中
+    case 1:
+      return "#003366"
+    // 保留
+    case 2:
+      return "#006600"
+    // 対応済み
+    default:
+      return "#020202"
+    }
+  }
+  /**
+   * 新規登録ダイアログを表示
+   */
+  private newTodoOpen(): void {
+    this.newDialog = true;
+  }
+  /**
+   * 新規登録ダイアログを非表示
+   */
+  private newTodoClose(): void {
+    this.newDialog = false;
+  }
+  /**
+   * todo新規登録
+   */
+  private todoRegister(succueseMsg: string): void {
+    this.newTodoClose();
+    this.succueseMsg = succueseMsg;
+    setTimeout(() => {
+      this.succueseMsg = '';
+    }, 3000);
+    this.getTodos();
+  }
+  /**
+   * 全削除ダイアログを表示
+   */
+  private allDeleteOpen(): void {
+    this.allDeleteDialog = true;
+  }
+  /**
+   * 全削除ダイアログを非表示
+   */
+  private allDeleteClose(): void {
+    this.allDeleteDialog = false;
+  }
+  /**
+   * 全削除成功
+   */
+  private removeAll(succueseMsg: string): void {
+    this.succueseMsg = succueseMsg;
+    setTimeout(() => {
+      this.succueseMsg = '';
+    }, 3000);
+    this.getTodos();
+  }
+  /**
+   * todo詳細
+   */
+  private async todoDetail(todo: Todos): Promise<void> {
+    // 子コンポーネント生成後、初期をセット
       await (
         this.detailDialog = true,
-        this.detailTodo = todo)
-        // コンポーネントに初期をセット
-        this.$refs.child.setVal();
-    },
-    /**
-     * todo編集完了
-     */
-    updateTodo(succueseMsg) {
+        this.detailTodo = todo
+      );
+      // コンポーネントに初期をセット
+      this.$refs.child.setVal();
+  }
+  /**
+   * todo編集完了
+   */
+  private updateTodo(succueseMsg: string): void {
+    this.detailDialogClose();
+    this.succueseMsg = succueseMsg;
+    setTimeout(() => {
+      this.succueseMsg = '';
+    }, 3000);
+    this.getTodos();
+  }
+  /**
+   * 削除成功
+   */
+  private deleteTodo(succueseMsg: string): void {
+    this.detailDialogClose();
+    this.succueseMsg = succueseMsg;
+    setTimeout(() => {
+      this.succueseMsg = '';
+    }, 3000);
+    this.getTodos();
+  }
+  /**
+   * 詳細ダイアログを非表示
+   */
+  private detailDialogClose(): void {
+    this.detailDialog = false;
+  }
+  /**
+   * 各ダイアログから戻る
+   */
+  private back(): void {
+    if(this.newDialog = true) {
+      this.newTodoClose();
+    }
+    if(this.allDeleteDialog = true) {
+      this.allDeleteClose();
+    }
+    if(this.detailDialog = true) {
       this.detailDialogClose();
-      this.succueseMsg = succueseMsg;
-      setTimeout(() => {
-        this.succueseMsg = '';
-      }, 3000);
-      this.getTodos();
-    },
-    /**
-     * 削除成功
-     */
-    deleteTodo(succueseMsg){
-      this.detailDialogClose();
-      this.succueseMsg = succueseMsg;
-      setTimeout(() => {
-        this.succueseMsg = '';
-      }, 3000);
-      this.getTodos();
-    },
-    /**
-     * 詳細ダイアログを非表示
-     */
-    detailDialogClose(){
-      this.detailDialog = false;
-    },
-    /**
-     * 各ダイアログから戻る
-     */
-    back(){
-      if(this.newDialog = true){
-        this.newTodoClose();
-      }
-      if(this.allDeleteDialog = true){
-        this.allDeleteClose();
-      }
-      if(this.detailDialog = true){
-        this.detailDialogClose();
-      }
-    },
+    }
   }
 }
 </script>
 
 <style scoped>
-#switch{
-  position: fixed;
-  right: 5%;
-  top: 10%;
-}
-#plus-circle{
-  position: fixed;
-  right: 10%;
-  bottom: 5%;
-  transform: scale(2, 2);
-}
-#delete-alert {
-  position: fixed;
-  right: 5%;
-  bottom: 5%;
-  transform: scale(2, 2);
-}
-.trash{
-  position: absolute;
-  right: 0;
-  top: 2%;
-}
-.edit{
-  position: absolute;
-  right: 20px;
-  top: 2%;
-}
-.new_line {
-  white-space: pre-wrap;
-  text-align: left;
-}
+  #switch{
+    position: fixed;
+    right: 5%;
+    top: 10%;
+  }
+  #plus-circle{
+    position: fixed;
+    right: 10%;
+    bottom: 5%;
+    transform: scale(2, 2);
+  }
+  #delete-alert {
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    transform: scale(2, 2);
+  }
+  .trash{
+    position: absolute;
+    right: 0;
+    top: 2%;
+  }
+  .edit{
+    position: absolute;
+    right: 20px;
+    top: 2%;
+  }
+  .new_line {
+    white-space: pre-wrap;
+    text-align: left;
+  }
 </style>
