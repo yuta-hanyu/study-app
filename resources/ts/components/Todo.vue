@@ -144,7 +144,7 @@
       persistent
       v-model="newDialog"
       height="200px"
-      width="400px">
+      width="500px">
       <new-todo
         @back-todos="back"
         @todo-register="todoRegister"
@@ -168,7 +168,7 @@
       persistent
       v-model="detailDialog"
       height="200px"
-      width="400px">
+      width="500px">
       <detail-todo
         ref="child"
         @todo-update="updateTodo"
@@ -239,7 +239,6 @@ export default class Todo extends Mixins(Const) {
     Axios.get(`/api/todos/${this.userId}`).then((res) => {
       let todos: Todos[] = [];
       todos = res.data.result;
-      console.log(todos);
       // 固定表示とその他を分別（ステータス完了非表示）
       if (this.finishFlag === false) {
         for (let todo of todos) {

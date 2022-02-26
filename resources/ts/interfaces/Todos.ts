@@ -4,5 +4,7 @@ export interface Todos {
   content?: string;
   state?: number | null;
   book_mark?: number | null;
-  deadline?: string;
+  reminder?: string;
+  reminderDate? :string;
+  reminderTime? :string;
 };
