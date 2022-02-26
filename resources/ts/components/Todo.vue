@@ -2,12 +2,12 @@
   <div>
     <v-container fluid>
       <v-row v-if="this.succueseMsg" justify="center">
-        <v-col cols="8">
+        <v-col cols="12">
         <v-alert
           align="center"
           dense
-          text
-          type="success">
+          dark
+          color="green">
           {{this.succueseMsg}}
         </v-alert>
         </v-col>
@@ -219,17 +219,9 @@ export default class Todo extends Mixins(Const) {
   private finishFlag: boolean = false;
   // 処理成功MSG
   private succueseMsg: string = '';
-  // todo編集初期データ
-  private editTodo: Todos = {
-    id: null,
-    title: '',
-    content: '',
-    state: null,
-    book_mark: null,
-  };
   mounted() {
     this.getTodos();
-  }
+  };
   /**
    * todo一覧表示
    */
