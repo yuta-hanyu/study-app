@@ -85,10 +85,25 @@
             </v-dialog>
           </v-col>
           <v-col cols="6" height='10%' class="mt-n5 pt-0">
-            <v-text-field
-              class="pt-0 pb-3"
-            label="リマインダー時間">
-            </v-text-field>
+            <v-dialog
+              v-model="timePickerDialog"
+              persistent
+              width="450px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    class="pt-0 pb-3 label-font"
+                    v-model="newTodo.reminderTime"
+                    label="リマインダー時間"
+                    prepend-icon="mdi-timer-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+              <time-picker
+                @choice-time=setReminderTime>
+              </time-picker>
+            </v-dialog>
           </v-col>
         </v-row>
       </v-col>
@@ -124,6 +139,7 @@
 <script lang="ts">
 import {Component, Mixins, Prop} from 'vue-property-decorator';
 import DatePicker from '../utilComponent/DatePicker.vue';
+import TimePicker from '../utilComponent/TimePicker.vue';
 import Const from '../../common/const';
 import Axios from 'axios';
 import { Todos } from '../../interfaces/Todos';
@@ -132,6 +148,7 @@ import { Todos } from '../../interfaces/Todos';
   name: 'NewTodo',
   components: {
     DatePicker,
+    TimePicker,
   }
 })
 
@@ -151,6 +168,8 @@ export default class NewTodo extends Mixins(Const) {
   private errors: string[] = [];
   // 日付カレンダーダイアログ表示フラグ
   private datePickerDialog: boolean = false;
+    // 日付カレンダーダイアログ表示フラグ
+  private timePickerDialog: boolean = false;
   // 登録成功時MSG
   private succueseMsg: string =  '';
   // リマインダー年月日表示用ラッパー
@@ -185,12 +204,20 @@ export default class NewTodo extends Mixins(Const) {
       book_mark: this.newTodo.book_mark,
       reminder: this.newTodo.reminder,
       userId: this.userId,
+      reminderDate: this.newTodo.reminderDate,
+      reminderTime: this.newTodo.reminderTime,
     }).then((res) => {
       if(res.data.validateState === false) {
         this.errors = this.changeErrors(res.data.message);
         return;
       }
-      this.succueseMsg = 'todoを登録しました'
+      let reminderMsg: string;
+      if(!this.newTodo.reminderDate || !this.newTodo.reminderTime) {
+        reminderMsg = '（リマインダーなし）';
+      } else {
+        reminderMsg = '（リマインダーあり）';
+      };
+      this.succueseMsg = `「${this.newTodo.title}」を新たに登録しました${reminderMsg}`;
       this.initialize();
       this.$emit('todo-register', this.succueseMsg);
     }).catch((e) => {
@@ -227,6 +254,13 @@ export default class NewTodo extends Mixins(Const) {
   private setReminderDate(date: string): void {
     this.newTodo.reminderDate = date;
     this.datePickerDialog = false;
+  };
+  /**
+   * リマインダー時間セット
+   */
+  private setReminderTime(time: string): void {
+    this.newTodo.reminderTime = time;
+    this.timePickerDialog = false;
   }
 }
 </script>
