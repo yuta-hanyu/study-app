@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import userInfo from './userInfo'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import userInfo from './userInfo';
 import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);

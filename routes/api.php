@@ -32,9 +32,13 @@ Route::middleware('auth:sanctum')->group(function () {
    */
   Route::post('/todos', 'App\Http\Controllers\TodoController@store');
   /**
-   * todo編集
+   * todo更新
    */
   Route::put('/todo/update', 'App\Http\Controllers\TodoController@update');
+  /**
+   * todoリマインダー更新
+   */
+  Route::put('/todo/updateRemaind', 'App\Http\Controllers\TodoController@updateRemaind');
   /**
    * todo削除
    */

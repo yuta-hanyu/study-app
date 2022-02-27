@@ -4,7 +4,7 @@ import Vue from 'vue';
 @Component({
   name: "Const",
 })
-export default class constant extends Vue {
+export default class Const extends Vue {
   // サイドメニュー
   MENU_ITEMS = Object.freeze([
     {name: 'トップ', url: '/'},
@@ -16,6 +16,7 @@ export default class constant extends Vue {
     SERVER_ERROR: 'サーバーエラーが発生しました',
     LOGOUT_FAILD: 'ログアウトに失敗しました',
     LOGIN_FAILD: 'ログインに失敗しました',
-    AUTH_FAILD: '認証エラーです'
+    AUTH_FAILD: '認証エラーです',
+    UPDATE_ERROR: 'データの更新に失敗しました',
   });
 }

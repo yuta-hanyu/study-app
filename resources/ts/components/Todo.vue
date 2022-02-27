@@ -177,6 +177,18 @@
         :detailTodo=detailTodo>
       </detail-todo>
     </v-dialog>
+    <!-- リマインダーダイアログ -->
+    <v-dialog
+      persistent
+      v-model="remaindDialog"
+      height="300px"
+      width="400px">
+      <remaind-todo
+        ref="child"
+        @back-todos="backRemaind"
+        :onRemindTodos=onRemindTodos>
+      </remaind-todo>
+    </v-dialog>
   </div>
 </template>
 
@@ -185,6 +197,7 @@ import {Component, Mixins} from 'vue-property-decorator';
 import AllDeleteTodo from './todoComponents/AllDeleteTodo.vue'
 import NewTodo from './todoComponents/NewTodo.vue';
 import DetailTodo from './todoComponents/DetailTodo.vue';
+import RemaindTodo from './todoComponents/RemaindTodo.vue';
 import Const from '../common/const';
 import Axios from 'axios';
 import { User } from '../interfaces/User';
@@ -196,6 +209,7 @@ import { Todos } from '../interfaces/Todos';
     NewTodo,
     AllDeleteTodo,
     DetailTodo,
+    RemaindTodo,
   },
 })
 
@@ -217,10 +231,36 @@ export default class Todo extends Mixins(Const) {
   private detailTodo: Todos | null = null;
   // ステータス完了表示フラグ
   private finishFlag: boolean = false;
+  // リマンダーダイアログ表示フラグ
+  private remaindDialog: boolean = false;
   // 処理成功MSG
   private succueseMsg: string = '';
+  // リマインドデータを初期化
+  private onRemindTodos: Todos[]  = [];
   mounted() {
+    // todo取得
     this.getTodos();
+    // リマインダー管理
+    if(this.remaindDialog === false) {
+      setInterval(this.checkReminder, 5000);
+    }
+  };
+  /**
+   * リマインダー管理
+   */
+  private checkReminder(): void {
+    // 要リマインドデータを初期化
+    this.onRemindTodos = [];
+    // 現在時刻を取得
+    const now = new Date();
+    // 現在時刻とリマインドを比較
+    this.bookMarkTodos.map((todo) => {
+      let reminder = new Date((todo.reminderDate!.replace(/-/g,'/')) + ' ' + todo.reminderTime);
+      if(reminder.getTime() < now.getTime()) {
+        this.remaindDialog = true;
+        this.onRemindTodos.push(todo);
+      };
+    });
   };
   /**
    * todo一覧表示
@@ -243,7 +283,7 @@ export default class Todo extends Mixins(Const) {
           }
         }
         return;
-      }
+      };
       // 固定表示とその他を分別（ステータス完了表示）
       if (this.finishFlag === true) {
         for (let todo of todos) {
@@ -253,7 +293,7 @@ export default class Todo extends Mixins(Const) {
             this.todos.push(todo);
           }
         }
-      }
+      };
     }).catch((e) => {
       //認証エラー
       if(e.response.status === 401) {
@@ -263,7 +303,7 @@ export default class Todo extends Mixins(Const) {
       };
       console.log(e);
     });
-  }
+  };
   /**
    * ステータスに応じた配色適用
    */
@@ -282,19 +322,19 @@ export default class Todo extends Mixins(Const) {
     default:
       return "#020202"
     }
-  }
+  };
   /**
    * 新規登録ダイアログを表示
    */
   private newTodoOpen(): void {
     this.newDialog = true;
-  }
+  };
   /**
    * 新規登録ダイアログを非表示
    */
   private newTodoClose(): void {
     this.newDialog = false;
-  }
+  };
   /**
    * todo新規登録
    */
@@ -305,19 +345,19 @@ export default class Todo extends Mixins(Const) {
       this.succueseMsg = '';
     }, 3000);
     this.getTodos();
-  }
+  };
   /**
    * 全削除ダイアログを表示
    */
   private allDeleteOpen(): void {
     this.allDeleteDialog = true;
-  }
+  };
   /**
    * 全削除ダイアログを非表示
    */
   private allDeleteClose(): void {
     this.allDeleteDialog = false;
-  }
+  };
   /**
    * 全削除成功
    */
@@ -327,19 +367,19 @@ export default class Todo extends Mixins(Const) {
       this.succueseMsg = '';
     }, 3000);
     this.getTodos();
-  }
+  };
   /**
    * todo詳細
    */
   private async todoDetail(todo: Todos): Promise<void> {
     // 子コンポーネント生成後、初期をセット
-      await (
+      // await (
         this.detailDialog = true,
         this.detailTodo = todo
-      );
+      // );
       // コンポーネントに初期をセット
       this.$refs.child.setVal();
-  }
+  };
   /**
    * todo編集完了
    */
@@ -374,15 +414,25 @@ export default class Todo extends Mixins(Const) {
   private back(): void {
     if(this.newDialog = true) {
       this.newTodoClose();
-    }
+    };
     if(this.allDeleteDialog = true) {
       this.allDeleteClose();
-    }
+    };
     if(this.detailDialog = true) {
       this.detailDialogClose();
-    }
-  }
-}
+    };
+  };
+  /**
+   * リマインダーダイアログから戻る
+   */
+  private backRemaind(): void {
+    if(this.remaindDialog = true) {
+      this.remaindDialog = false;
+    };
+    // DB値を変更となるため、フロントデータも更新
+    this.getTodos();
+  };
+};
 </script>
 
 <style scoped>

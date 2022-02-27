@@ -108,7 +108,7 @@ class TodoController extends Controller
     };
     // 更新開始
     DB::beginTransaction();
-    try{
+    try {
       $todo = new Todo();
       $updateTodo = $todo->where('id', $request->id)->first();
       $updateTodo->title = $request->title;
@@ -124,6 +124,30 @@ class TodoController extends Controller
       DB::rollback();
     };
     Log::info('todo更新終了');
+    return;
+  }
+  /**
+   * リマインダー更新
+   */
+  public function updateRemaind(Request $request)
+  {
+    Log::info('todoリマンダー更新開始');
+    DB::beginTransaction();
+    try {
+      $todo = new Todo();
+      $updateTodo = $todo->where('user_id', $request->userId)->get();
+      foreach($request->id as $id){
+        $updateTodo = $updateTodo->where('id', $id)->first();
+        $updateTodo->reminder = null;
+        $updateTodo->save();
+        DB::commit();
+      };
+    } catch (\Exception $e) {
+      Log::info('todoリマンダー更新失敗');
+      Log::info($e);
+      DB::rollback();
+    };
+    Log::info('todoリマンダー更新終了');
     return;
   }
   /**
