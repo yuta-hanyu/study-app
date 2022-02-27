@@ -1,39 +1,37 @@
 <template>
-  <v-row align-content="center">
-    <v-card class="text-center">
-      <v-sheet
-        class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
-        color="black"
-        dark
-        height="200px"
-        width="400px">
-        <div class="grey--text text--lighten-1 text-h6 mb-4" align="center">
-          全てのtodoを削除しますか？<br>
-          ※ 元には戻りません
-        </div>
-        <v-row justify="center">
-          <v-col cols="4">
-            <v-btn
-              class="ma-1"
-              color="grey"
-              plain
-              @click="backTodos">
-              <div class="text-h6">戻る</div>
-            </v-btn>
-          </v-col>
-          <v-col cols="4">
-            <v-btn
-              class="ma-1"
-              color="error"
-              plain
-              @click="removeAll">
-              <div class="text-h6">削除</div>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-sheet>
-    </v-card>
-  </v-row>
+  <v-card class="text-center">
+    <v-sheet
+      class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
+      color="black"
+      dark
+      height="200px"
+      width="400px">
+      <div class="grey--text text--lighten-1 text-h6 mb-4" align="center">
+        全てのtodoを削除しますか？<br>
+        ※ 元には戻りません
+      </div>
+      <v-row justify="center">
+        <v-col cols="4">
+          <v-btn
+            class="ma-1"
+            color="grey"
+            plain
+            @click="backTodos">
+            <div class="text-h6">戻る</div>
+          </v-btn>
+        </v-col>
+        <v-col cols="4">
+          <v-btn
+            class="ma-1"
+            color="error"
+            plain
+            @click="removeAll">
+            <div class="text-h6">削除</div>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-sheet>
+  </v-card>
 </template>
 
 <script lang="ts">

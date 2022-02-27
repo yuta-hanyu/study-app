@@ -4,19 +4,6 @@ type Payload = User;
 interface Context {
   commit: (name: any, Payload?: Payload) => void;
 }
-/**
- * ログインユーザー情報の初期値
- * @param any state
- * @param any userInfo
-*/
-// const getDefaultState = (): User => {
-//   return {
-//     loginUserName: '',
-//     userId: '',
-//     isAuth: false,
-//   }
-// };
-// ログイン情報(State)
 type UserState = User & {
   isDark: boolean;
   omitEmail: string;
