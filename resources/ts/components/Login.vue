@@ -126,7 +126,7 @@ export default class Login extends Mixins(Const){
               omitEmail: this.email
             });
           };
-          this.$router.push("/");
+          this.$router.push("/todo");
         } else {
           this.validatMessage = this.changeErrors(res.data.validatMessage);
         };
