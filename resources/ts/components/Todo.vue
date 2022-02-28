@@ -184,7 +184,6 @@
       height="300px"
       width="400px">
       <remaind-todo
-        ref="child"
         @back-todos="backRemaind"
         :onRemindTodos=onRemindTodos>
       </remaind-todo>
@@ -371,14 +370,14 @@ export default class Todo extends Mixins(Const) {
   /**
    * todo詳細
    */
-  private async todoDetail(todo: Todos): Promise<void> {
+  async todoDetail(todo: Todos): Promise<void> {
     // 子コンポーネント生成後、初期をセット
-      // await (
-        this.detailDialog = true,
-        this.detailTodo = todo
-      // );
-      // コンポーネントに初期をセット
-      this.$refs.child.setVal();
+    await (
+      this.detailTodo = todo,
+      this.detailDialog = true
+    );
+    // コンポーネントに初期をセット
+    this.$refs.child.setVal();
   };
   /**
    * todo編集完了
