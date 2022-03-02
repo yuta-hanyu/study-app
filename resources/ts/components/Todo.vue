@@ -193,9 +193,9 @@
 
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
-import AllDeleteTodo from './todoComponents/AllDeleteTodo.vue'
-import NewTodo from './todoComponents/NewTodo.vue';
-import DetailTodo from './todoComponents/DetailTodo.vue';
+import AllDeleteTodo from './todoComponents/allDeleteTodo.vue'
+import NewTodo from './todoComponents/newTodo.vue';
+import DetailTodo from './todoComponents/detailTodo.vue';
 import RemaindTodo from './todoComponents/RemaindTodo.vue';
 import Const from '../common/const';
 import Axios from 'axios';
