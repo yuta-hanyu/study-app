@@ -241,7 +241,7 @@ export default class Todo extends Mixins(Const) {
     this.getTodos();
     // リマインダー管理
     if(this.remaindDialog === false) {
-      setInterval(this.checkReminder, 5000);
+      setInterval(this.checkReminder, 60000);
     }
   };
   /**
