@@ -14,20 +14,20 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-      // DB::table('users')->truncate();
+      DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+      DB::table('users')->truncate();
       DB::table('users')->insert([
-        'login' => 'aaa',
-        'name' => 'aaa',
-        'email' => 'aaa@gmail.com',
-        'password' => 'aaa',
+        'name' => 'guest',
+        'email' => 'guest@gmail.com',
+        'password' => '$2y$10$dyh3ID9qIkYX6XuqYKjgiOPN8gZRCxokse4tSiSvaN4saK/dSBIuy',
         'is_deleted' => 0,
       ]);
       DB::table('users')->insert([
-        'login' => 'bbb',
-        'name' => 'bbb',
-        'email' => 'bbb@gmail.com',
-        'password' => 'bbb',
+        'name' => 'ccc',
+        'email' => 'ccc@gmail.com',
+        'password' => '$2y$10$8ANWoUBI.vLUL4jlMxKCEucmcE6OQgNYC/yHHG3ivG4ZBfKwa7crm',
         'is_deleted' => 0,
       ]);
+      DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
