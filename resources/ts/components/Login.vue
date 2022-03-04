@@ -5,7 +5,9 @@
         <v-col cols="8" align="center">
         <v-sheet
         color="amber lighten-5"
-        elevation="1">
+        elevation="1"
+        width="100%"
+        height="100%">
         <div class="text-h4 py-5">ログイン</div>
           <v-row
             class="mt-3"
@@ -89,7 +91,6 @@ import Axios from 'axios';
 })
 
 export default class Login extends Mixins(Const){
-
   // 認証メールアドレス
   private email: string = this.$store.state.userInfo.omitEmail;
   // 認証パスワード
@@ -155,5 +156,4 @@ export default class Login extends Mixins(Const){
 </script>
 
 <style>
-
 </style>
