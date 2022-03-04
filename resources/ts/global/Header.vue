@@ -5,13 +5,14 @@
       dark>
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
     <v-toolbar-title>MyStudyApp</v-toolbar-title>
-    <!-- ダークモード変換ボタン -->
+    <v-spacer></v-spacer>
     <v-tooltip bottom color="yellow lighten-3">
       <template v-slot:activator="{ on, attrs }">
         <v-icon
           color="yellow lighten-3"
           v-bind="attrs"
           v-on="on"
+          class="mx-2"
           id="mdi-lightbulb-on"
           @click="changeIsDark">
         mdi-lightbulb-on
@@ -19,6 +20,16 @@
       </template>
       <span style="color: black;">{{isDarkMode}}モードにする</span>
     </v-tooltip>
+    <v-btn
+      class="mx-2"
+      color="success"
+      dark>
+        <v-icon
+          dark
+          left>
+          mdi-human-greeting-variant
+        </v-icon>{{$store.state.userInfo.loginUserName}}
+      </v-btn>
     </v-app-bar>
       <v-navigation-drawer
         v-model="drawer"
@@ -80,9 +91,6 @@ export default class Header extends Mixins(Const){
 
 <style scoped>
   #mdi-lightbulb-on {
-    position: fixed;
-    right: 1%;
-    top: 15px;
-    transform: scale(1.5, 1.5);
+    transform: scale(1.4, 1.4);
   }
 </style>

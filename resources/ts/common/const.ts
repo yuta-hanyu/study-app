@@ -5,6 +5,11 @@ import Vue from 'vue';
   name: "Const",
 })
 export default class Const extends Vue {
+  // ゲストユーザー
+  GUEST_USER = Object.freeze({
+    email: 'guest@gmail.com',
+    password: 'guest'
+  });
   // サイドメニュー
   MENU_ITEMS = Object.freeze([
     {name: 'トップ', url: '/'},

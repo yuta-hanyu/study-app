@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Vue Laravel SPA') }}</title>
+    {{-- <title>{{ config('app.name', 'Vue Laravel SPA') }}</title> --}}
+    <title>muscle</title>
     <!-- Styles -->
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     {{-- axios --}}
