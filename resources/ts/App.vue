@@ -2,11 +2,12 @@
   <div>
     <v-app>
       <header>
-      <Header
-        :isDark=isDark
-        @change-isdark="changeIsDark"
-        @logout-dialog="logoutDialogOpen">
-      </Header>
+        <Header
+          v-show="headerFlag"
+          :isDark=isDark
+          @change-isdark="changeIsDark"
+          @logout-dialog="logoutDialogOpen">
+        </Header>
       </header>
       <main class="body">
       <RouterView />
@@ -45,16 +46,20 @@ import Logout from './components/Logout.vue';
 
 export default class App extends Vue {
   // ダークモードフラグ
-  isDark: boolean = this.$store.state.userInfo.isDark;
+  private isDark: boolean = this.$store.state.userInfo.isDark;
   // ログアウトダイアログ
-  LogoutDialog: boolean = false;
+  private LogoutDialog: boolean = false;
+  // ヘッダー表示判定
+  get headerFlag(): boolean {
+    return this.$store.state.userInfo.isAuth ? true : false;
+  };
   mounted() {
     this.changeDarkMode();
   }
   /**
   * ログアウトダイアログを表示
   */
-  logoutDialogOpen(): void {
+  private logoutDialogOpen(): void {
     this.LogoutDialog = true;
   };
   /**
@@ -66,7 +71,7 @@ export default class App extends Vue {
   /**
   * ダークモード切替処理
   */
-  changeDarkMode(): void {
+  private changeDarkMode(): void {
     if(this.isDark) {
       document.getElementById('app')!.classList.remove('theme--light');
       document.getElementById('app')!.classList.add('theme--dark');

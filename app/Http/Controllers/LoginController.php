@@ -45,10 +45,8 @@ class LoginController extends Controller
       $retultFlag = false;
       return response()->json(['validatMessage' => $validatMessage, 'retultFlag' => $retultFlag]);
     };
-
     // 認証情報
     $credentials = $request->only('email', 'password');
-
     // 認証開始
     if(Auth::attempt($credentials)) {
       // 論理削除は認証失敗
