@@ -15,7 +15,7 @@ php artisan db:seed --class=TodosTableSeeder
 
 # コマンドラインからデータ投入
 php artisan tinker
-
+\App\Models\User::factory()->create(['name' => 'ゲストユーザー', 'email' => 'guest@gmail.com', 'password' => bcrypt('guest')]);
 \App\Models\User::factory()->create(['name' => 'ccc', 'email' => 'ccc@gmail.com', 'password' => bcrypt('ccc')]);
 \App\Models\User::factory()->create(['name' => 'aaa', 'email' => 'aaa@gmail.com', 'password' => bcrypt('aaa')]);
 
@@ -27,6 +27,11 @@ if(e.response.status === 401) {
   this.$store.dispatch('userInfo/resetUserInfo');
   this.$router.push("/login");
 };
+
+# トランケイト
+mysql> set foreign_key_checks = 0;
+mysql> truncate table hoge;
+mysql> set foreign_key_checks = 1;
 
 
 

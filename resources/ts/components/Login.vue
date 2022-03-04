@@ -4,11 +4,23 @@
       <v-row justify="center" align-content="center" style="height: 600px;">
         <v-col cols="8" align="center">
         <v-sheet
-        color="amber lighten-5"
-        elevation="1"
-        width="100%"
-        height="100%">
-        <div class="text-h4 py-5">ログイン</div>
+          color="amber lighten-5"
+          elevation="1"
+          width="100%"
+          height="110%">
+          <v-row justify="end">
+            <v-col md="4" mx="4">
+              <div class="text-h4 py-5">ログイン</div>
+            </v-col>
+            <v-col md="4">
+              <v-btn
+                class="ma-2"
+                color="success"
+                @click="login(true)">
+                ゲストログイン
+              </v-btn>
+            </v-col>
+          </v-row>
           <v-row
             class="mt-3"
             v-if="this.validatMessage.length"
@@ -68,7 +80,7 @@
             <v-col cols="10" align="center">
               <v-btn
                 class="mr-4"
-                @click="login"
+                @click="login(false)"
                 color="orange lighten-2">
                 ログイン
               </v-btn>
@@ -82,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Emit} from 'vue-property-decorator';
+import {Component, Mixins} from 'vue-property-decorator';
 import Const from '../common/const';
 import Axios from 'axios';
 
@@ -104,7 +116,12 @@ export default class Login extends Mixins(Const){
   /**
    * ログインボタン押下
    */
-  login(): void {
+  login(gestFlag: boolean): void {
+    // ゲストログインの場合
+    if(gestFlag === true) {
+        this.email = this.GUEST_USER.email;
+        this.password = this.GUEST_USER.password;
+    };
     // エラーメッセージ初期化;
     this.validatMessage = [];
     this.message = '';
