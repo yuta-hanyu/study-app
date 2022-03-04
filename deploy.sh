@@ -6,6 +6,4 @@ sudo php artisan config:cache
 sudo php artisan route:clear
 sudo php artisan view:clear
 sudo php artisan clear-compiled
-sudo php artisan optimize
-sudo composer dump-autoload
 
