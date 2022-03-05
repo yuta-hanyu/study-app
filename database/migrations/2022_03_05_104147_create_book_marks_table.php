@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateBookMarksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('book_marks', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable(false);
-            $table->string('email')->unique()->nullable(false);
-            $table->string('password')->nullable(false);
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('book_mark_folders_id')->constrained('book_mark_folders');
+            $table->string('title')->nullable(false);
+            $table->string('link')->nullable(false);
+            $table->string('memo');
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });
@@ -30,6 +32,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('book_marks');
     }
 }

@@ -5,18 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Todo extends Model
+class BookMarkFolder extends Model
 {
+  use HasFactory;
   /**
    * @var array
    */
   protected $fillable = [
     'user_id',
     'title',
-    'content',
-    'state',
-    'book_mark',
-    'remainder',
+    'color',
     'is_deleted'
   ];
   /**
@@ -25,5 +23,12 @@ class Todo extends Model
   public function user()
   {
     return $this->belongsTo('/App/Models/User', 'id');
+  }
+  /**
+   * ブックマークを取得
+   */
+  public function bookMarks()
+  {
+    return $this->hasMany('App/Models/BookMark', 'book_mark_folders_id');
   }
 }
