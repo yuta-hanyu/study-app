@@ -20,7 +20,7 @@
       </template>
       <span style="color: black;">{{isDarkMode}}モードにする</span>
     </v-tooltip>
-    <v-btn
+    <v-chip
       class="mx-2"
       color="success"
       dark>
@@ -29,7 +29,7 @@
           left>
           mdi-human-greeting-variant
         </v-icon>{{$store.state.userInfo.loginUserName}}
-      </v-btn>
+    </v-chip>
     </v-app-bar>
       <v-navigation-drawer
         v-model="drawer"

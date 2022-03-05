@@ -16,11 +16,11 @@ class CreateTodosTable extends Migration
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('title')->nullable();
-            $table->string('content')->nullable();
+            $table->string('title')->nullable(false);
+            $table->string('content');
             $table->tinyInteger('state')->nullable(false);
             $table->tinyInteger('book_mark')->nullable()->default(0);
-            $table->dateTime('reminder')->nullable();
+            $table->dateTime('reminder')->nullable(true);
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });
