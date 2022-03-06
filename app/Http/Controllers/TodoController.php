@@ -16,7 +16,7 @@ class TodoController extends Controller
   * 一覧表示
   * @return Http response
   */
-  public function index($user_id) :object
+  public function index($user_id)
   {
     Log::info('todo一覧取得開始');
     $todos = new Todo();
@@ -75,7 +75,7 @@ class TodoController extends Controller
       DB::commit();
     } catch (\Exception $e) {
       DB::rollback();
-      Log::info('todo新規登録失敗');
+      Log::error('todo新規登録失敗');
       Log::info($e);
     }
     Log::info('todo新規登録終了');

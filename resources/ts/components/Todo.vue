@@ -262,7 +262,7 @@ export default class Todo extends Mixins(Const) {
     });
   };
   /**
-   * todo一覧表示
+   * todo一覧取得
    */
   private getTodos(): void {
     this.bookMarkTodos = [];

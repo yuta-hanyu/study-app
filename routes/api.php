@@ -47,9 +47,14 @@ Route::middleware('auth:sanctum')->group(function () {
    * todo全削除
    */
   Route::delete('/todos/{user_id}', 'App\Http\Controllers\TodoController@allDestroy');
-
-  // return $request->user();
-
+  /**
+   * ブックマーク一覧表示
+   */
+  Route::get('/bookMarks/{user_id}', 'App\Http\Controllers\BookMarkController@index');
+  /**
+   * ブックマークフォルダ登録
+   */
+  Route::post('/bookMarkFolder', 'App\Http\Controllers\BookMarkController@store');
 });
 
 

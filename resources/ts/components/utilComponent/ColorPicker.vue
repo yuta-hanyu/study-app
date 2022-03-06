@@ -1,0 +1,55 @@
+<template>
+  <div>
+  <v-color-picker
+    dark
+    v-model="color"
+    dot-size="25"
+    hide-mode-switch
+    mode="hexa"
+    show-swatches
+    swatches-max-height="200">
+  </v-color-picker>
+  <v-container>
+    <v-row justify="center"
+      :style="{backgroundColor: '#666666'}">
+      <v-btn
+        class="mx-2 my-2"
+        color="orange lighten-2"
+        elevation="20"
+        rounded
+        @click="choiceColor">
+        OK
+      </v-btn>
+      </v-row>
+  </v-container>
+    </div>
+</template>
+
+<script lang="ts">
+import {Component, Emit} from 'vue-property-decorator';
+import Vue from 'vue';
+
+@Component({
+  name: 'ColorPicker',
+})
+
+export default class ColorPicker extends Vue {
+  // OK押下
+  @Emit('choice-color')
+    emitChoiceColor(date: string): void {
+  };
+  // カラー
+  private color: string = '';
+  /**
+   * OK押下
+   */
+  private choiceColor(): void {
+    this.emitChoiceColor(this.color);
+    this.color = '';
+  }
+}
+</script>
+
+<style>
+
+</style>

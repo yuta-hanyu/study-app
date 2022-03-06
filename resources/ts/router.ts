@@ -4,6 +4,7 @@ import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
+import bookMark from './components/BookMark.vue';
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,12 @@ const router = new VueRouter({
       path: '/todo',
       name: 'Todo',
       component: Todo,
+      meta: {isAuthenticated: true},
+    },
+    {
+      path: '/bookMark',
+      name: 'bookMark',
+      component: bookMark,
       meta: {isAuthenticated: true},
     },
   ]
