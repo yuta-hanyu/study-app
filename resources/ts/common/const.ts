@@ -28,6 +28,6 @@ export default class Const extends Vue {
   });
   // サクセスMSG
   SUCCESS_MSG = Object.freeze({
-    STORE_SUCCESS: 'を新たに登録しました';
+    STORE_SUCCESS: 'を新たに登録しました',
   });
 }
