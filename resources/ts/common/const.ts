@@ -13,7 +13,8 @@ export default class Const extends Vue {
   // サイドメニュー
   MENU_ITEMS = Object.freeze([
     {name: 'トップ', url: '/'},
-    {name: 'TODO', url: '/todo'},
+    {name: 'タスク管理', url: '/todo'},
+    {name: 'ブックマーク', url: '/bookMark'},
   ]);
   // エラーMSG
   ERROR_MSG = Object.freeze({
@@ -23,5 +24,10 @@ export default class Const extends Vue {
     LOGIN_FAILD: 'ログインに失敗しました',
     AUTH_FAILD: '認証エラーです',
     UPDATE_ERROR: 'データの更新に失敗しました',
+    GET_ERROR: 'データの取得に失敗しました',
+  });
+  // サクセスMSG
+  SUCCESS_MSG = Object.freeze({
+    STORE_SUCCESS: 'を新たに登録しました';
   });
 }

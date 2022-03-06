@@ -33,6 +33,7 @@ import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
+import BookMark from './components/BookMark.vue';
 
 @Component({
   components: {
@@ -40,7 +41,8 @@ import Logout from './components/Logout.vue';
     Todo,
     Top,
     Login,
-    Logout
+    Logout,
+    BookMark
   },
 })
 

@@ -217,7 +217,7 @@ export default class NewTodo extends Mixins(Const) {
       } else {
         reminderMsg = '（リマインダーあり）';
       };
-      this.succueseMsg = `「${this.newTodo.title}」を新たに登録しました${reminderMsg}`;
+      this.succueseMsg = `「${this.newTodo.title}」${this.SUCCESS_MSG.STORE_SUCCESS}${reminderMsg}`;
       this.initialize();
       this.$emit('todo-register', this.succueseMsg);
     }).catch((e) => {

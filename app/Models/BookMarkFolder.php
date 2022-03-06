@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class BookMarkFolder extends Model
 {
@@ -30,5 +32,17 @@ class BookMarkFolder extends Model
   public function bookMarks()
   {
     return $this->hasMany('App/Models/BookMark', 'book_mark_folders_id');
+  }
+  /**
+   * バリデーション
+   */
+  public function validate(array $input)
+  {
+    $rules = [
+      'user_id' => 'required|integer',
+      'title' => 'required|max:255',
+      'color' => 'max:15',
+    ];
+    return Validator::make($input, $rules);
   }
 }
