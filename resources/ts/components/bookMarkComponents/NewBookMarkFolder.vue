@@ -146,7 +146,7 @@ export default class NewBookMarkFolder extends Mixins(Const) {
       newBookMarkFolder: this.newBookMarkFolder
     }).then((res) => {
       if(res.data.validateState === false) {
-        for (let [key, value] of Object.entries(res.data.message)) {
+        for (let [key, value] of Object.entries(!res.data.message)) {
           this.errors.push(value[0]);
         };
         return;
