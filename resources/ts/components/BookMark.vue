@@ -51,7 +51,7 @@
               <tr
                 v-for="(getBookMarkFolder,index) in getBookMarkFolders(bookMarkFolder.id)"
                 :key="index">
-                <td>
+                <td class="link">
                   <a :href="getBookMarkFolder.bookMarkLink" target="_blank">{{getBookMarkFolder.bookMarkTitle}}</a>
                 </td>
               </tr>
@@ -74,8 +74,9 @@
     <v-dialog
       v-model="addBookMark"
       persistent
-      width="400px">
-      <new-book-mark>
+      width="600px">
+      <new-book-mark
+        @back="addBookMark = !addBookMark">
       </new-book-mark>
     </v-dialog>
   </div>
@@ -149,17 +150,14 @@ export default class BookMark extends Mixins(Const) {
     }, 3000);
     this.getBookMarks();
   };
-
-  private back(): void {
-    this.addFolder = false;
-  }
-
-
 }
 </script>
 
-<style>
-
+<style scoped>
+  .v-application a {
+    color: white;
+    text-decoration: none;
+  }
 </style>
 
 

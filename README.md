@@ -45,6 +45,9 @@ if(e.response.status === 401) {
   this.$router.push("/login");
 };
 
+# コントローラー作成
+php artisan make:controller BookMarkController
+
 # トランケイト
 mysql> set foreign_key_checks = 0;
 mysql> truncate table hoge;

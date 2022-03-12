@@ -84,4 +84,34 @@ class BookMarkController extends Controller
     }
     Log::info('ブックマークフォルダ登録終了');
   }
+  /**
+  * ブックマーク_タイトル取得
+  * @return Http response
+  */
+  public function getTitle(Request $request)
+  {
+    Log::info('ブックマークタイトル取得開始');
+    $input = $request['newBookMark'];
+    // バリデーション
+    $bookMark = new BookMark();
+    $validate = $bookMark->linkValidate($input);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::error("ブックマークタイトル取得失敗_バリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // ページタイトル取得
+    $result = ''; // 結果初期化
+    $url = $input['link'];
+    $html = mb_convert_encoding(file_get_contents($url), "utf-8", "auto"); //文字化け防止した上でページ読み込み
+    preg_match("/<title>(.*?)<\/title>/i", $html, $title); //タイトルタグ内容取得
+    if(!$title) { //タイトルが取得できない場合はURLを返す
+      $result = $url;
+      return response()->json($result);
+    }
+    $result = $title[1]; //配列１つ目がタイトル
+    Log::info('ブックマークタイトル取得終了');
+    return response()->json($result);
+  }
 }
