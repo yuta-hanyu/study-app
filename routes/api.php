@@ -55,6 +55,10 @@ Route::middleware('auth:sanctum')->group(function () {
    * ブックマークフォルダ登録
    */
   Route::post('/bookMarkFolder', 'App\Http\Controllers\BookMarkController@store');
+  /**
+   * ブックマークタイトル取得
+   */
+  Route::post('/bookMark/getTitle', 'App\Http\Controllers\BookMarkController@getTitle');
 });
 
 
