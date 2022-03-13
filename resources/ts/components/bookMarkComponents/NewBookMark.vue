@@ -34,14 +34,18 @@
               </v-text-field>
             </v-col>
             <v-col cols="10" class="mt-n3">
-              <v-combobox
-                dark
+              <v-autocomplete
                 prepend-icon="mdi-folder"
-                v-model="select"
-                :items="comboboxItems"
+                v-model="newBookMark.book_mark_folders_id"
+                :items="bookMarkFolders"
+                item-text="title"
+                item-value="id"
                 label="フォルダ選択"
+                dark
+                item-color="primary"
+                no-data-text="選択されたフォルダはありません"
                 dense>
-              </v-combobox>
+              </v-autocomplete>
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-textarea
@@ -66,6 +70,7 @@
                 </v-col>
                 <v-col cols="4" class="text-center">
                   <v-btn
+                    @click="addBookMark"
                     width="25%"
                     color="orange lighten-2"
                     elevation="20"
@@ -83,9 +88,10 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins,Emit} from 'vue-property-decorator';
+import {Component,Mixins,Emit,Prop} from 'vue-property-decorator';
 import Const from '../../common/const';
 import { BookMarks } from '../../interfaces/BookMarks';
+import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
 
 @Component({
@@ -95,10 +101,18 @@ import Axios from 'axios';
 })
 
 export default class NewBookMark extends Mixins(Const) {
+  // ブックマークフォルダ
+  @Prop({type: Array, default: false})
+    bookMarkFolders!: BookMarkFolders;
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      // this.initialize()
+      this.initialize()
+    };
+  // 登録成功
+  @Emit('bookMark-registered')
+    bookMarkRegistered(succueseMsg: string): void {
+      this.initialize()
     };
   // フォームバリデーションエラー
   private errors: string[] = [];
@@ -110,23 +124,16 @@ export default class NewBookMark extends Mixins(Const) {
     memo: '',
     user_id: this.$store.state.userInfo.userId,
   }
-  private select: string = 'Vuetify';
-  private comboboxItems: string[] = [
-      'Programming',
-          'Design',
-          'Vue',
-          'Vuetify',
-  ];
-  // mounted() {
-  //   this.initialize();
-  // }
+  mounted() {
+    this.initialize();
+  }
   /**
    * データ初期化
    */
-  // private initialize(): void {
-  //   Object.keys(this.newBookMarkFolder).forEach(key => this.newBookMarkFolder[key] = '');
-  //   this.newBookMarkFolder.user_id = this.$store.state.userInfo.userId;
-  // };
+  private initialize(): void {
+    Object.keys(this.newBookMark).forEach(key => this.newBookMark[key] = '');
+    this.newBookMark.user_id = this.$store.state.userInfo.userId;
+  };
   /**
    * リンクからタイトル取得
    */
@@ -136,8 +143,6 @@ export default class NewBookMark extends Mixins(Const) {
         link: this.newBookMark.link
       }
     }).then((res) => {
-      console.log(res)
-      console.log(res.data)
       if(res.data.validateState === false) {
         this.errors.push(res.data.message.link[0]);
         return;
@@ -154,10 +159,44 @@ export default class NewBookMark extends Mixins(Const) {
       };
     })
   }
+  /**
+   * ブックマーク登録
+   */
+  private addBookMark(): void {
+    // エラーMSGリセット
+    this.errors = [];
+    // 成功MSGリセット
+    let succueseMsg: string = '';
+    Axios.post('/api/bookMark',{
+      newBookMark: this.newBookMark
+    }).then((res) => {
+      if(res.data.validateState === false) {
+        for (let [key, value] of Object.entries(res.data.message)) {
+          if(typeof value === 'object') {
+            if(value !== undefined && value !== null){
+              this.errors.push(value[0]);
+            }
+          }
+        };
+        return;
+      }
+      let succueseMsg = `「${this.newBookMark.title}」${this.SUCCESS_MSG.STORE_SUCCESS}`;
+      this.bookMarkRegistered(succueseMsg);
+    }).catch((e) => {
+      if(e.response.status === 401) {
+        alert(this.ERROR_MSG.EXPAIRED_SESSION);
+        this.$store.dispatch('resetUserInfo');
+        this.$router.push("/login");
+      };
+      if(e.response.status === 500) {
+        window.alert(this.ERROR_MSG.SERVER_ERROR);
+      };
+    })
+  }
 
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

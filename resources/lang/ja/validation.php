@@ -164,6 +164,7 @@ return [
       'password' => 'パスワード',
       'color' => 'カラー',
       'link' => 'リンク',
+      'book_mark_folders_id' => 'ブックマークフォルダ'
     ],
 
 ];

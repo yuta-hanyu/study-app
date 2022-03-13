@@ -12,7 +12,7 @@
       <div class="d-flex justify-end" flat tile>
         <v-btn
           class="mx-2"
-          @click="addBookMark = !addBookMark"
+          @click="addBookMarkDialog = !addBookMarkDialog"
           color="success">
           <v-icon left>
             mdi-plus
@@ -21,7 +21,7 @@
         </v-btn>
         <v-btn
           class="mx-2"
-          @click="addFolder = !addFolder"
+          @click="addFolderDialog = !addFolderDialog"
           color="success">
           <v-icon left>
             mdi-plus
@@ -33,9 +33,9 @@
     <!-- ブックマーク一覧 -->
     <v-container>
       <v-row>
-        <v-col md="3"
+        <v-col md="4" sm="6"
           v-for="(bookMarkFolder,index) in bookMarkFolders" :key=index>
-          <v-simple-table
+          <v-simple-table  class="table"
             :style="{backgroundColor: bookMarkFolder.color}"
             dark
             dense
@@ -43,6 +43,14 @@
             <thead>
               <tr>
                 <th class="text-left text-h6">
+                  <v-icon
+                  class="ml-n3"
+                  dark
+                  dense
+                  @click="chengeEditFolder(bookMarkFolder)"
+                  left>
+                    mdi-circle-edit-outline
+                  </v-icon>
                   {{bookMarkFolder.title}}
                 </th>
               </tr>
@@ -52,6 +60,13 @@
                 v-for="(getBookMarkFolder,index) in getBookMarkFolders(bookMarkFolder.id)"
                 :key="index">
                 <td class="link">
+                  <v-icon
+                  class="ml-n3"
+                  dark
+                  dense
+                  left>
+                    mdi-file
+                  </v-icon>
                   <a :href="getBookMarkFolder.bookMarkLink" target="_blank">{{getBookMarkFolder.bookMarkTitle}}</a>
                 </td>
               </tr>
@@ -62,21 +77,35 @@
     </v-container>
     <!-- ブックマークフォルダー追加ダイアログ -->
     <v-dialog
-      v-model="addFolder"
+      v-model="addFolderDialog"
       persistent
       width="400px">
       <new-book-mark-folder
-        @back="addFolder = !addFolder"
-        @folder-registered="folderRegistered">
+        @back="addFolderDialog=!addFolderDialog"
+        @folder-registered="registered">
       </new-book-mark-folder>
+    </v-dialog>
+    <!-- ブックマークフォルダー編集ダイアログ -->
+    <v-dialog
+      v-model="editFolderDialog"
+      persistent
+      width="400px">
+      <edit-book-mark-folder
+        ref="childFolder"
+        :editFolder=editFolder
+        @back="editFolderDialog=!editFolderDialog,getBookMarks()"
+        @folder-edited="registered">>
+      </edit-book-mark-folder>
     </v-dialog>
     <!-- ブックマーク追加ダイアログ -->
     <v-dialog
-      v-model="addBookMark"
+      v-model="addBookMarkDialog"
       persistent
       width="600px">
       <new-book-mark
-        @back="addBookMark = !addBookMark">
+        :bookMarkFolders=bookMarkFolders
+        @back="addBookMarkDialog=!addBookMarkDialog"
+        @bookMark-registered="registered">
       </new-book-mark>
     </v-dialog>
   </div>
@@ -89,24 +118,31 @@ import Const from '../common/const';
 import { BookMarkFolders } from '../interfaces/BookMarkFolders';
 import { BookMarks } from '../interfaces/BookMarks';
 import NewBookMarkFolder from './bookMarkComponents/NewBookMarkFolder.vue';
+import EditBookMarkFolder from './bookMarkComponents/EditBookMarkFolder.vue';
 import NewBookMark from './bookMarkComponents/NewBookMark.vue';
 
 @Component({
   name: 'BookMark',
   components: {
     NewBookMarkFolder,
+    EditBookMarkFolder,
     NewBookMark,
   },
 })
 
 export default class BookMark extends Mixins(Const) {
+  $refs: any = {}
   // 処理成功MSG
   private succueseMsg: string = '';
   // ブックマーク追加ダイアログ
-  private addBookMark: boolean = false;
+  private addBookMarkDialog: boolean = false;
   // ブックマークフォルダー追加ダイアログ
-  private addFolder: boolean = false;
-  // ブックマークフォルダー
+  private addFolderDialog: boolean = false;
+  // ブックマークフォルダー編集ダイアログ
+  private editFolderDialog: boolean = false;
+  // ブックマークフォルダー（編集用）
+  private editFolder: BookMarkFolders | null = null;;
+  // ブックマークフォルダー（表示用）
   private bookMarkFolders: BookMarkFolders[] = [];
   // ブックマーク
   private bookMarks: BookMarks[] = [];
@@ -139,17 +175,25 @@ export default class BookMark extends Mixins(Const) {
     });
   };
   /**
-   * ブックマークフォルダー新規登録完了
+   * ブックマーク/フォルダー新規登録完了
    */
-  private folderRegistered(succueseMsg: string): void {
-    console.log(succueseMsg);
-    this.addFolder = false;
+  private registered(succueseMsg: string): void {
+    this.addBookMarkDialog = false;
+    this.addFolderDialog = false;
+    this.editFolderDialog = false;
     this.succueseMsg = succueseMsg;
     setTimeout(() => {
       this.succueseMsg = '';
     }, 3000);
     this.getBookMarks();
   };
+  /**
+   * ブックマークフォルダー編集ボタン押下
+   */
+  async chengeEditFolder(bookMarkFolder: BookMarkFolders): Promise<void> {
+    this.editFolder = bookMarkFolder
+    this.editFolderDialog = !this.editFolderDialog
+  }
 }
 </script>
 
@@ -157,6 +201,9 @@ export default class BookMark extends Mixins(Const) {
   .v-application a {
     color: white;
     text-decoration: none;
+  }
+  .table th,td{
+    border: 1px solid black;
   }
 </style>
 

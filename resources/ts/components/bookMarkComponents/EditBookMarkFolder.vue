@@ -4,7 +4,7 @@
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">フォルダ登録</p>
+            <p class="text-h6 py-3">フォルダ編集</p>
               <v-alert
                 v-for="(error, index) in this.errors" :key=index
                 dense
@@ -18,7 +18,7 @@
             <v-col
               cols="10">
               <v-text-field
-                v-model="newBookMarkFolder.title"
+                v-model="editFolder.title"
                 prepend-icon="mdi-folder-plus-outline"
                 label="タイトル">
               </v-text-field>
@@ -32,7 +32,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     class="pt-0 pb-3 label-font"
-                    v-model="newBookMarkFolder.color"
+                    v-model="editFolder.color"
                     label="カラー"
                     prepend-icon="mdi-palette"
                     readonly
@@ -63,7 +63,7 @@
                   cols="4"
                   class="text-center">
                   <v-btn
-                    @click="addBookMarkFolder"
+                   @click="editBookMarkFolder"
                     width="25%"
                     color="orange lighten-2"
                     elevation="20"
@@ -81,77 +81,66 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Emit} from 'vue-property-decorator';
+import {Component, Mixins, Emit,Prop} from 'vue-property-decorator';
 import Const from '../../common/const';
 import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
 
 @Component({
-  name: 'NewBookMarkFolder',
+  name: 'EditBookMarkFolder',
   components: {
     ColorPicker,
   },
 })
 
-export default class NewBookMarkFolder extends Mixins(Const) {
+export default class EditBookMarkFolder extends Mixins(Const) {
+  // 編集対象情報
+  @Prop({type: Object, default: false})
+    editFolder!: BookMarkFolders;
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      this.initialize()
     };
   // 登録成功
-  @Emit('folder-registered')
-    folderRegistered(succueseMsg: string): void {
-      this.initialize()
+  @Emit('folder-edited')
+    folderEdited(succueseMsg: string): void {
     };
-  // 新規登録フォルダ情報
-  private newBookMarkFolder: BookMarkFolders = {
-    title: '',
-    color: '',
-    user_id: this.$store.state.userInfo.userId,
-  }
   // カラーピッカーダイアログ
   private colorPockerDialog: boolean = false;
   // フォームバリデーションエラー
   private errors: string[] = [];
-
-  mounted() {
-    this.initialize();
-  }
-  /**
-   * データ初期化
-   */
-  private initialize(): void {
-    Object.keys(this.newBookMarkFolder).forEach(key => this.newBookMarkFolder[key] = '');
-    this.newBookMarkFolder.user_id = this.$store.state.userInfo.userId;
-  };
   /**
    * カラーセット
    */
   private setColor(color: string): void {
-    this.newBookMarkFolder.color = color;
+    this.editFolder.color = color;
     this.colorPockerDialog = false;
   };
   /**
-   * フォルダー登録
+   * フォルダー編集
    */
-  private addBookMarkFolder(): void {
+  private editBookMarkFolder(): void {
     // エラーMSGリセット
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
-    Axios.post('/api/bookMarkFolder',{
-      newBookMarkFolder: this.newBookMarkFolder
+    Axios.post('/api/editBookMarkFolder',{
+      editFolder: this.editFolder,
+      user_id: this.$store.state.userInfo.userId
     }).then((res) => {
       if(res.data.validateState === false) {
-        for (let [key, value] of Object.entries(!res.data.message)) {
-          this.errors.push(value[0]);
+        for (let [key, value] of Object.entries(res.data.message)) {
+          if(typeof value === 'object') {
+            if(value !== undefined && value !== null){
+              this.errors.push(value[0]);
+            }
+          }
         };
         return;
       }
-      let succueseMsg = `「${this.newBookMarkFolder.title}」${this.SUCCESS_MSG.STORE_SUCCESS}`;
-      this.folderRegistered(succueseMsg);
+      let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      this.folderEdited(succueseMsg);
     }).catch((e) => {
       if(e.response.status === 401) {
         alert(this.ERROR_MSG.EXPAIRED_SESSION);
