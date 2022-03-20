@@ -6,23 +6,23 @@
         align="center"
         dense
         dark
-        color="green">
+        color="success">
         {{this.succueseMsg}}
       </v-alert>
       <div class="d-flex justify-end" flat tile>
         <v-btn
-          class="mx-2"
+          class="mx-2 font-weight-black"
           @click="addBookMarkDialog = !addBookMarkDialog"
-          color="success">
+          color="primary">
           <v-icon left>
             mdi-plus
           </v-icon>
           ブックマーク追加
         </v-btn>
         <v-btn
-          class="mx-2"
+          class="mx-2 font-weight-black"
           @click="addFolderDialog = !addFolderDialog"
-          color="success">
+          color="primary">
           <v-icon left>
             mdi-plus
           </v-icon>
@@ -39,7 +39,8 @@
             :style="{backgroundColor: bookMarkFolder.color}"
             dark
             dense
-            fixed-header>
+            fixed-header
+            items-per-page="1">
             <thead>
               <tr>
                 <th class="text-left text-h6">
@@ -56,20 +57,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(getBookMarkFolder,index) in getBookMarkFolders(bookMarkFolder.id)"
-                :key="index">
-                <td class="link">
-                  <v-icon
-                  class="ml-n3"
-                  dark
-                  dense
-                  left>
-                    mdi-file
-                  </v-icon>
-                  <a :href="getBookMarkFolder.bookMarkLink" target="_blank">{{getBookMarkFolder.bookMarkTitle}}</a>
-                </td>
-              </tr>
+              <div class="table-body">
+                <tr
+                  v-for="(getBookMarkFolder,index) in getBookMarkFolders(bookMarkFolder.id)"
+                  :key="index">
+                  <td class="link px-4">
+                    <v-icon
+                    class="ml-n3"
+                    dark
+                    dense
+                    left
+                    @click="chengeEditBoookMark(getBookMarkFolder)">
+                      mdi-file
+                    </v-icon>
+                    <a :href="getBookMarkFolder.link" target="_blank">{{getBookMarkFolder.title}}</a>
+                  </td>
+                </tr>
+              </div>
             </tbody>
           </v-simple-table>
         </v-col>
@@ -91,10 +95,9 @@
       persistent
       width="400px">
       <edit-book-mark-folder
-        ref="childFolder"
         :editFolder=editFolder
         @back="editFolderDialog=!editFolderDialog,getBookMarks()"
-        @folder-edited="registered">>
+        @folder-edited="registered">
       </edit-book-mark-folder>
     </v-dialog>
     <!-- ブックマーク追加ダイアログ -->
@@ -108,6 +111,18 @@
         @bookMark-registered="registered">
       </new-book-mark>
     </v-dialog>
+    <!-- ブックマークフォルダー編集ダイアログ -->
+    <v-dialog
+      v-model="editBookMarkDialog"
+      persistent
+      width="600px">
+      <edit-book-mark
+        :bookMarkFolders=bookMarkFolders
+        :editBookMark=editBookMark
+        @back="editBookMarkDialog=!editBookMarkDialog,getBookMarks()"
+        @bookMark-edited="registered">>
+      </edit-book-mark>
+    </v-dialog>
   </div>
 </template>
 
@@ -120,6 +135,7 @@ import { BookMarks } from '../interfaces/BookMarks';
 import NewBookMarkFolder from './bookMarkComponents/NewBookMarkFolder.vue';
 import EditBookMarkFolder from './bookMarkComponents/EditBookMarkFolder.vue';
 import NewBookMark from './bookMarkComponents/NewBookMark.vue';
+import EditBookMark from './bookMarkComponents/EditBookMark.vue';
 
 @Component({
   name: 'BookMark',
@@ -127,6 +143,7 @@ import NewBookMark from './bookMarkComponents/NewBookMark.vue';
     NewBookMarkFolder,
     EditBookMarkFolder,
     NewBookMark,
+    EditBookMark,
   },
 })
 
@@ -140,8 +157,12 @@ export default class BookMark extends Mixins(Const) {
   private addFolderDialog: boolean = false;
   // ブックマークフォルダー編集ダイアログ
   private editFolderDialog: boolean = false;
+  // ブックマーク編集ダイアログ
+  private editBookMarkDialog: boolean = false;
   // ブックマークフォルダー（編集用）
-  private editFolder: BookMarkFolders | null = null;;
+  private editFolder: BookMarkFolders | null = null;
+  // ブックマーク（編集用）
+  private editBookMark: BookMarks | null = null;;
   // ブックマークフォルダー（表示用）
   private bookMarkFolders: BookMarkFolders[] = [];
   // ブックマーク
@@ -170,8 +191,9 @@ export default class BookMark extends Mixins(Const) {
         this.$store.dispatch('resetUserInfo');
         this.$router.push("/login");
       };
-      alert(this.ERROR_MSG.GET_ERROR);
-      console.log(e);
+      if(e.response.status === 500) {
+        window.alert(this.ERROR_MSG.SERVER_ERROR);
+      };
     });
   };
   /**
@@ -181,6 +203,7 @@ export default class BookMark extends Mixins(Const) {
     this.addBookMarkDialog = false;
     this.addFolderDialog = false;
     this.editFolderDialog = false;
+    this.editBookMarkDialog = false;
     this.succueseMsg = succueseMsg;
     setTimeout(() => {
       this.succueseMsg = '';
@@ -190,9 +213,16 @@ export default class BookMark extends Mixins(Const) {
   /**
    * ブックマークフォルダー編集ボタン押下
    */
-  async chengeEditFolder(bookMarkFolder: BookMarkFolders): Promise<void> {
-    this.editFolder = bookMarkFolder
-    this.editFolderDialog = !this.editFolderDialog
+  private chengeEditFolder(bookMarkFolder: BookMarkFolders): void {
+    this.editFolder = bookMarkFolder;
+    this.editFolderDialog = !this.editFolderDialog;
+  }
+  /**
+   * ブックマーク編集ボタン押下
+   */
+  private chengeEditBoookMark(getBookMarkFolder: BookMarks): void {
+    this.editBookMark = getBookMarkFolder;
+    this.editBookMarkDialog = !this.editBookMarkDialog;
   }
 }
 </script>
@@ -202,8 +232,19 @@ export default class BookMark extends Mixins(Const) {
     color: white;
     text-decoration: none;
   }
+  .table-body {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E1E1E;
+  }
   .table th,td{
-    border: 1px solid black;
+    border: 1px solid #1E1E1E;
   }
 </style>
 

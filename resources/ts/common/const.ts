@@ -30,5 +30,11 @@ export default class Const extends Vue {
   SUCCESS_MSG = Object.freeze({
     STORE_SUCCESS: 'を新たに登録しました',
     EDIT_SUCCESS: 'を編集しました',
+    DELETE_SUCCESS: 'を削除しました',
+  });
+  // 確認MSG
+  CONFIRM_MSG = Object.freeze({
+    DELETE: 'を削除しますか？',
+    CANSEL: 'キャンセルしました。'
   });
 }

@@ -39,7 +39,6 @@ class BookMarkFolder extends Model
   public function validate(array $input)
   {
     $rules = [
-      'id' => 'required|integer',
       'user_id' => 'required|integer',
       'title' => 'required|max:255',
       'color' => 'max:15',

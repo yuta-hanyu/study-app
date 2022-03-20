@@ -68,7 +68,7 @@
                     color="orange lighten-2"
                     elevation="20"
                     rounded>
-                    登録
+                    編集
                   </v-btn>
                 </v-col>
               </v-row>
@@ -101,6 +101,8 @@ export default class EditBookMarkFolder extends Mixins(Const) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
+      // エラーMSGリセット
+      this.errors = [];
     };
   // 登録成功
   @Emit('folder-edited')
