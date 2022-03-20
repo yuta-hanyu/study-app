@@ -36,10 +36,11 @@ class BookMarkController extends Controller
     // userIdに紐づくブックマーク情報取得
     $bookMarks = $bookMark
                   ->select(
+                    'id',
                     'book_marks.book_mark_folders_id',
-                    'book_marks.title as bookMarkTitle',
-                    'book_marks.link as bookMarkLink',
-                    'book_marks.memo as bookMarkMemo',
+                    'book_marks.title',
+                    'book_marks.link',
+                    'book_marks.memo',
                   )
                   ->where('book_marks.user_id', '=', $user_id)
                   ->where('book_marks.is_deleted', '=', 0)
@@ -67,7 +68,6 @@ class BookMarkController extends Controller
       $message = $validate->errors();
       $validateState = false;
       Log::error("ブックマークフォルダ登録失敗_バリデーションエラー");
-      Log::error($message);
       return response()->json(['message' => $message, 'validateState' => $validateState]);
     }
     // 登録開始
@@ -83,6 +83,141 @@ class BookMarkController extends Controller
       DB::rollBack();
     }
     Log::info('ブックマークフォルダ登録終了');
+  }
+  /**
+  * ブックマークフォルダー編集
+  * @return Http response
+  */
+  public function bookMarkFolderEdit(Request $request)
+  {
+    Log::info('ブックマークフォルダ編集開始');
+    $input = $request['editFolder'];
+    // user_idをマージ
+    $input = array_merge($input,array('user_id'=>$request['user_id']));
+    // バリデーション
+    $bookMarkFolder = new BookMarkFolder();
+    $validate = $bookMarkFolder->validate($input);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::error("ブックマークフォルダ編集失敗_バリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $bookMarkFolder = new BookMarkFolder();
+      $updateBookMarkFolder = $bookMarkFolder
+                              ->where('id', '=' ,$input['id'])
+                              ->where('user_id', '=' ,$input['user_id'])
+                              ->first();
+      $updateBookMarkFolder->fill($input);
+      $updateBookMarkFolder->save();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('ブックマークフォルダ編集失敗');
+      Log::info($e);
+      DB::rollback();
+    }
+    Log::info('ブックマークフォルダ編集終了');
+    return;
+  }
+  /**
+  * ブックマーク登録
+  * @return Http response
+  */
+  public function bookMarkStore(Request $request)
+  {
+    Log::info('ブックマーク登録開始');
+    $input = $request['newBookMark'];
+    // バリデーション
+    $bookMark = new BookMark();
+    $validate = $bookMark->validate($input);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::error("ブックマーク登録失敗_バリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 登録開始
+    DB::beginTransaction();
+    try{
+      $bookMark = new BookMark();
+      $bookMark->fill($input);
+      $bookMark->save();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::error($e->getMessage());
+      Log::error('ブックマーク登録失敗');
+      DB::rollBack();
+    }
+    Log::info('ブックマーク登録終了');
+  }
+  /**
+  * ブックマーク編集
+  * @return Http response
+  */
+  public function bookMarkEdit(Request $request)
+  {
+    Log::info('ブックマーク編集開始');
+    $input = $request['editBookMark'];
+    // user_idをマージ
+    $input = array_merge($input,array('user_id'=>$request['user_id']));
+    // バリデーション
+    $bookMark= new BookMark();
+    $validate = $bookMark->validate($input);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::error("ブックマーク編集失敗_バリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $bookMark= new BookMark();
+      $updateBookMark= $bookMark
+                        ->where('id', '=' ,$input['id'])
+                        ->where('user_id', '=' ,$input['user_id'])
+                        ->first();
+      $updateBookMark->fill($input);
+      $updateBookMark->save();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('ブックマーク編集失敗');
+      Log::info($e);
+      DB::rollback();
+    }
+    Log::info('ブックマーク編集終了');
+    return;
+  }
+  /**
+  * ブックマーク削除
+  * @return Http response
+  */
+  public function bookMarkRemove(Request $request)
+  {
+    Log::info('ブックマーク削除開始');
+    $input = $request['editBookMark'];
+    // user_idをマージ
+    $input = array_merge($input,array('user_id'=>$request['user_id']));
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $bookMark= new BookMark();
+      $removeBookMark = $bookMark
+                        ->where('id', '=' ,$input['id'])
+                        ->where('user_id', '=' ,$input['user_id'])
+                        ->first();
+      $removeBookMark->delete($input);
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('ブックマーク削除失敗');
+      Log::info($e);
+      DB::rollback();
+    }
+    Log::info('ブックマーク削除終了');
+    return;
   }
   /**
   * ブックマーク_タイトル取得

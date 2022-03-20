@@ -4,7 +4,7 @@
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">ブックマーク登録</p>
+            <p class="text-h6 py-3">ブックマーク編集</p>
             <v-col cols="10">
                 <v-alert
                   v-for="(error, index) in this.errors" :key=index
@@ -19,7 +19,7 @@
             </v-col>
             <v-col cols="10">
               <v-text-field
-                v-model="newBookMark.link"
+                v-model="editBookMark.link"
                 @change="getTitle()"
                 prepend-icon="mdi-open-in-new"
                 label="リンク">
@@ -27,7 +27,7 @@
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-text-field
-                v-model="newBookMark.title"
+                v-model="editBookMark.title"
                 prepend-icon="mdi-folder-plus-outline"
                 placeholder="リンクからページタイトルを表示します"
                 label="タイトル">
@@ -36,7 +36,7 @@
             <v-col cols="10" class="mt-n3">
               <v-autocomplete
                 prepend-icon="mdi-folder"
-                v-model="newBookMark.book_mark_folders_id"
+                v-model="editBookMark.book_mark_folders_id"
                 :items="bookMarkFolders"
                 item-text="title"
                 item-value="id"
@@ -49,7 +49,7 @@
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-textarea
-                v-model="newBookMark.memo"
+                v-model="editBookMark.memo"
                 prepend-icon="mdi-book-open"
                 label="メモ">
               </v-textarea>
@@ -58,8 +58,9 @@
               <v-row justify="center">
                 <v-col
                   class="text-center"
-                  cols="4">
+                  cols="2">
                   <v-btn
+                    class="font-weight-black"
                     color="grey lighten-1"
                     width="25%"
                     @click="back()"
@@ -68,14 +69,26 @@
                     戻る
                   </v-btn>
                 </v-col>
-                <v-col cols="4" class="text-center">
+                <v-col cols="2" class="text-center">
                   <v-btn
-                    @click="addBookMark"
+                    class="font-weight-black"
+                    @click="editToBookMark"
                     width="25%"
                     color="orange lighten-2"
                     elevation="20"
                     rounded>
-                    登録
+                    編集
+                  </v-btn>
+                </v-col>
+                <v-col cols="2" class="text-center">
+                  <v-btn
+                    class="font-weight-black"
+                    @click="removeBookMark"
+                    width="25%"
+                    color="red darken-1"
+                    elevation="20"
+                    rounded>
+                    削除
                   </v-btn>
                 </v-col>
               </v-row>
@@ -95,59 +108,45 @@ import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
 
 @Component({
-  name: 'NewBookMark',
+  name: 'EditBookMark',
   components: {
   },
 })
 
-export default class NewBookMark extends Mixins(Const) {
+export default class EditBookMark extends Mixins(Const) {
+  // ブックマーク
+  @Prop({type: Object, default: false})
+    editBookMark!: BookMarks;
   // ブックマークフォルダ
   @Prop({type: Array, default: false})
     bookMarkFolders!: BookMarkFolders;
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      this.initialize()
+      // エラーMSGリセット
+      this.errors = [];
     };
   // 登録成功
-  @Emit('bookMark-registered')
-    bookMarkRegistered(succueseMsg: string): void {
-      this.initialize()
+  @Emit('bookMark-edited')
+    bookMarkEdited(succueseMsg: string): void {
     };
   // フォームバリデーションエラー
   private errors: string[] = [];
-  // 新規登録ブックマーク情報
-  private newBookMark: BookMarks = {
-    book_mark_folders_id: null,
-    title: '',
-    link: '',
-    memo: '',
-    user_id: this.$store.state.userInfo.userId,
-  }
-  mounted() {
-    this.initialize();
-  }
-  /**
-   * データ初期化
-   */
-  private initialize(): void {
-    Object.keys(this.newBookMark).forEach(key => this.newBookMark[key] = '');
-    this.newBookMark.user_id = this.$store.state.userInfo.userId;
-  };
   /**
    * リンクからタイトル取得
    */
   private getTitle(): void {
     Axios.post('/api/bookMark/getTitle', {
+      // 新規登録時とロジックを共有するためkeyはnewBookMarkとする
       newBookMark: {
-        link: this.newBookMark.link
+        link: this.editBookMark.link
       }
     }).then((res) => {
       if(res.data.validateState === false) {
         this.errors.push(res.data.message.link[0]);
         return;
       }
-      this.newBookMark.title = res.data;
+      this.editBookMark.title = res.data;
     }).catch((e) => {
       if(e.response.status === 401) {
         alert(this.ERROR_MSG.EXPAIRED_SESSION);
@@ -160,15 +159,16 @@ export default class NewBookMark extends Mixins(Const) {
     })
   }
   /**
-   * ブックマーク登録
+   * ブックマーク編集
    */
-  private addBookMark(): void {
+  private editToBookMark(): void {
     // エラーMSGリセット
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
-    Axios.post('/api/bookMark',{
-      newBookMark: this.newBookMark
+    Axios.post('/api/editBookMark',{
+      editBookMark: this.editBookMark,
+      user_id: this.$store.state.userInfo.userId
     }).then((res) => {
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
@@ -180,8 +180,32 @@ export default class NewBookMark extends Mixins(Const) {
         };
         return;
       }
-      let succueseMsg = `「${this.newBookMark.title}」${this.SUCCESS_MSG.STORE_SUCCESS}`;
-      this.bookMarkRegistered(succueseMsg);
+      let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      this.bookMarkEdited(succueseMsg);
+    }).catch((e) => {
+      if(e.response.status === 401) {
+        alert(this.ERROR_MSG.EXPAIRED_SESSION);
+        this.$store.dispatch('resetUserInfo');
+        this.$router.push("/login");
+      };
+      if(e.response.status === 500) {
+        window.alert(this.ERROR_MSG.SERVER_ERROR);
+      };
+    })
+  }
+  /**
+   * ブックマーク削除
+   */
+  private removeBookMark(): void {
+    if(!window.confirm(`「${this.editBookMark.title}」${this.CONFIRM_MSG.DELETE}`)) {
+      return;
+    };
+    Axios.post('/api/removeBookMark',{
+      editBookMark: this.editBookMark,
+      user_id: this.$store.state.userInfo.userId
+    }).then((res) => {
+      let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;
+      this.bookMarkEdited(succueseMsg);
     }).catch((e) => {
       if(e.response.status === 401) {
         alert(this.ERROR_MSG.EXPAIRED_SESSION);

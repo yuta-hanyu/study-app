@@ -19,7 +19,7 @@ class CreateBookMarksTable extends Migration
             $table->foreignId('book_mark_folders_id')->constrained('book_mark_folders');
             $table->string('title')->nullable(false);
             $table->string('link')->nullable(false);
-            $table->string('memo');
+            $table->string('memo')->nullable(true);
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });

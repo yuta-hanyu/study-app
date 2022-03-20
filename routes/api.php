@@ -59,6 +59,22 @@ Route::middleware('auth:sanctum')->group(function () {
    * ブックマークタイトル取得
    */
   Route::post('/bookMark/getTitle', 'App\Http\Controllers\BookMarkController@getTitle');
+  /**
+   * ブックマーク登録
+   */
+  Route::post('/bookMark', 'App\Http\Controllers\BookMarkController@bookMarkStore');
+  /**
+   * ブックマークフォルダ編集
+   */
+  Route::post('/editBookMarkFolder', 'App\Http\Controllers\BookMarkController@bookMarkFolderEdit');
+  /**
+   * ブックマーク編集
+   */
+  Route::post('/editBookMark', 'App\Http\Controllers\BookMarkController@bookMarkEdit');
+  /**
+   * ブックマーク削除
+   */
+  Route::post('/removeBookMark', 'App\Http\Controllers\BookMarkController@bookMarkRemove');
 });
 
 

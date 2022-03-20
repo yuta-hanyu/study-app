@@ -154,7 +154,7 @@ import { Todos } from '../../interfaces/Todos';
 
 export default class NewTodo extends Mixins(Const) {
   @Prop({type: Number, default: false})
-  userId!: number;
+    userId!: number;
   // 新規登録todo
   private newTodo: Todos = {
     title: '',
