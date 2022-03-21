@@ -101,8 +101,9 @@
 </template>
 
 <script lang="ts">
-import {Component,Mixins,Emit,Prop} from 'vue-property-decorator';
+import { Component,Mixins,Emit,Prop } from 'vue-property-decorator';
 import Const from '../../common/const';
+import Util from '../../common/util';
 import { BookMarks } from '../../interfaces/BookMarks';
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
@@ -113,7 +114,7 @@ import Axios from 'axios';
   },
 })
 
-export default class EditBookMark extends Mixins(Const) {
+export default class EditBookMark extends Mixins(Const, Util) {
   // ブックマーク
   @Prop({type: Object, default: false})
     editBookMark!: BookMarks;
@@ -148,14 +149,8 @@ export default class EditBookMark extends Mixins(Const) {
       }
       this.editBookMark.title = res.data;
     }).catch((e) => {
-      if(e.response.status === 401) {
-        alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('resetUserInfo');
-        this.$router.push("/login");
-      };
-      if(e.response.status === 500) {
-        window.alert(this.ERROR_MSG.SERVER_ERROR);
-      };
+      this.authCheck(e);
+      this.serverError(e);
     })
   }
   /**
@@ -183,14 +178,8 @@ export default class EditBookMark extends Mixins(Const) {
       let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.bookMarkEdited(succueseMsg);
     }).catch((e) => {
-      if(e.response.status === 401) {
-        alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('resetUserInfo');
-        this.$router.push("/login");
-      };
-      if(e.response.status === 500) {
-        window.alert(this.ERROR_MSG.SERVER_ERROR);
-      };
+      this.authCheck(e);
+      this.serverError(e);
     })
   }
   /**
@@ -207,14 +196,8 @@ export default class EditBookMark extends Mixins(Const) {
       let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;
       this.bookMarkEdited(succueseMsg);
     }).catch((e) => {
-      if(e.response.status === 401) {
-        alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('resetUserInfo');
-        this.$router.push("/login");
-      };
-      if(e.response.status === 500) {
-        window.alert(this.ERROR_MSG.SERVER_ERROR);
-      };
+      this.authCheck(e);
+      this.serverError(e);
     })
   }
 

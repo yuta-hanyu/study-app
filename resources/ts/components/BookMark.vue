@@ -130,6 +130,7 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import Axios from 'axios';
 import Const from '../common/const';
+import Util from '../common/util';
 import { BookMarkFolders } from '../interfaces/BookMarkFolders';
 import { BookMarks } from '../interfaces/BookMarks';
 import NewBookMarkFolder from './bookMarkComponents/NewBookMarkFolder.vue';
@@ -147,7 +148,7 @@ import EditBookMark from './bookMarkComponents/EditBookMark.vue';
   },
 })
 
-export default class BookMark extends Mixins(Const) {
+export default class BookMark extends Mixins(Const, Util) {
   $refs: any = {}
   // 処理成功MSG
   private succueseMsg: string = '';
@@ -185,15 +186,8 @@ export default class BookMark extends Mixins(Const) {
       this.bookMarkFolders = res.data.bookMarkFolders;
       this.bookMarks = res.data.bookMarks;
     }).catch((e) => {
-      //認証エラー
-      if(e.response.status === 401) {
-        alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('resetUserInfo');
-        this.$router.push("/login");
-      };
-      if(e.response.status === 500) {
-        window.alert(this.ERROR_MSG.SERVER_ERROR);
-      };
+      this.authCheck(e);
+      this.serverError(e);
     });
   };
   /**
@@ -237,7 +231,7 @@ export default class BookMark extends Mixins(Const) {
     overflow-y: scroll;
   }
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 1px;
     height: 10px;
   }
   ::-webkit-scrollbar-thumb {

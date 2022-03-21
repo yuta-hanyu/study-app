@@ -83,6 +83,7 @@
 <script lang="ts">
 import {Component, Mixins, Emit} from 'vue-property-decorator';
 import Const from '../../common/const';
+import Util from '../../common/util';
 import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
@@ -94,7 +95,7 @@ import Axios from 'axios';
   },
 })
 
-export default class NewBookMarkFolder extends Mixins(Const) {
+export default class NewBookMarkFolder extends Mixins(Const,Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
@@ -145,22 +146,20 @@ export default class NewBookMarkFolder extends Mixins(Const) {
       newBookMarkFolder: this.newBookMarkFolder
     }).then((res) => {
       if(res.data.validateState === false) {
-        for (let [key, value] of Object.entries(!res.data.message)) {
-          this.errors.push(value[0]);
+        for (let [key, value] of Object.entries(res.data.message)) {
+          if(typeof value === 'object') {
+            if(value !== undefined && value !== null){
+              this.errors.push(value[0]);
+            }
+          }
         };
         return;
       }
       let succueseMsg = `「${this.newBookMarkFolder.title}」${this.SUCCESS_MSG.STORE_SUCCESS}`;
       this.folderRegistered(succueseMsg);
     }).catch((e) => {
-      if(e.response.status === 401) {
-        alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('resetUserInfo');
-        this.$router.push("/login");
-      };
-      if(e.response.status === 500) {
-        window.alert(this.ERROR_MSG.SERVER_ERROR);
-      };
+      this.authCheck(e);
+      this.serverError(e);
     })
   }
 }
