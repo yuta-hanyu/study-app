@@ -58,8 +58,9 @@
               <v-row justify="center">
                 <v-col
                   class="text-center"
-                  cols="4">
+                  cols="3">
                   <v-btn
+                    class="font-weight-black"
                     color="grey lighten-1"
                     width="25%"
                     @click="back()"
@@ -68,8 +69,9 @@
                     戻る
                   </v-btn>
                 </v-col>
-                <v-col cols="4" class="text-center">
+                <v-col cols="3" class="text-center">
                   <v-btn
+                    class="font-weight-black"
                     @click="addBookMark"
                     width="25%"
                     color="orange lighten-2"
