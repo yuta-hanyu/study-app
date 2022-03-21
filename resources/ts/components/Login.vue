@@ -1,96 +1,103 @@
 <template>
-  <div>
+  <!-- <div> -->
     <v-container>
-      <v-row justify="center" align-content="center" style="height: 600px;">
-        <v-col cols="8" align="center">
-        <v-sheet
-          color="amber lighten-5"
-          elevation="1"
-          width="100%"
-          height="110%">
-          <v-row justify="end">
-            <v-col md="4" mx="4">
-              <div class="text-h4 py-5">ログイン</div>
+      <v-row justify="center" style="height: 800px;">
+        <v-col
+        class="d-flex title-container">
+          <div :class="title">
+            <span>S</span>
+            <span>T</span>
+            <span>U</span>
+            <span>D</span>
+            <span>Y</span>
+            <span>&nbsp;</span>
+            <span>A</span>
+            <span>P</span>
+            <span>P</span>
+          </div>
+          <div class="chalk1"></div>
+<div class="chalk2"></div>
+        </v-col>
+        <v-col
+          md="10"
+          sm="10"
+          v-if="this.message">
+          <v-row
+            class="mt-3"
+            justify="center">
+            <v-alert
+              dense
+              text
+              border="left"
+              type="error"
+              class="px-auto"
+              width="70%">
+              {{message}}
+            </v-alert>
+          </v-row>
+        </v-col>
+        <v-col md="10" mx="10">
+          <v-row justify="center">
+            <v-col md="10" mx="10">
+              <v-form>
+                <v-col md="12" align="center">
+                  <v-text-field
+                    dark
+                    class="px-10"
+                    v-model="email"
+                    label="メールアドレス"
+                    required
+                    :counter="255"
+                  ></v-text-field>
+                </v-col>
+                <v-col md="12" align="center">
+                  <v-text-field
+                    dark
+                    class="px-10"
+                    v-model="password"
+                    :counter="8"
+                    label="パスワード"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col class="checkbox">
+                  <v-checkbox
+                    dark
+                    v-model="omitEmailSend"
+                    label="次回以降、メールアドレスの入力をスキップ"
+                    color="red"
+                    dense
+                  ></v-checkbox>
+                </v-col>
+              </v-form>
             </v-col>
-            <v-col md="4">
+          </v-row>
+          <v-row justify="center">
+            <v-col md="3" align="center">
               <v-btn
-                class="ma-2"
+                class="font-weight-black"
+                dark
+                width="70%"
+                @click="login(false)"
+                color="orange lighten-2">
+                ログイン
+              </v-btn>
+            </v-col>
+            <v-col md="3">
+              <v-btn
+                class="font-weight-black"
+                align="right"
+                width="70%"
                 color="success"
                 @click="login(true)">
                 ゲストログイン
               </v-btn>
             </v-col>
           </v-row>
-          <v-row
-            class="mt-3"
-            v-if="this.validatMessage.length"
-            justify="center">
-            <v-alert
-              v-for="(message, index) in this.validatMessage" :key=index
-              dense
-              text
-              border="left"
-              type="error"
-              class="px-6"
-              width="70%">
-              {{message}}
-            </v-alert>
-          </v-row>
-          <v-row
-            class="mt-3"
-            v-if="this.message"
-            justify="center">
-            <v-alert
-              dense
-              text
-              border="left"
-              type="error"
-              class="px-6"
-              width="70%">
-              {{message}}
-            </v-alert>
-          </v-row>
-          <v-form>
-            <v-col cols="10" align="center">
-              <v-text-field
-                class="px-10"
-                v-model="email"
-                label="メールアドレス"
-                required
-                :counter="255"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="10" align="center">
-              <v-text-field
-                class="px-10"
-                v-model="password"
-                :counter="8"
-                label="パスワード"
-                required
-              ></v-text-field>
-            </v-col>
-            <v-col cols="6">
-              <v-checkbox
-                v-model="omitEmailSend"
-                label="次回以降、メールアドレスの入力をスキップ"
-                color="red"
-                dense
-            ></v-checkbox>
-            </v-col>
-            <v-col cols="10" align="center">
-              <v-btn
-                class="mr-4"
-                @click="login(false)"
-                color="orange lighten-2">
-                ログイン
-              </v-btn>
-            </v-col>
-          </v-form>
-        </v-sheet>
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script lang="ts">
@@ -113,6 +120,18 @@ export default class Login extends Mixins(Const){
   private message: string = "";
   // メールアドレススキップ
   private omitEmailSend: boolean = false;
+  private title: string = 'title';
+  mounted() {
+    // タイトル表示制御
+    setInterval(() => {
+      this.title += " -visible";
+      console.log(this.title)
+      setTimeout(() => {
+        this.title = "title";
+        console.log(this.title)
+      }, 1500);
+    }, 3000);
+  }
   /**
    * ログインボタン押下
    */
@@ -150,13 +169,11 @@ export default class Login extends Mixins(Const){
         };
       }).catch((e) => {
         //認証エラー
-        console.log(e);
         this.message = this.ERROR_MSG.LOGIN_FAILD
       });
     }).catch((e) => {
       //認証エラー
-      window.alert(this.ERROR_MSG.AUTH_FAILD);
-      console.log(e);
+      window.alert(this.ERROR_MSG.AUTH_FAILD)
     });
   }
   /**
@@ -172,5 +189,80 @@ export default class Login extends Mixins(Const){
 }
 </script>
 
-<style>
+<style scoped>
+.checkbox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.title-container {
+  margin-top: 10%;
+  text-align: center;
+  height: 300px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  background: #104300;
+  border: 8px solid #a60;
+  box-shadow: 2px 2px 4px #999, 2px 2px 2px #020 inset;
+}
+.title {
+  display: flex;
+  overflow: hidden;
+  color: #FFFF8D;
+  font-family: 'Josefin Sans', sans-serif;
+}
+.title span {
+  display: block;
+  transform: translate(0, 115%);
+  transition: transform cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+  font-weight: bold;
+  font-size: 50px;
+  height: 50px;
+  margin-right: 7px;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+.title.-visible span {
+  transform: translate(0, 0);
+}
+.title span:nth-child(2) {
+  transition-delay: 0.06s;
+}
+.title span:nth-child(3) {
+  transition-delay: 0.12s;
+}
+.title span:nth-child(4) {
+  transition-delay: 0.18s;
+}
+.title span:nth-child(5) {
+  transition-delay: 0.24s;
+}
+.title span:nth-child(6) {
+  transition-delay: 0.30s;
+}
+.title span:nth-child(7) {
+  transition-delay: 0.36s;
+}
+.title span:nth-child(8) {
+  transition-delay: 0.42s;
+}
+.title span:nth-child(9) {
+  transition-delay: 0.48s;
+}
+.title span:nth-child(10) {
+  transition-delay: 0.54s;
+}
+.title span:nth-child(11) {
+  transition-delay: 0.6s;
+}
+.title span:nth-child(12) {
+  transition-delay: 0.66s;
+}
+.title span:nth-child(13) {
+  transition-delay: 0.72s;
+}
+.title span:nth-child(14) {
+  transition-delay: 0.78s;
+}
 </style>
