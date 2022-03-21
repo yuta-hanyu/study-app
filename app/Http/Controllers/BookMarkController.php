@@ -123,6 +123,34 @@ class BookMarkController extends Controller
     return;
   }
   /**
+  * ブックマークフォルダー削除
+  * @return Http response
+  */
+  public function bookMarkFolderRemove(Request $request)
+  {
+    Log::info('ブックマークフォルダ削除開始');
+    $input = $request['editFolder'];
+    // user_idをマージ
+    $input = array_merge($input,array('user_id'=>$request['user_id']));
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $bookMarkFolder = new BookMarkFolder();
+      $updateBookMarkFolder = $bookMarkFolder
+                              ->where('id', '=' ,$input['id'])
+                              ->where('user_id', '=' ,$input['user_id'])
+                              ->first();
+      $updateBookMarkFolder->delete();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('ブックマークフォルダ削除失敗');
+      Log::info($e);
+      DB::rollback();
+    }
+    Log::info('ブックマークフォルダ削除終了');
+    return;
+  }
+  /**
   * ブックマーク登録
   * @return Http response
   */

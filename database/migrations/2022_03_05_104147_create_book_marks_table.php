@@ -15,13 +15,25 @@ class CreateBookMarksTable extends Migration
     {
         Schema::create('book_marks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('book_mark_folders_id')->constrained('book_mark_folders');
+            $table->bigInteger('user_id')->unsigned()->nullable(false);
+            // $table->foreignId('user_id')->constrained('users');
+            $table->bigInteger('book_mark_folders_id')->unsigned()->nullable(false);
+            // $table->foreignId('book_mark_folders_id')->constrained('book_mark_folders');
             $table->string('title')->nullable(false);
             $table->string('link')->nullable(false);
             $table->string('memo')->nullable(true);
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
+
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign('book_mark_folders_id')
+                  ->references('id')
+                  ->on('book_mark_folders')
+                  ->cascadeOnDelete();
         });
     }
 

@@ -49,9 +49,10 @@
               <v-row justify="center">
                 <v-col
                   class="text-center"
-                  cols="4">
+                  cols="3">
                   <v-btn
                     color="grey lighten-1"
+                    class="font-weight-black"
                     width="25%"
                     @click="back()"
                     rounded
@@ -60,15 +61,29 @@
                   </v-btn>
                 </v-col>
                 <v-col
-                  cols="4"
+                  cols="3"
                   class="text-center">
                   <v-btn
-                   @click="editBookMarkFolder"
+                    @click="editBookMarkFolder"
+                    class="font-weight-black"
                     width="25%"
                     color="orange lighten-2"
                     elevation="20"
                     rounded>
                     編集
+                  </v-btn>
+                </v-col>
+                <v-col
+                  cols="3"
+                  class="text-center">
+                  <v-btn
+                    class="font-weight-black"
+                    @click="removeBookMarkFolder"
+                    width="25%"
+                    color="red darken-1"
+                    elevation="20"
+                    rounded>
+                    削除
                   </v-btn>
                 </v-col>
               </v-row>
@@ -81,8 +96,9 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Emit,Prop} from 'vue-property-decorator';
+import { Component, Mixins, Emit,Prop } from 'vue-property-decorator';
 import Const from '../../common/const';
+import Util from '../../common/util';
 import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
@@ -94,7 +110,7 @@ import Axios from 'axios';
   },
 })
 
-export default class EditBookMarkFolder extends Mixins(Const) {
+export default class EditBookMarkFolder extends Mixins(Const, Util) {
   // 編集対象情報
   @Prop({type: Object, default: false})
     editFolder!: BookMarkFolders;
@@ -144,14 +160,26 @@ export default class EditBookMarkFolder extends Mixins(Const) {
       let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.folderEdited(succueseMsg);
     }).catch((e) => {
-      if(e.response.status === 401) {
-        alert(this.ERROR_MSG.EXPAIRED_SESSION);
-        this.$store.dispatch('resetUserInfo');
-        this.$router.push("/login");
-      };
-      if(e.response.status === 500) {
-        window.alert(this.ERROR_MSG.SERVER_ERROR);
-      };
+      this.authCheck(e);
+      this.serverError(e);
+    })
+  }
+  /**
+   * フォルダー削除
+   */
+  private removeBookMarkFolder(): void {
+    if(!window.confirm(`「${this.editFolder.title}」${this.CONFIRM_MSG.DELETE}`)) {
+      return;
+    };
+    Axios.post('/api/removeBookMarkFolder',{
+      editFolder: this.editFolder,
+      user_id: this.$store.state.userInfo.userId
+    }).then((res) => {
+      let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;
+      this.folderEdited(succueseMsg);
+    }).catch((e) => {
+      this.authCheck(e);
+      this.serverError(e);
     })
   }
 }

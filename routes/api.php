@@ -68,6 +68,10 @@ Route::middleware('auth:sanctum')->group(function () {
    */
   Route::post('/editBookMarkFolder', 'App\Http\Controllers\BookMarkController@bookMarkFolderEdit');
   /**
+   * ブックマークフォルダ削除
+   */
+  Route::post('/removeBookMarkFolder', 'App\Http\Controllers\BookMarkController@bookMarkFolderRemove');
+  /**
    * ブックマーク編集
    */
   Route::post('/editBookMark', 'App\Http\Controllers\BookMarkController@bookMarkEdit');
