@@ -8,7 +8,9 @@ use App\Models\BookMark;
 // use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isNull;
 
 class BookMarkController extends Controller
 {
@@ -276,5 +278,87 @@ class BookMarkController extends Controller
     $result = $title[1]; //配列１つ目がタイトル
     Log::info('ブックマークタイトル取得終了');
     return response()->json($result);
+  }
+  /**
+  *
+  * @return Http response
+  */
+  public function bookMarksImport(Request $request)
+  {
+    Log::info('ブックマークインポート登録開始');
+    // ログインユーザーID取得
+    $user_id = Auth::id();
+    // ブックマークフォルダID初期化
+    $bookMarkFoldersId = null;
+    // ファイル情報取得
+    $fileName = $request['html'];
+    // ファイル読み込み開始
+    $file = fopen($fileName, "r");
+    // htmlファイルの最終行読込完了するまでループ
+    while(!feof($file)) {
+      // 読み込み情報取得
+      $str = fgets($file);
+      preg_match("/<h3(?:[^>]*?)>(.*?)<\/h3>/i", $str, $h3); // ブックマークフォルダ名取得(h3タグに格納されている)
+      preg_match("/<a href(?:[^>]*?)>(.*?)<\/a>/i", $str, $title); // ブックマークタイトル取得(aタグに格納されている)
+      preg_match('/<a href="(.*?)"/i', $str, $link); // ブックマークリンクURL取得(aタグに格納されている)
+      // 読み込み行がh3タグ（＝ブックマークフォルダ）の場合、ブックマークフォルダ登録開始
+      if($h3){
+        $input = [
+          'user_id' => $user_id,
+          'title' => $h3[1]
+        ];
+        $bookMarkFolder = new BookMarkFolder();
+        $validate = $bookMarkFolder->validate($input);
+        if($validate->fails()) {
+          $message = $validate->errors();
+          $validateState = false;
+          Log::error("ブックマークフォルダインポート失敗_バリデーションエラー");
+          return response()->json(['message' => $message, 'validateState' => $validateState]);
+        }
+        // 登録開始
+        DB::beginTransaction();
+        try{
+          $bookMarkFolder->fill($input);
+          $bookMarkFolder->save();
+          DB::commit();
+        } catch (\Exception $e) {
+          Log::error($e->getMessage());
+          Log::error('ブックマークフォルダインポート失敗');
+          DB::rollBack();
+        }
+        $bookMarkFoldersId = $bookMarkFolder->id; //ブックマーク登録用のid
+      }
+      // 読み込み行がaタグ（＝ブックマーク）の場合、ブックマーク登録開始
+      if($title || $link){
+        $input = [
+          'user_id' => $user_id,
+          'book_mark_folders_id' => $bookMarkFoldersId,
+          'title' => $title[1] ? $title[1] : $link[1], // タイトル不存在の場合はタイトルはURLとする
+          'link' => $link[1],
+        ];
+        // バリデーション
+        $bookMark = new BookMark();
+        $validate = $bookMark->validate($input);
+        $message = $validate->errors();
+        $validateState = false;
+        Log::error("ブックマークインポート失敗_バリデーションエラー");
+        return response()->json(['message' => $message, 'validateState' => $validateState]);
+        if($validate->fails()) {
+        }
+        // 登録開始
+        DB::beginTransaction();
+        try{
+          $bookMark->fill($input);
+          $bookMark->save();
+          DB::commit();
+        } catch (\Exception $e) {
+          Log::error($e->getMessage());
+          Log::error('ブックマークインポート失敗');
+          DB::rollBack();
+        }
+      }
+    }
+    fclose($file);
+    Log::info('ブックマークインポート終了');
   }
 }

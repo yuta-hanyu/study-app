@@ -79,6 +79,10 @@ Route::middleware('auth:sanctum')->group(function () {
    * ブックマーク削除
    */
   Route::post('/removeBookMark', 'App\Http\Controllers\BookMarkController@bookMarkRemove');
+  /**
+   * ブックマークインポート
+   */
+  Route::post('/bookMarks/import', 'App\Http\Controllers\BookMarkController@bookMarksImport');
 });
 
 
