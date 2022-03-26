@@ -2,8 +2,7 @@
   <!-- <div> -->
     <v-container>
       <v-row justify="center" style="height: 800px;">
-        <v-col
-        class="d-flex title-container">
+        <v-col class="title-container">
           <div :class="title">
             <span>S</span>
             <span>T</span>
@@ -15,8 +14,6 @@
             <span>P</span>
             <span>P</span>
           </div>
-          <div class="chalk1"></div>
-<div class="chalk2"></div>
         </v-col>
         <v-col
           md="10"
@@ -125,10 +122,8 @@ export default class Login extends Mixins(Const){
     // タイトル表示制御
     setInterval(() => {
       this.title += " -visible";
-      console.log(this.title)
       setTimeout(() => {
         this.title = "title";
-        console.log(this.title)
       }, 1500);
     }, 3000);
   }

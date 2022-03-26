@@ -4,7 +4,7 @@
       :color="color"
       dark>
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
-    <v-toolbar-title>MyStudyApp</v-toolbar-title>
+    <v-toolbar-title>StudyApp</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-tooltip bottom color="yellow lighten-3">
       <template v-slot:activator="{ on, attrs }">
@@ -15,10 +15,10 @@
           class="mx-2"
           id="mdi-lightbulb-on"
           @click="changeIsDark">
-        mdi-lightbulb-on
+          mdi-lightbulb-on
         </v-icon>
       </template>
-      <span style="color: black;">{{isDarkMode}}モードにする</span>
+      <span style="color: black;">背景を{{isDarkMode}}する</span>
     </v-tooltip>
     <v-chip
       class="mx-2"
@@ -34,19 +34,29 @@
       <v-navigation-drawer
         v-model="drawer"
         fixed
+        width="200px"
+        dark
         temporary>
         <v-list
           nav
           dense>
-          <v-list-item-group >
+          <v-list-item-group>
             <v-list-item
               v-for="(menu, index) in this.MENU_ITEMS"
               :key=index>
-              <router-link :to="menu.url">{{menu.name}}</router-link>
+              <router-link
+                :to="menu.url"
+                class="font-weight-black list">
+                {{menu.name}}
+              </router-link>
             </v-list-item>
             <v-list-item
               @click="LogoutDialog">
-              <router-link to="#">ログアウト</router-link>
+              <router-link
+                to="#"
+                class="font-weight-black list">
+                ログアウト
+              </router-link>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -80,7 +90,7 @@ export default class Header extends Mixins(Const){
   private drawer: Boolean = false;
   // ツールチップtext変換
   get isDarkMode(): String {
-    return this.isDark === true ? "ライト" : "ダーク";
+    return this.isDark === true ? "明るく" : "暗く";
   }
   // ヘッダー配色変換
   get color(): String {
@@ -92,5 +102,9 @@ export default class Header extends Mixins(Const){
 <style scoped>
   #mdi-lightbulb-on {
     transform: scale(1.4, 1.4);
+  }
+  .list {
+    text-decoration: none;
+    color: #FFFFFF;
   }
 </style>

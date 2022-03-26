@@ -14,7 +14,7 @@ export default class Const extends Vue {
   MENU_ITEMS = Object.freeze([
     {name: 'トップ', url: '/'},
     {name: 'タスク管理', url: '/todo'},
-    {name: 'ブックマーク', url: '/bookMark'},
+    {name: 'ブックマーク管理', url: '/bookMark'},
   ]);
   // エラーMSG
   ERROR_MSG = Object.freeze({
@@ -31,6 +31,7 @@ export default class Const extends Vue {
     STORE_SUCCESS: 'を新たに登録しました',
     EDIT_SUCCESS: 'を編集しました',
     DELETE_SUCCESS: 'を削除しました',
+    IMPORT_SUCCESS: '取込が完了しました',
   });
   // 確認MSG
   CONFIRM_MSG = Object.freeze({
