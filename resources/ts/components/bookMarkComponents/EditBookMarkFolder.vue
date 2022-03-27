@@ -18,7 +18,7 @@
             <v-col
               cols="10">
               <v-text-field
-                v-model="editFolder.title"
+                v-model="targetEditFolder.title"
                 prepend-icon="mdi-folder-plus-outline"
                 label="タイトル">
               </v-text-field>
@@ -32,7 +32,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     class="pt-0 pb-3 label-font"
-                    v-model="editFolder.color"
+                    v-model="targetEditFolder.color"
                     label="カラー"
                     prepend-icon="mdi-palette"
                     readonly
@@ -118,21 +118,35 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
   @Emit('back')
     back(): void {
       // エラーMSGリセット
+      this.initialize();
       this.errors = [];
     };
   // 登録成功
   @Emit('folder-edited')
     folderEdited(succueseMsg: string): void {
     };
+  // 編集用データディープコピー
+  get targetEditFolder(): BookMarkFolders {
+    return this.targetObjCopy(this.editFolder);
+  };
   // カラーピッカーダイアログ
   private colorPockerDialog: boolean = false;
   // フォームバリデーションエラー
   private errors: string[] = [];
   /**
+   * データ初期化
+   */
+  private initialize(): void {
+    for(let key in this.editFolder) {
+        this.targetEditFolder[key] = this.editFolder[key];
+    }
+    this.errors = [];
+  };
+  /**
    * カラーセット
    */
   private setColor(color: string): void {
-    this.editFolder.color = color;
+    this.targetEditFolder.color = color;
     this.colorPockerDialog = false;
   };
   /**
@@ -143,10 +157,12 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    this.setLoading();
     Axios.post('/api/editBookMarkFolder',{
-      editFolder: this.editFolder,
+      editFolder: this.targetEditFolder,
       user_id: this.$store.state.userInfo.userId
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
@@ -157,7 +173,7 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
         };
         return;
       }
-      let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      let succueseMsg = `「${this.targetEditFolder.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.folderEdited(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);
@@ -171,10 +187,12 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
     if(!window.confirm(`「${this.editFolder.title}」${this.CONFIRM_MSG.DELETE}`)) {
       return;
     };
+    this.setLoading();
     Axios.post('/api/removeBookMarkFolder',{
       editFolder: this.editFolder,
       user_id: this.$store.state.userInfo.userId
     }).then((res) => {
+      this.closeLoading();
       let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;
       this.folderEdited(succueseMsg);
     }).catch((e) => {

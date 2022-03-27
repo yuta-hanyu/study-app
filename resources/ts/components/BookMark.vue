@@ -8,7 +8,7 @@
       color="success">
       {{this.succueseMsg}}
     </v-alert>
-    <v-row>
+    <v-row class="mt-4">
       <v-col md="6" sm="12">
         <v-autocomplete
           dark
@@ -23,45 +23,48 @@
       </v-col>
       <v-col md="6">
         <v-row justify="end">
-          <v-col md="4" sm="12">
-            <v-btn
-              class="mx-2 font-weight-black"
-              @click="addBookMarkDialog = !addBookMarkDialog"
-              color="primary">
-              <v-icon left>
-                mdi-plus
+          <v-tooltip bottom color="light-blue lighten-2">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="light-blue lighten-2"
+                v-bind="attrs"
+                v-on="on"
+                size="40"
+                class="mx-2"
+                @click="addBookMarkDialog = !addBookMarkDialog">
+                mdi-bookmark-multiple
               </v-icon>
-              ブックマーク
-            </v-btn>
-          </v-col>
-          <v-col md="4" sm="12">
-            <v-btn
-              class="mx-2 font-weight-black"
-              @click="addFolderDialog = !addFolderDialog"
-              color="primary">
-              <v-icon left>
-                mdi-plus
+            </template>
+            <span style="color: black;">ブックマークを追加</span>
+          </v-tooltip>
+          <v-tooltip bottom color="light-blue lighten-2">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="light-blue lighten-2"
+                v-bind="attrs"
+                v-on="on"
+                size="40"
+                class="mx-2"
+                @click="addFolderDialog = !addFolderDialog">
+                mdi-folder
               </v-icon>
-              フォルダー
-            </v-btn>
-          </v-col>
-          <v-col md="4" sm="12">
-            <!-- <v-file-input
-            dark
-            show-size
-            v-model="bookMarkImports"
-              truncate-length="15"
-            ></v-file-input> -->
-            <v-btn
-              class="mx-2 font-weight-black"
-              @click="importBookMarkDialog = !importBookMarkDialog"
-              color="primary">
-              <v-icon left>
-                mdi-plus
+            </template>
+            <span style="color: black;">フォルダを追加</span>
+          </v-tooltip>
+          <v-tooltip bottom color="light-blue lighten-2">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="light-blue lighten-2"
+                v-bind="attrs"
+                v-on="on"
+                size="40"
+                class="mx-2"
+                @click="importBookMarkDialog = !importBookMarkDialog">
+                mdi-cloud-upload
               </v-icon>
-              ブックマークインポート
-            </v-btn>
-          </v-col>
+            </template>
+            <span style="color: black;">ブックマークインポート</span>
+          </v-tooltip>
         </v-row>
       </v-col>
     </v-row>
@@ -77,17 +80,18 @@
           items-per-page="1">
           <thead>
             <tr>
-              <th class="text-left text-h6">
-                <v-icon
-                class="ml-n3"
-                dark
-                dense
-                @click="chengeEditFolder(bookMarkFolder)"
-                left>
-                  mdi-circle-edit-outline
-                </v-icon>
-                {{bookMarkFolder.title}}
-              </th>
+              <v-tooltip bottom color="#1E1E1E">
+                <template v-slot:activator="{ on, attrs }">
+                  <th
+                    class="text-left text-h6 font-weight-black"
+                    v-on="on"
+                    v-bind="attrs"
+                    @click="chengeEditFolder(bookMarkFolder)">
+                    {{bookMarkFolder.title}}
+                  </th>
+                </template>
+                <span style="color: white;">フォルダを編集</span>
+              </v-tooltip>
             </tr>
           </thead>
           <tbody>
@@ -96,15 +100,33 @@
                 v-for="(getBookMarkFolder,index) in getBookMarkFolders(bookMarkFolder.id)"
                 :key="index">
                 <td class="link px-4">
-                  <v-icon
-                  class="ml-n3"
-                  dark
-                  dense
-                  left
-                  @click="chengeEditBoookMark(getBookMarkFolder)">
-                    mdi-file
-                  </v-icon>
-                  <a :href="getBookMarkFolder.link" target="_blank">{{getBookMarkFolder.title}}</a>
+                  <v-tooltip bottom color="#1E1E1E">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        v-on="on"
+                        v-bind="attrs"
+                        class="ml-n3"
+                        dark
+                        dense
+                        left
+                        @click="chengeEditBoookMark(getBookMarkFolder)">
+                        mdi-bookmark
+                      </v-icon>
+                    </template>
+                    <span style="color: white;">ブックマークを編集</span>
+                  </v-tooltip>
+                  <v-tooltip bottom color="#1E1E1E">
+                  <template v-slot:activator="{ on, attrs }">
+                    <a
+                    :href="getBookMarkFolder.link"
+                    target="_blank"
+                    v-on="on"
+                    v-bind="attrs">
+                      {{getBookMarkFolder.title}}
+                    </a>
+                  </template>
+                    <span style="color: white;">リンクへ遷移</span>
+                  </v-tooltip>
                 </td>
               </tr>
             </div>
@@ -129,7 +151,7 @@
       width="400px">
       <edit-book-mark-folder
         :editFolder=editFolder
-        @back="editFolderDialog=!editFolderDialog,getBookMarks()"
+        @back="editFolderDialog=!editFolderDialog"
         @folder-edited="registered">
       </edit-book-mark-folder>
     </v-dialog>
@@ -152,8 +174,8 @@
       <edit-book-mark
         :bookMarkFolders=bookMarkFolders
         :editBookMark=editBookMark
-        @back="editBookMarkDialog=!editBookMarkDialog,getBookMarks()"
-        @bookMark-edited="registered">>
+        @back="editBookMarkDialog=!editBookMarkDialog"
+        @bookMark-edited="registered">
       </edit-book-mark>
     </v-dialog>
     <!-- ブックマークインポートダイアログ -->
@@ -162,8 +184,8 @@
       persistent
       width="400px">
       <import-book-mark
-        @back="importBookMarkDialog=!importBookMarkDialog,getBookMarks()"
-        @import-Finished="registered">>
+        @back="importBookMarkDialog=!importBookMarkDialog"
+        @import-Finished="registered">
       </import-book-mark>
     </v-dialog>
   </div>
@@ -181,6 +203,7 @@ import EditBookMarkFolder from './bookMarkComponents/EditBookMarkFolder.vue';
 import NewBookMark from './bookMarkComponents/NewBookMark.vue';
 import EditBookMark from './bookMarkComponents/EditBookMark.vue';
 import ImportBookMark from './bookMarkComponents/ImportBookMark.vue';
+import Loading from '../global/Loading.vue'
 
 @Component({
   name: 'BookMark',
@@ -190,6 +213,7 @@ import ImportBookMark from './bookMarkComponents/ImportBookMark.vue';
     NewBookMark,
     EditBookMark,
     ImportBookMark,
+    Loading,
   },
 })
 
@@ -217,8 +241,6 @@ export default class BookMark extends Mixins(Const, Util) {
   private bookMarks: BookMarks[] = [];
   // ブックマーク（検索用）
   private serchBookMark: string = '';
-  // // ブックマークインポート
-  // private bookMarkImports: any = {};
   // ブックマーク（フォルダーと紐付け）
   get getBookMarkFolders(): any {
     return (id: number) => {
@@ -233,9 +255,11 @@ export default class BookMark extends Mixins(Const, Util) {
    * ブックマークフォルダ、ブックマーク取得
    */
   private getBookMarks(): void {
+    this.setLoading();
     Axios.get(`/api/bookMarks/${this.$store.state.userInfo.userId}`).then((res) => {
       this.bookMarkFolders = res.data.bookMarkFolders;
       this.bookMarks = res.data.bookMarks;
+      this.closeLoading();
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
@@ -253,7 +277,7 @@ export default class BookMark extends Mixins(Const, Util) {
     this.succueseMsg = succueseMsg;
     setTimeout(() => {
       this.succueseMsg = '';
-    }, 3000);
+    }, 10000);
     this.getBookMarks();
   };
   /**
@@ -288,15 +312,9 @@ export default class BookMark extends Mixins(Const, Util) {
     max-height: 300px;
     overflow-y: scroll;
   }
-  ::-webkit-scrollbar {
-    width: 1px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #1E1E1E;
-  }
-  .table th,td{
-    border: 1px solid #1E1E1E;
+  .table th,td.link{
+    border-top: 1px solid #5a5858;
+    width: 800px;
   }
 </style>
 

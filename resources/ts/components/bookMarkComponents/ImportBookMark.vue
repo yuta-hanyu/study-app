@@ -4,7 +4,7 @@
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">フォルダ登録</p>
+            <p class="text-h6 py-3">ブックマークインポート</p>
               <v-alert
                 v-for="(error, index) in this.errors" :key=index
                 dense
@@ -17,33 +17,13 @@
               </v-alert>
             <v-col
               cols="10">
-              <v-text-field
-                v-model="newBookMarkFolder.title"
-                prepend-icon="mdi-folder-plus-outline"
-                label="タイトル">
-              </v-text-field>
-            </v-col>
-            <v-col
-              cols="10">
-              <v-dialog
-                width="300px"
-                persistent
-                v-model="colorPockerDialog">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    class="pt-0 pb-3 label-font"
-                    v-model="newBookMarkFolder.color"
-                    label="カラー"
-                    prepend-icon="mdi-palette"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <color-picker
-                 @choice-color=setColor>
-                </color-picker>
-              </v-dialog>
+              <v-file-input
+                messages="※ インポート対象はgoogleのブックマークのみとなります"
+                label="ファイルアップロード"
+                dark
+                show-size
+                v-model="bookMarkImports">
+              </v-file-input>
             </v-col>
             <v-container>
               <v-row justify="center">
@@ -65,12 +45,12 @@
                   class="text-center">
                   <v-btn
                     class="font-weight-black"
-                    @click="addBookMarkFolder"
+                    @click="importBookMark"
                     width="25%"
                     color="orange lighten-2"
                     elevation="20"
                     rounded>
-                    登録
+                    取込
                   </v-btn>
                 </v-col>
               </v-row>
@@ -86,39 +66,35 @@
 import {Component, Mixins, Emit} from 'vue-property-decorator';
 import Const from '../../common/const';
 import Util from '../../common/util';
-import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
-import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
+
+import Loading from '../../global/Loading.vue'
 import Axios from 'axios';
 
 @Component({
-  name: 'NewBookMarkFolder',
+  name: 'ImportBookMark',
   components: {
-    ColorPicker,
-  },
+    Loading,
+  }
 })
 
-export default class NewBookMarkFolder extends Mixins(Const,Util) {
+export default class ImportBookMark extends Mixins(Const, Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
       this.initialize()
     };
-  // 登録成功
-  @Emit('folder-registered')
-    folderRegistered(succueseMsg: string): void {
+  @Emit('loading-Start')
+    loadingStart(): void {
+    };
+  // 取込完了
+  @Emit('import-Finished')
+    importFinished(succueseMsg: string): void {
       this.initialize()
     };
-  // 新規登録フォルダ情報
-  private newBookMarkFolder: BookMarkFolders = {
-    title: '',
-    color: '',
-    user_id: this.$store.state.userInfo.userId,
-  }
-  // カラーピッカーダイアログ
-  private colorPockerDialog: boolean = false;
+  // ブックマークインポート
+  private bookMarkImports: any = {};
   // フォームバリデーションエラー
   private errors: string[] = [];
-
   mounted() {
     this.initialize();
   }
@@ -126,29 +102,34 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
    * データ初期化
    */
   private initialize(): void {
-    Object.keys(this.newBookMarkFolder).forEach(key => this.newBookMarkFolder[key] = '');
-    this.newBookMarkFolder.user_id = this.$store.state.userInfo.userId;
+    this.bookMarkImports = {};
     this.errors = [];
   };
   /**
-   * カラーセット
+   * インポート開始
    */
-  private setColor(color: string): void {
-    this.newBookMarkFolder.color = color;
-    this.colorPockerDialog = false;
-  };
-  /**
-   * フォルダー登録
-   */
-  private addBookMarkFolder(): void {
+  private importBookMark(): void {
     // エラーMSGリセット
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    // ファイルの空判定
+    if(this.bookMarkImports === null || !this.bookMarkImports.name) {
+      this.errors.push('ファイルが登録されていません');
+      return;
+    }
+    // ファイルの拡張子判定
+    if(!this.bookMarkImports.name.match(/\.(html)$/i)) {
+      this.errors.push('htmlファイルのみ取込可能です');
+      return;
+    }
+    // ファイル送信のためformdataオブジェクト作成
+    let formData = new FormData();
+    formData.append("html", this.bookMarkImports);
     this.setLoading();
-    Axios.post('/api/bookMarkFolder',{
-      newBookMarkFolder: this.newBookMarkFolder
-    }).then((res) => {
+    Axios.post(`/api/bookMarks/import`,formData,
+      {headers: {'Content-Type': 'multipart/form-data'}}
+    ).then((res) => {
       this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
@@ -160,16 +141,15 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
         };
         return;
       }
-      let succueseMsg = `「${this.newBookMarkFolder.title}」${this.SUCCESS_MSG.STORE_SUCCESS}`;
-      this.folderRegistered(succueseMsg);
+      let succueseMsg = this.SUCCESS_MSG.IMPORT_SUCCESS;
+      this.importFinished(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
-  }
+    });
+  };
 }
 </script>
 
-<style>
-
+<style scoped>
 </style>

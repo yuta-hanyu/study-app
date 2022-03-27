@@ -1,15 +1,15 @@
 <template>
   <div>
-  <v-color-picker
-    dark
-    v-model="color"
-    dot-size="25"
-    hide-mode-switch
-    mode="hexa"
-    show-swatches
-    swatches-max-height="200">
-  </v-color-picker>
-  <v-container>
+    <v-color-picker
+      dark
+      mode="hexa"
+      hide-canvas
+      hide-sliders
+      v-model="color"
+      class="ma-2"
+      show-swatches>
+    </v-color-picker>
+    <v-container>
     <v-row justify="center"
       :style="{backgroundColor: '#666666'}">
       <v-btn

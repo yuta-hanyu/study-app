@@ -124,8 +124,8 @@ export default class Login extends Mixins(Const){
       this.title += " -visible";
       setTimeout(() => {
         this.title = "title";
-      }, 1500);
-    }, 3000);
+      }, 1000);
+    }, 2000);
   }
   /**
    * ログインボタン押下

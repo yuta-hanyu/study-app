@@ -19,7 +19,7 @@
             </v-col>
             <v-col cols="10">
               <v-text-field
-                v-model="editBookMark.link"
+                v-model="targetEditBookMark.link"
                 @change="getTitle()"
                 prepend-icon="mdi-open-in-new"
                 label="リンク">
@@ -27,7 +27,7 @@
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-text-field
-                v-model="editBookMark.title"
+                v-model="targetEditBookMark.title"
                 prepend-icon="mdi-folder-plus-outline"
                 placeholder="リンクからページタイトルを表示します"
                 label="タイトル">
@@ -36,7 +36,7 @@
             <v-col cols="10" class="mt-n3">
               <v-autocomplete
                 prepend-icon="mdi-folder"
-                v-model="editBookMark.book_mark_folders_id"
+                v-model="targetEditBookMark.book_mark_folders_id"
                 :items="bookMarkFolders"
                 item-text="title"
                 item-value="id"
@@ -49,7 +49,7 @@
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-textarea
-                v-model="editBookMark.memo"
+                v-model="targetEditBookMark.memo"
                 prepend-icon="mdi-book-open"
                 label="メモ">
               </v-textarea>
@@ -126,6 +126,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     back(): void {
       // エラーMSGリセット
       this.errors = [];
+      this.initialize();
     };
   // 登録成功
   @Emit('bookMark-edited')
@@ -133,22 +134,39 @@ export default class EditBookMark extends Mixins(Const, Util) {
     };
   // フォームバリデーションエラー
   private errors: string[] = [];
+  // 編集用データディープコピー
+  get targetEditBookMark(): BookMarks {
+    return this.targetObjCopy(this.editBookMark);
+  };
+  /**
+   * データ初期化
+   */
+  private initialize(): void {
+    for(let key in this.editBookMark) {
+        this.targetEditBookMark[key] = this.editBookMark[key];
+    }
+    this.errors = [];
+  };
   /**
    * リンクからタイトル取得
    */
   private getTitle(): void {
+    this.setLoading();
     Axios.post('/api/bookMark/getTitle', {
       // 新規登録時とロジックを共有するためkeyはnewBookMarkとする
       newBookMark: {
-        link: this.editBookMark.link
+        link: this.targetEditBookMark.link
       }
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         this.errors.push(res.data.message.link[0]);
         return;
       }
-      this.editBookMark.title = res.data;
+      this.targetEditBookMark.title = res.data;
+      this.$forceUpdate(); //強制的にDOM更新（変更がDOMに反映されないため）
     }).catch((e) => {
+      this.closeLoading();
       this.authCheck(e);
       this.serverError(e);
     })
@@ -161,10 +179,12 @@ export default class EditBookMark extends Mixins(Const, Util) {
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    this.setLoading();
     Axios.post('/api/editBookMark',{
-      editBookMark: this.editBookMark,
+      editBookMark: this.targetEditBookMark,
       user_id: this.$store.state.userInfo.userId
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
@@ -175,7 +195,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
         };
         return;
       }
-      let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      let succueseMsg = `「${this.targetEditBookMark.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.bookMarkEdited(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);
@@ -189,6 +209,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     if(!window.confirm(`「${this.editBookMark.title}」${this.CONFIRM_MSG.DELETE}`)) {
       return;
     };
+    this.setLoading();
     Axios.post('/api/removeBookMark',{
       editBookMark: this.editBookMark,
       user_id: this.$store.state.userInfo.userId

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BookMarkFolder;
 use App\Models\BookMark;
-// use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +82,7 @@ class BookMarkController extends Controller
       Log::error($e->getMessage());
       Log::error('ブックマークフォルダ登録失敗');
       DB::rollBack();
+      return response()->json([], 500);
     }
     Log::info('ブックマークフォルダ登録終了');
   }
@@ -120,6 +120,7 @@ class BookMarkController extends Controller
       Log::info('ブックマークフォルダ編集失敗');
       Log::info($e);
       DB::rollback();
+      return response()->json([], 500);
     }
     Log::info('ブックマークフォルダ編集終了');
     return;
@@ -148,6 +149,7 @@ class BookMarkController extends Controller
       Log::info('ブックマークフォルダ削除失敗');
       Log::info($e);
       DB::rollback();
+      return response()->json([], 500);
     }
     Log::info('ブックマークフォルダ削除終了');
     return;
@@ -180,6 +182,7 @@ class BookMarkController extends Controller
       Log::error($e->getMessage());
       Log::error('ブックマーク登録失敗');
       DB::rollBack();
+      return response()->json([], 500);
     }
     Log::info('ブックマーク登録終了');
   }
@@ -191,8 +194,10 @@ class BookMarkController extends Controller
   {
     Log::info('ブックマーク編集開始');
     $input = $request['editBookMark'];
+    // ログインユーザーID取得
+    $user_id = Auth::id();
     // user_idをマージ
-    $input = array_merge($input,array('user_id'=>$request['user_id']));
+    $input = array_merge($input,array('user_id'=>$user_id));
     // バリデーション
     $bookMark= new BookMark();
     $validate = $bookMark->validate($input);
@@ -217,6 +222,7 @@ class BookMarkController extends Controller
       Log::info('ブックマーク編集失敗');
       Log::info($e);
       DB::rollback();
+      return response()->json([], 500);
     }
     Log::info('ブックマーク編集終了');
     return;
@@ -245,6 +251,7 @@ class BookMarkController extends Controller
       Log::info('ブックマーク削除失敗');
       Log::info($e);
       DB::rollback();
+      return response()->json([], 500);
     }
     Log::info('ブックマーク削除終了');
     return;
@@ -280,7 +287,7 @@ class BookMarkController extends Controller
     return response()->json($result);
   }
   /**
-  *
+  * ブックマーク_インポート
   * @return Http response
   */
   public function bookMarksImport(Request $request)
@@ -295,7 +302,7 @@ class BookMarkController extends Controller
     // ファイル読み込み開始
     $file = fopen($fileName, "r");
     // htmlファイルの最終行読込完了するまでループ
-    while(!feof($file)) {
+    while (!feof($file)) {
       // 読み込み情報取得
       $str = fgets($file);
       preg_match("/<h3(?:[^>]*?)>(.*?)<\/h3>/i", $str, $h3); // ブックマークフォルダ名取得(h3タグに格納されている)
@@ -325,6 +332,7 @@ class BookMarkController extends Controller
           Log::error($e->getMessage());
           Log::error('ブックマークフォルダインポート失敗');
           DB::rollBack();
+          return response()->json([], 500);
         }
         $bookMarkFoldersId = $bookMarkFolder->id; //ブックマーク登録用のid
       }
@@ -339,11 +347,11 @@ class BookMarkController extends Controller
         // バリデーション
         $bookMark = new BookMark();
         $validate = $bookMark->validate($input);
-        $message = $validate->errors();
-        $validateState = false;
-        Log::error("ブックマークインポート失敗_バリデーションエラー");
-        return response()->json(['message' => $message, 'validateState' => $validateState]);
         if($validate->fails()) {
+          $message = $validate->errors();
+          $validateState = false;
+          Log::error("ブックマークインポート失敗_バリデーションエラー");
+          return response()->json(['message' => $message, 'validateState' => $validateState]);
         }
         // 登録開始
         DB::beginTransaction();
@@ -355,6 +363,7 @@ class BookMarkController extends Controller
           Log::error($e->getMessage());
           Log::error('ブックマークインポート失敗');
           DB::rollBack();
+          return response()->json([], 500);
         }
       }
     }

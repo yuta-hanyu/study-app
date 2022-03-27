@@ -11,6 +11,7 @@
       </header>
       <main class="body">
       <RouterView />
+      <loading :loadingDialog="IsLoadingShow" />
       <v-dialog
         persistent
         v-model="LogoutDialog"
@@ -34,6 +35,7 @@ import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import BookMark from './components/BookMark.vue';
+import Loading from './global/Loading.vue'
 
 @Component({
   components: {
@@ -42,7 +44,8 @@ import BookMark from './components/BookMark.vue';
     Top,
     Login,
     Logout,
-    BookMark
+    BookMark,
+    Loading,
   },
 })
 
@@ -55,8 +58,16 @@ export default class App extends Vue {
   get headerFlag(): boolean {
     return this.$store.state.userInfo.isAuth ? true : false;
   };
+  // ローディング表示判定
+  get IsLoadingShow() {
+    return this.$store.state.userInfo.isLoading;
+  }
   mounted() {
     this.changeDarkMode();
+    // vuexに初期値をセット
+    this.$store.dispatch('setIsLoading',{
+      isLoading: false
+    });
   }
   /**
   * ログアウトダイアログを表示
@@ -111,5 +122,11 @@ export default class App extends Vue {
   }
   body {
     background-color: #666666;
+      height: 100%;
+  margin: 0;
   }
+  html {
+      height: 100%;
+  }
+
 </style>

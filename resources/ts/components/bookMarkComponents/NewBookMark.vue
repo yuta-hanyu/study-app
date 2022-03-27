@@ -136,16 +136,19 @@ export default class NewBookMark extends Mixins(Const, Util) {
   private initialize(): void {
     Object.keys(this.newBookMark).forEach(key => this.newBookMark[key] = '');
     this.newBookMark.user_id = this.$store.state.userInfo.userId;
+    this.errors = [];
   };
   /**
    * リンクからタイトル取得
    */
   private getTitle(): void {
+    this.setLoading();
     Axios.post('/api/bookMark/getTitle', {
       newBookMark: {
         link: this.newBookMark.link
       }
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         this.errors.push(res.data.message.link[0]);
         return;
@@ -164,9 +167,11 @@ export default class NewBookMark extends Mixins(Const, Util) {
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    this.setLoading();
     Axios.post('/api/bookMark',{
       newBookMark: this.newBookMark
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
