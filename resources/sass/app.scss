@@ -6,3 +6,42 @@
 
 // vuetif
 @import '~vuetify/dist/vuetify.min.css';
+
+.kokuban {
+  font-family: HuiFontP109 !important;
+  color: #fff !important;;
+  background-color: #114400 !important;;
+  margin: 10px 0 10px 0 !important;;
+  padding: 15px !important;;
+  border: 9px solid #a60 !important;;
+  border-radius: 3px !important;;
+  box-shadow: 2px 2px 4px #666, 2px 2px 2px #111 inset !important;;
+  text-shadow: 0px 0px 2px #000 !important;;
+  line-height: 1.9 !important;;
+}
+.back {
+  background-color: #424242 !important;
+  width: 64px;
+  font-weight: bold;
+  border-radius: 5%;
+}
+.go {
+  background-color: #E65100 !important;
+  width: 64px;
+  font-weight: bold;
+  border-radius: 5%;
+}
+.delete {
+  background-color: #C62828 !important;
+  width: 64px;
+  font-weight: bold;
+  border-radius: 5%;
+}
+// body {
+//   font-family: "Helvetica Neue",
+//     Arial,
+//     "Hiragino Kaku Gothic ProN",
+//     "Hiragino Sans",
+//     Meiryo,
+//     sans-serif !important;
+// }

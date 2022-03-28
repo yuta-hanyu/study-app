@@ -20,9 +20,7 @@ export default new Vuex.Store({
         'userInfo.userId',
         'userInfo.loginUserName',
         'userInfo.isAuth',
-        'userInfo.isDark',
         'userInfo.omitEmail',
-        // 'userInfo.isLoading',
       ],
       storage: window.localStorage
     }),

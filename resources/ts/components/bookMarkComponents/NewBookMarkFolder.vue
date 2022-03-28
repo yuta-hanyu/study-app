@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-sheet width="400px" dark>
+    <v-sheet width="400px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
@@ -51,12 +51,8 @@
                   class="text-center"
                   cols="3">
                   <v-btn
-                    class="font-weight-black"
-                    color="grey lighten-1"
-                    width="25%"
-                    @click="back()"
-                    rounded
-                    elevation="20">
+                    class="back"
+                    @click="back()">
                     戻る
                   </v-btn>
                 </v-col>
@@ -64,12 +60,8 @@
                   cols="3"
                   class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="addBookMarkFolder"
-                    width="25%"
-                    color="orange lighten-2"
-                    elevation="20"
-                    rounded>
+                    class="go"
+                    @click="addBookMarkFolder">
                     登録
                   </v-btn>
                 </v-col>

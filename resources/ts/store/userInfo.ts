@@ -5,7 +5,6 @@ interface Context {
   commit: (name: any, Payload?: Payload) => void;
 }
 type UserState = User & {
-  isDark: boolean;
   omitEmail: string;
   isLoading: boolean;
 };
@@ -14,7 +13,6 @@ interface userInfoParam {
   loginUserName: string
   userId: string
   isAuth: boolean
-  isDark: boolean
   omitEmail: string
   isLoading: boolean
 };
@@ -24,7 +22,6 @@ const userInfo = {
     loginUserName: '',
     userId: '',
     isAuth: false,
-    isDark: false,
     omitEmail: '',
     isLoading: false,
   },
@@ -53,14 +50,6 @@ const userInfo = {
         });
     },
     /**
-     * ダークモードの設定値を保存
-     * @param any state
-     * @param any isDark
-     */
-    setIsDark(state: UserState, isDark: userInfoParam) {
-      state.isDark = isDark.isDark;
-    },
-    /**
      * メールアドレスを保存
      * @param any state
      * @param any omitEmail
@@ -80,9 +69,6 @@ const userInfo = {
   actions: {
     setLoginUser(context: Context, userInfo: userInfoParam) {
       context.commit('setLoginUser', userInfo);
-    },
-    setIsDark(context: Context, isDark: userInfoParam) {
-      context.commit('setIsDark', isDark);
     },
     resetUserInfo(context: Context) {
       context.commit('resetUserInfo');

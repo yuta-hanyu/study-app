@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-sheet width="400px" dark>
+    <v-sheet width="400px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
@@ -18,7 +18,7 @@
             <v-col
               cols="10">
               <v-text-field
-                v-model="targetEditFolder.title"
+                v-model="targetEditBookMarkFolder.title"
                 prepend-icon="mdi-folder-plus-outline"
                 label="タイトル">
               </v-text-field>
@@ -32,7 +32,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     class="pt-0 pb-3 label-font"
-                    v-model="targetEditFolder.color"
+                    v-model="targetEditBookMarkFolder.color"
                     label="カラー"
                     prepend-icon="mdi-palette"
                     readonly
@@ -51,12 +51,8 @@
                   class="text-center"
                   cols="3">
                   <v-btn
-                    color="grey lighten-1"
-                    class="font-weight-black"
-                    width="25%"
-                    @click="back()"
-                    rounded
-                    elevation="20">
+                    class="back"
+                    @click="back()">
                     戻る
                   </v-btn>
                 </v-col>
@@ -65,11 +61,7 @@
                   class="text-center">
                   <v-btn
                     @click="editBookMarkFolder"
-                    class="font-weight-black"
-                    width="25%"
-                    color="orange lighten-2"
-                    elevation="20"
-                    rounded>
+                    class="go">
                     編集
                   </v-btn>
                 </v-col>
@@ -77,12 +69,8 @@
                   cols="3"
                   class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="removeBookMarkFolder"
-                    width="25%"
-                    color="red darken-1"
-                    elevation="20"
-                    rounded>
+                    class="delete"
+                    @click="removeBookMarkFolder">
                     削除
                   </v-btn>
                 </v-col>
@@ -118,35 +106,29 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
   @Emit('back')
     back(): void {
       // エラーMSGリセット
-      this.initialize();
       this.errors = [];
     };
   // 登録成功
   @Emit('folder-edited')
     folderEdited(succueseMsg: string): void {
     };
-  // 編集用データディープコピー
-  get targetEditFolder(): BookMarkFolders {
-    return this.targetObjCopy(this.editFolder);
-  };
   // カラーピッカーダイアログ
   private colorPockerDialog: boolean = false;
   // フォームバリデーションエラー
   private errors: string[] = [];
+    // ブックマークフォルダ（編集用）
+  private targetEditBookMarkFolder: BookMarkFolders | null = Object.assign({}, this.editFolder);
   /**
-   * データ初期化
+   * ブックマークフォルダ（編集用）データセット
    */
-  private initialize(): void {
-    for(let key in this.editFolder) {
-        this.targetEditFolder[key] = this.editFolder[key];
-    }
-    this.errors = [];
-  };
+  private setInitializeValue(): void {
+    this.targetEditBookMarkFolder = Object.assign({}, this.editFolder)
+  }
   /**
    * カラーセット
    */
   private setColor(color: string): void {
-    this.targetEditFolder.color = color;
+    this.targetEditBookMarkFolder!.color = color;
     this.colorPockerDialog = false;
   };
   /**
@@ -159,7 +141,7 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
     let succueseMsg: string = '';
     this.setLoading();
     Axios.post('/api/editBookMarkFolder',{
-      editFolder: this.targetEditFolder,
+      editFolder: this.targetEditBookMarkFolder!,
       user_id: this.$store.state.userInfo.userId
     }).then((res) => {
       this.closeLoading();
@@ -173,7 +155,7 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
         };
         return;
       }
-      let succueseMsg = `「${this.targetEditFolder.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      let succueseMsg = `「${this.targetEditBookMarkFolder!.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.folderEdited(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);

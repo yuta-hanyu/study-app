@@ -13,10 +13,7 @@
     <v-row justify="center"
       :style="{backgroundColor: '#666666'}">
       <v-btn
-        class="mx-2 my-2"
-        color="orange lighten-2"
-        elevation="20"
-        rounded
+        class="go mx-2 my-2"
         @click="choiceColor">
         OK
       </v-btn>

@@ -1,21 +1,21 @@
 <template>
   <div>
-    <v-sheet width="600px" dark>
+    <v-sheet width="600px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
             <p class="text-h6 py-3">ブックマーク編集</p>
             <v-col cols="10">
-                <v-alert
-                  v-for="(error, index) in this.errors" :key=index
-                  dense
-                  text
-                  border="left"
-                  type="error"
-                  class="px-6 mx-auto"
-                  width="70%">
-                  {{error}}
-                </v-alert>
+              <v-alert
+                v-for="(error, index) in this.errors" :key=index
+                dense
+                text
+                border="left"
+                type="error"
+                class="px-6 mx-auto"
+                width="70%">
+                {{error}}
+              </v-alert>
             </v-col>
             <v-col cols="10">
               <v-text-field
@@ -60,34 +60,22 @@
                   class="text-center"
                   cols="2">
                   <v-btn
-                    class="font-weight-black"
-                    color="grey lighten-1"
-                    width="25%"
-                    @click="back()"
-                    rounded
-                    elevation="20">
+                    class="back"
+                    @click="back()">
                     戻る
                   </v-btn>
                 </v-col>
                 <v-col cols="2" class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="editToBookMark"
-                    width="25%"
-                    color="orange lighten-2"
-                    elevation="20"
-                    rounded>
+                    class="go"
+                    @click="editToBookMark">
                     編集
                   </v-btn>
                 </v-col>
                 <v-col cols="2" class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="removeBookMark"
-                    width="25%"
-                    color="red darken-1"
-                    elevation="20"
-                    rounded>
+                    class="delete"
+                    @click="removeBookMark">
                     削除
                   </v-btn>
                 </v-col>
@@ -126,7 +114,6 @@ export default class EditBookMark extends Mixins(Const, Util) {
     back(): void {
       // エラーMSGリセット
       this.errors = [];
-      this.initialize();
     };
   // 登録成功
   @Emit('bookMark-edited')
@@ -134,19 +121,14 @@ export default class EditBookMark extends Mixins(Const, Util) {
     };
   // フォームバリデーションエラー
   private errors: string[] = [];
-  // 編集用データディープコピー
-  get targetEditBookMark(): BookMarks {
-    return this.targetObjCopy(this.editBookMark);
-  };
+  // ブックマーク（編集用）
+  private targetEditBookMark: BookMarks | null = Object.assign({}, this.editBookMark);
   /**
-   * データ初期化
+   * ブックマーク（編集用）データセット
    */
-  private initialize(): void {
-    for(let key in this.editBookMark) {
-        this.targetEditBookMark[key] = this.editBookMark[key];
-    }
-    this.errors = [];
-  };
+  private setInitializeValue(): void {
+    this.targetEditBookMark = Object.assign({}, this.editBookMark)
+  }
   /**
    * リンクからタイトル取得
    */
@@ -155,7 +137,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     Axios.post('/api/bookMark/getTitle', {
       // 新規登録時とロジックを共有するためkeyはnewBookMarkとする
       newBookMark: {
-        link: this.targetEditBookMark.link
+        link: this.targetEditBookMark!.link
       }
     }).then((res) => {
       this.closeLoading();
@@ -163,7 +145,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
         this.errors.push(res.data.message.link[0]);
         return;
       }
-      this.targetEditBookMark.title = res.data;
+      this.targetEditBookMark!.title = res.data;
       this.$forceUpdate(); //強制的にDOM更新（変更がDOMに反映されないため）
     }).catch((e) => {
       this.closeLoading();
@@ -195,7 +177,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
         };
         return;
       }
-      let succueseMsg = `「${this.targetEditBookMark.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      let succueseMsg = `「${this.targetEditBookMark!.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.bookMarkEdited(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);

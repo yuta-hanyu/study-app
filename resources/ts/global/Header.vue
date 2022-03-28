@@ -1,25 +1,12 @@
 <template>
   <div>
     <v-app-bar
-      :color="color"
+      app
+      fixed
       dark>
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
     <v-toolbar-title>StudyApp</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-tooltip bottom color="yellow lighten-3">
-      <template v-slot:activator="{ on, attrs }">
-        <v-icon
-          color="yellow lighten-3"
-          v-bind="attrs"
-          v-on="on"
-          class="mx-2"
-          id="mdi-lightbulb-on"
-          @click="changeIsDark">
-          mdi-lightbulb-on
-        </v-icon>
-      </template>
-      <span style="color: black;">背景を{{isDarkMode}}する</span>
-    </v-tooltip>
     <v-chip
       class="mx-2"
       color="success"
@@ -73,14 +60,6 @@ import Const from '../common/const';
 })
 
 export default class Header extends Mixins(Const){
-  @Prop({type: Boolean, default: false})
-  isDark!: Boolean;
-  /**
-   * ダークモード切替処理
-   */
-  @Emit('change-isdark')
-  changeIsDark(): void{
-  };
   /**
    * ログアウト
    */
@@ -88,14 +67,6 @@ export default class Header extends Mixins(Const){
   LogoutDialog(): void{};
   // サイドメニュー閉じる開く
   private drawer: Boolean = false;
-  // ツールチップtext変換
-  get isDarkMode(): String {
-    return this.isDark === true ? "明るく" : "暗く";
-  }
-  // ヘッダー配色変換
-  get color(): String {
-    return this.isDark === true ? "gray" : "orange";
-  }
 }
 </script>
 

@@ -1,5 +1,6 @@
 <template>
-  <div class="my-5 mx-3">
+  <div class="bg">
+    <v-container>
     <v-alert
       v-if="this.succueseMsg"
       align="center"
@@ -12,6 +13,7 @@
       <v-col md="6" sm="12">
         <v-autocomplete
           dark
+          class="font-weight-black"
           @change="clickSerch()"
           v-model="serchBookMark"
           :items="bookMarks"
@@ -23,13 +25,13 @@
       </v-col>
       <v-col md="6">
         <v-row justify="end">
-          <v-tooltip bottom color="light-blue lighten-2">
+          <v-tooltip bottom color="#FFEE58">
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                color="light-blue lighten-2"
+                color="#FFEE58"
                 v-bind="attrs"
                 v-on="on"
-                size="40"
+                size="50"
                 class="mx-2"
                 @click="addBookMarkDialog = !addBookMarkDialog">
                 mdi-bookmark-multiple
@@ -37,13 +39,13 @@
             </template>
             <span style="color: black;">ブックマークを追加</span>
           </v-tooltip>
-          <v-tooltip bottom color="light-blue lighten-2">
+          <v-tooltip bottom color="#FFEE58">
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                color="light-blue lighten-2"
+                color="#FFEE58"
                 v-bind="attrs"
                 v-on="on"
-                size="40"
+                size="60"
                 class="mx-2"
                 @click="addFolderDialog = !addFolderDialog">
                 mdi-folder
@@ -51,13 +53,13 @@
             </template>
             <span style="color: black;">フォルダを追加</span>
           </v-tooltip>
-          <v-tooltip bottom color="light-blue lighten-2">
+          <v-tooltip bottom color="#FFEE58">
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                color="light-blue lighten-2"
+                color="#FFEE58"
                 v-bind="attrs"
                 v-on="on"
-                size="40"
+                size="60"
                 class="mx-2"
                 @click="importBookMarkDialog = !importBookMarkDialog">
                 mdi-cloud-upload
@@ -150,6 +152,7 @@
       persistent
       width="400px">
       <edit-book-mark-folder
+        ref="child"
         :editFolder=editFolder
         @back="editFolderDialog=!editFolderDialog"
         @folder-edited="registered">
@@ -166,12 +169,13 @@
         @bookMark-registered="registered">
       </new-book-mark>
     </v-dialog>
-    <!-- ブックマークフォルダー編集ダイアログ -->
+    <!-- ブックマーク編集ダイアログ -->
     <v-dialog
       v-model="editBookMarkDialog"
       persistent
       width="600px">
       <edit-book-mark
+        ref="child"
         :bookMarkFolders=bookMarkFolders
         :editBookMark=editBookMark
         @back="editBookMarkDialog=!editBookMarkDialog"
@@ -188,6 +192,7 @@
         @import-Finished="registered">
       </import-book-mark>
     </v-dialog>
+  </v-container>
   </div>
 </template>
 
@@ -283,16 +288,22 @@ export default class BookMark extends Mixins(Const, Util) {
   /**
    * ブックマークフォルダー編集ボタン押下
    */
-  private chengeEditFolder(bookMarkFolder: BookMarkFolders): void {
-    this.editFolder = bookMarkFolder;
-    this.editFolderDialog = !this.editFolderDialog;
+  async chengeEditFolder(bookMarkFolder: BookMarkFolders): Promise<void> {
+    await (
+      this.editFolder = bookMarkFolder,
+      this.editFolderDialog = !this.editFolderDialog
+    );
+    this.$refs.child.setInitializeValue();
   }
   /**
    * ブックマーク編集ボタン押下
    */
-  private chengeEditBoookMark(getBookMarkFolder: BookMarks): void {
-    this.editBookMark = getBookMarkFolder;
-    this.editBookMarkDialog = !this.editBookMarkDialog;
+  async chengeEditBoookMark(getBookMarkFolder: BookMarks): Promise<void>  {
+    await (
+      this.editBookMark = getBookMarkFolder,
+      this.editBookMarkDialog = !this.editBookMarkDialog
+    );
+    this.$refs.child.setInitializeValue();
   }
   /**
    * ブックマーク検索
@@ -304,6 +315,13 @@ export default class BookMark extends Mixins(Const, Util) {
 </script>
 
 <style scoped>
+  .bg {
+    top: 20px;
+    left: 0;
+    background-size: cover;
+    background-image: url("../../../public/images/school.jpeg");
+  }
+
   .v-application a {
     color: white;
     text-decoration: none;

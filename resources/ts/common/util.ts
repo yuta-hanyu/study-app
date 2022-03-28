@@ -48,15 +48,4 @@ export default class Util extends Mixins(Const, Vue) {
       window.alert(this.ERROR_MSG.SERVER_ERROR);
     }
   }
-  /**
-   * 編集用データディープコピー
-   * @param object コピー元データ
-   */
-  public targetObjCopy(object: object): object {
-    let clone = {};
-    for (let key in object) {
-      clone[key] = object[key];
-    }
-    return clone;
-  }
 }

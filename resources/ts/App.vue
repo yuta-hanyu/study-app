@@ -4,12 +4,10 @@
       <header>
         <Header
           v-show="headerFlag"
-          :isDark=isDark
-          @change-isdark="changeIsDark"
           @logout-dialog="logoutDialogOpen">
         </Header>
       </header>
-      <main class="body">
+      <main class="body pt-15">
       <RouterView />
       <loading :loadingDialog="IsLoadingShow" />
       <v-dialog
@@ -50,8 +48,6 @@ import Loading from './global/Loading.vue'
 })
 
 export default class App extends Vue {
-  // ダークモードフラグ
-  private isDark: boolean = this.$store.state.userInfo.isDark;
   // ログアウトダイアログ
   private LogoutDialog: boolean = false;
   // ヘッダー表示判定
@@ -61,13 +57,6 @@ export default class App extends Vue {
   // ローディング表示判定
   get IsLoadingShow() {
     return this.$store.state.userInfo.isLoading;
-  }
-  mounted() {
-    this.changeDarkMode();
-    // vuexに初期値をセット
-    this.$store.dispatch('setIsLoading',{
-      isLoading: false
-    });
   }
   /**
   * ログアウトダイアログを表示
@@ -81,37 +70,6 @@ export default class App extends Vue {
   backLogout(): void {
     this.LogoutDialog = false;
   };
-  /**
-  * ダークモード切替処理
-  */
-  private changeDarkMode(): void {
-    if(this.isDark) {
-      document.getElementById('app')!.classList.remove('theme--light');
-      document.getElementById('app')!.classList.add('theme--dark');
-      // vuexに値をセット
-      this.$store.dispatch('setIsDark',{
-        isDark: this.isDark
-      });
-    } else {
-      document.getElementById('app')!.classList.remove('theme--dark');
-      document.getElementById('app')!.classList.add('theme--light');
-      // vuexに値をセット
-      this.$store.dispatch('setIsDark',{
-        isDark: this.isDark
-      });
-    }
-  }
-  /**
-  * ダークモードボタン押下
-  */
-  changeIsDark(): void {
-    this.isDark = !this.isDark;
-  }
-  /**
-   * ダークモードフラグの変化によって変換処理を実施
-   */
-  @Watch('isDark')
-  onisDarkChanged() {this.changeDarkMode();}
 }
 </script>
 
@@ -122,11 +80,10 @@ export default class App extends Vue {
   }
   body {
     background-color: #666666;
-      height: 100%;
-  margin: 0;
+    height: 100%;
+    margin: 0;
   }
   html {
       height: 100%;
   }
-
 </style>
