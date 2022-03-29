@@ -73,17 +73,13 @@ export default class App extends Vue {
 }
 </script>
 
-<style scoped>
-  .theme--dark {
+<style lang="scss">
+  .theme--light.v-application {
     background-color: #666666;
     color: #fff;
   }
-  body {
-    background-color: #666666;
-    height: 100%;
-    margin: 0;
-  }
-  html {
-      height: 100%;
-  }
+  .v-application{
+    font-family: "M Plus 1c" !important;
+    font-weight: bolder;
+}
 </style>

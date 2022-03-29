@@ -4,7 +4,7 @@
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">ブックマーク登録</p>
+            <p class="dialog-title">ブックマーク登録</p>
             <v-col cols="10">
                 <v-alert
                   v-for="(error, index) in this.errors" :key=index

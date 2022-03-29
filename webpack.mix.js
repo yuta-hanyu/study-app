@@ -18,9 +18,6 @@ const mix = require('laravel-mix');
 
 mix.ts('resources/ts/app.ts', 'public/js').vue()
   .sass('resources/sass/app.scss', 'public/css');
-// mix.ts("resources/ts/app.ts", "public/js");
-//     .vue()
-//     .sass('resources/sass/app.scss', 'public/css');
 
 mix.webpackConfig({
   resolve: {
@@ -43,3 +40,16 @@ mix.webpackConfig({
     ]
   }
 });
+const GoogleFontsPlugin = require("google-fonts-webpack-plugin")
+
+module.exports = {
+    "entry": "index.js",
+    /* ... */
+    plugins: [
+        new GoogleFontsPlugin({
+            fonts: [
+                { family: "M PLUS Rounded 1c" }
+            ]
+        })
+    ]
+}

@@ -158,7 +158,7 @@ export default class Login extends Mixins(Const){
               omitEmail: this.email
             });
           };
-          this.$router.push("/todo");
+          this.$router.push("/bookMark");
         } else {
           this.validatMessage = this.changeErrors(res.data.validatMessage);
         };
