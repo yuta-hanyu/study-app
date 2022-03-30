@@ -9,9 +9,6 @@
     <title>muscle</title>
     <!-- Styles -->
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
-    {{-- axios --}}
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
 </head>
   <head>
     <title>MyStudyApp</title>

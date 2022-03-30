@@ -1,25 +1,25 @@
 <template>
   <div>
-    <v-sheet width="600px" dark>
+    <v-sheet width="600px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">ブックマーク編集</p>
+            <p class="dialog-title">ブックマーク編集</p>
             <v-col cols="10">
-                <v-alert
-                  v-for="(error, index) in this.errors" :key=index
-                  dense
-                  text
-                  border="left"
-                  type="error"
-                  class="px-6 mx-auto"
-                  width="70%">
-                  {{error}}
-                </v-alert>
+              <v-alert
+                v-for="(error, index) in this.errors" :key=index
+                dense
+                text
+                border="left"
+                type="error"
+                class="px-6 mx-auto"
+                width="70%">
+                {{error}}
+              </v-alert>
             </v-col>
             <v-col cols="10">
               <v-text-field
-                v-model="editBookMark.link"
+                v-model="targetEditBookMark.link"
                 @change="getTitle()"
                 prepend-icon="mdi-open-in-new"
                 label="リンク">
@@ -27,7 +27,7 @@
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-text-field
-                v-model="editBookMark.title"
+                v-model="targetEditBookMark.title"
                 prepend-icon="mdi-folder-plus-outline"
                 placeholder="リンクからページタイトルを表示します"
                 label="タイトル">
@@ -36,7 +36,7 @@
             <v-col cols="10" class="mt-n3">
               <v-autocomplete
                 prepend-icon="mdi-folder"
-                v-model="editBookMark.book_mark_folders_id"
+                v-model="targetEditBookMark.book_mark_folders_id"
                 :items="bookMarkFolders"
                 item-text="title"
                 item-value="id"
@@ -49,7 +49,7 @@
             </v-col>
             <v-col cols="10" class="mt-n8">
               <v-textarea
-                v-model="editBookMark.memo"
+                v-model="targetEditBookMark.memo"
                 prepend-icon="mdi-book-open"
                 label="メモ">
               </v-textarea>
@@ -60,34 +60,22 @@
                   class="text-center"
                   cols="2">
                   <v-btn
-                    class="font-weight-black"
-                    color="grey lighten-1"
-                    width="25%"
-                    @click="back()"
-                    rounded
-                    elevation="20">
+                    class="back"
+                    @click="back()">
                     戻る
                   </v-btn>
                 </v-col>
                 <v-col cols="2" class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="editToBookMark"
-                    width="25%"
-                    color="orange lighten-2"
-                    elevation="20"
-                    rounded>
+                    class="go"
+                    @click="editToBookMark">
                     編集
                   </v-btn>
                 </v-col>
                 <v-col cols="2" class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="removeBookMark"
-                    width="25%"
-                    color="red darken-1"
-                    elevation="20"
-                    rounded>
+                    class="delete"
+                    @click="removeBookMark">
                     削除
                   </v-btn>
                 </v-col>
@@ -133,22 +121,34 @@ export default class EditBookMark extends Mixins(Const, Util) {
     };
   // フォームバリデーションエラー
   private errors: string[] = [];
+  // ブックマーク（編集用）
+  private targetEditBookMark: BookMarks | null = Object.assign({}, this.editBookMark);
+  /**
+   * ブックマーク（編集用）データセット
+   */
+  private setInitializeValue(): void {
+    this.targetEditBookMark = Object.assign({}, this.editBookMark)
+  }
   /**
    * リンクからタイトル取得
    */
   private getTitle(): void {
+    this.setLoading();
     Axios.post('/api/bookMark/getTitle', {
       // 新規登録時とロジックを共有するためkeyはnewBookMarkとする
       newBookMark: {
-        link: this.editBookMark.link
+        link: this.targetEditBookMark!.link
       }
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         this.errors.push(res.data.message.link[0]);
         return;
       }
-      this.editBookMark.title = res.data;
+      this.targetEditBookMark!.title = res.data;
+      this.$forceUpdate(); //強制的にDOM更新（変更がDOMに反映されないため）
     }).catch((e) => {
+      this.closeLoading();
       this.authCheck(e);
       this.serverError(e);
     })
@@ -161,10 +161,12 @@ export default class EditBookMark extends Mixins(Const, Util) {
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    this.setLoading();
     Axios.post('/api/editBookMark',{
-      editBookMark: this.editBookMark,
+      editBookMark: this.targetEditBookMark,
       user_id: this.$store.state.userInfo.userId
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
@@ -175,7 +177,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
         };
         return;
       }
-      let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
+      let succueseMsg = `「${this.targetEditBookMark!.title}」${this.SUCCESS_MSG.EDIT_SUCCESS}`;
       this.bookMarkEdited(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);
@@ -189,6 +191,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     if(!window.confirm(`「${this.editBookMark.title}」${this.CONFIRM_MSG.DELETE}`)) {
       return;
     };
+    this.setLoading();
     Axios.post('/api/removeBookMark',{
       editBookMark: this.editBookMark,
       user_id: this.$store.state.userInfo.userId

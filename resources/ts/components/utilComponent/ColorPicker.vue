@@ -1,22 +1,19 @@
 <template>
   <div>
-  <v-color-picker
-    dark
-    v-model="color"
-    dot-size="25"
-    hide-mode-switch
-    mode="hexa"
-    show-swatches
-    swatches-max-height="200">
-  </v-color-picker>
-  <v-container>
+    <v-color-picker
+      dark
+      mode="hexa"
+      hide-canvas
+      hide-sliders
+      v-model="color"
+      class="ma-2"
+      show-swatches>
+    </v-color-picker>
+    <v-container>
     <v-row justify="center"
       :style="{backgroundColor: '#666666'}">
       <v-btn
-        class="mx-2 my-2"
-        color="orange lighten-2"
-        elevation="20"
-        rounded
+        class="go mx-2 my-2"
         @click="choiceColor">
         OK
       </v-btn>

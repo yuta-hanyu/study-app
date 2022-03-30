@@ -5,26 +5,25 @@ interface Context {
   commit: (name: any, Payload?: Payload) => void;
 }
 type UserState = User & {
-  isDark: boolean;
   omitEmail: string;
+  isLoading: boolean;
 };
 // ログイン情報(param）
 interface userInfoParam {
   loginUserName: string
   userId: string
   isAuth: boolean
-  isDark: boolean
   omitEmail: string
+  isLoading: boolean
 };
 
 const userInfo = {
   state: {
-    // getDefaultState,
-    isDark: false,
-    omitEmail: '',
     loginUserName: '',
     userId: '',
     isAuth: false,
+    omitEmail: '',
+    isLoading: false,
   },
   mutations: {
     /**
@@ -51,14 +50,6 @@ const userInfo = {
         });
     },
     /**
-     * ダークモードの設定値を保存
-     * @param any state
-     * @param any isDark
-     */
-    setIsDark(state: UserState, isDark: userInfoParam) {
-      state.isDark = isDark.isDark;
-    },
-    /**
      * メールアドレスを保存
      * @param any state
      * @param any omitEmail
@@ -66,19 +57,27 @@ const userInfo = {
     setOmitEmail(state: UserState, omitEmail: userInfoParam) {
       state.omitEmail = omitEmail.omitEmail;
     },
+    /**
+     * ローディングの設定値を保存
+     * @param any state
+     * @param any isLoading
+     */
+     setIsLoading(state: UserState, isLoading: userInfoParam) {
+      state.isLoading = isLoading.isLoading;
+    },
   },
   actions: {
     setLoginUser(context: Context, userInfo: userInfoParam) {
       context.commit('setLoginUser', userInfo);
-    },
-    setIsDark(context: Context, isDark: userInfoParam) {
-      context.commit('setIsDark', isDark);
     },
     resetUserInfo(context: Context) {
       context.commit('resetUserInfo');
     },
     setOmitEmail(context: Context, omitEmail: userInfoParam) {
       context.commit('setOmitEmail', omitEmail);
+    },
+    setIsLoading(context: Context, isLoading: userInfoParam) {
+      context.commit('setIsLoading', isLoading);
     },
   },
 };

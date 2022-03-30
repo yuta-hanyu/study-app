@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-sheet width="600px" dark>
+    <v-sheet width="600px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">ブックマーク登録</p>
+            <p class="dialog-title">ブックマーク登録</p>
             <v-col cols="10">
                 <v-alert
                   v-for="(error, index) in this.errors" :key=index
@@ -60,23 +60,15 @@
                   class="text-center"
                   cols="3">
                   <v-btn
-                    class="font-weight-black"
-                    color="grey lighten-1"
-                    width="25%"
-                    @click="back()"
-                    rounded
-                    elevation="20">
+                    class="back"
+                    @click="back()">
                     戻る
                   </v-btn>
                 </v-col>
                 <v-col cols="3" class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="addBookMark"
-                    width="25%"
-                    color="orange lighten-2"
-                    elevation="20"
-                    rounded>
+                    class="go"
+                    @click="addBookMark">
                     登録
                   </v-btn>
                 </v-col>
@@ -136,16 +128,19 @@ export default class NewBookMark extends Mixins(Const, Util) {
   private initialize(): void {
     Object.keys(this.newBookMark).forEach(key => this.newBookMark[key] = '');
     this.newBookMark.user_id = this.$store.state.userInfo.userId;
+    this.errors = [];
   };
   /**
    * リンクからタイトル取得
    */
   private getTitle(): void {
+    this.setLoading();
     Axios.post('/api/bookMark/getTitle', {
       newBookMark: {
         link: this.newBookMark.link
       }
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         this.errors.push(res.data.message.link[0]);
         return;
@@ -164,9 +159,11 @@ export default class NewBookMark extends Mixins(Const, Util) {
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    this.setLoading();
     Axios.post('/api/bookMark',{
       newBookMark: this.newBookMark
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {

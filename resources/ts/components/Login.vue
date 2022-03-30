@@ -101,12 +101,14 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import Const from '../common/const';
 import Axios from 'axios';
+import Util from '../common/util';
+
 
 @Component ({
   name: "Login",
 })
 
-export default class Login extends Mixins(Const){
+export default class Login extends Mixins(Const, Util){
   // 認証メールアドレス
   private email: string = this.$store.state.userInfo.omitEmail;
   // 認証パスワード
@@ -119,13 +121,14 @@ export default class Login extends Mixins(Const){
   private omitEmailSend: boolean = false;
   private title: string = 'title';
   mounted() {
+    this.closeLoading();
     // タイトル表示制御
     setInterval(() => {
       this.title += " -visible";
       setTimeout(() => {
         this.title = "title";
-      }, 1500);
-    }, 3000);
+      }, 1000);
+    }, 2000);
   }
   /**
    * ログインボタン押下
@@ -158,7 +161,7 @@ export default class Login extends Mixins(Const){
               omitEmail: this.email
             });
           };
-          this.$router.push("/todo");
+          this.$router.push("/bookMark");
         } else {
           this.validatMessage = this.changeErrors(res.data.validatMessage);
         };

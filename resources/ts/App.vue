@@ -4,13 +4,12 @@
       <header>
         <Header
           v-show="headerFlag"
-          :isDark=isDark
-          @change-isdark="changeIsDark"
           @logout-dialog="logoutDialogOpen">
         </Header>
       </header>
-      <main class="body">
+      <main class="body pt-15">
       <RouterView />
+      <loading :loadingDialog="IsLoadingShow" />
       <v-dialog
         persistent
         v-model="LogoutDialog"
@@ -34,6 +33,7 @@ import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import BookMark from './components/BookMark.vue';
+import Loading from './global/Loading.vue'
 
 @Component({
   components: {
@@ -42,21 +42,21 @@ import BookMark from './components/BookMark.vue';
     Top,
     Login,
     Logout,
-    BookMark
+    BookMark,
+    Loading,
   },
 })
 
 export default class App extends Vue {
-  // ダークモードフラグ
-  private isDark: boolean = this.$store.state.userInfo.isDark;
   // ログアウトダイアログ
   private LogoutDialog: boolean = false;
   // ヘッダー表示判定
   get headerFlag(): boolean {
     return this.$store.state.userInfo.isAuth ? true : false;
   };
-  mounted() {
-    this.changeDarkMode();
+  // ローディング表示判定
+  get IsLoadingShow() {
+    return this.$store.state.userInfo.isLoading;
   }
   /**
   * ログアウトダイアログを表示
@@ -70,46 +70,16 @@ export default class App extends Vue {
   backLogout(): void {
     this.LogoutDialog = false;
   };
-  /**
-  * ダークモード切替処理
-  */
-  private changeDarkMode(): void {
-    if(this.isDark) {
-      document.getElementById('app')!.classList.remove('theme--light');
-      document.getElementById('app')!.classList.add('theme--dark');
-      // vuexに値をセット
-      this.$store.dispatch('setIsDark',{
-        isDark: this.isDark
-      });
-    } else {
-      document.getElementById('app')!.classList.remove('theme--dark');
-      document.getElementById('app')!.classList.add('theme--light');
-      // vuexに値をセット
-      this.$store.dispatch('setIsDark',{
-        isDark: this.isDark
-      });
-    }
-  }
-  /**
-  * ダークモードボタン押下
-  */
-  changeIsDark(): void {
-    this.isDark = !this.isDark;
-  }
-  /**
-   * ダークモードフラグの変化によって変換処理を実施
-   */
-  @Watch('isDark')
-  onisDarkChanged() {this.changeDarkMode();}
 }
 </script>
 
-<style scoped>
-  .theme--dark {
+<style lang="scss">
+  .theme--light.v-application {
     background-color: #666666;
     color: #fff;
   }
-  body {
-    background-color: #666666;
-  }
+  .v-application{
+    font-family: "M Plus 1c" !important;
+    font-weight: bolder;
+}
 </style>

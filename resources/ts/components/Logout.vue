@@ -1,28 +1,21 @@
 <template>
   <div>
-    <v-card
-     color="amber lighten-5">
+    <v-card class="kokuban" dark>
       <v-card-title class="justify-center title text-h6">ログアウト</v-card-title>
       <v-card-actions>
         <v-row justify="center" class="mb-auto">
           <v-col cols="6" align="right">
             <v-btn
-              color="grey lighten-1"
-              width="100px"
-              rounded
-              @click="back"
-              elevation="20">
+              class="back"
+              @click="back">
               戻る
             </v-btn>
           </v-col>
           <v-col cols="6">
             <v-btn
               @click="logout"
-              width="100px"
-              color="orange lighten-2"
-              elevation="20"
-              rounded>
-              ログアウト
+              class="go">
+              OK
             </v-btn>
           </v-col>
         </v-row>
@@ -61,7 +54,6 @@ export default class Logout extends Mixins(Const){
       this.$router.push("/login");
     }).catch((e) => {
       window.alert(this.ERROR_MSG.SERVER_ERROR);
-      console.log(e);
     });
   }
 }

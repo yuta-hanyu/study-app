@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-sheet width="400px" dark>
+    <v-sheet width="400px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="text-h6 py-3">フォルダ登録</p>
+            <p class="dialog-title">フォルダ登録</p>
               <v-alert
                 v-for="(error, index) in this.errors" :key=index
                 dense
@@ -51,12 +51,8 @@
                   class="text-center"
                   cols="3">
                   <v-btn
-                    class="font-weight-black"
-                    color="grey lighten-1"
-                    width="25%"
-                    @click="back()"
-                    rounded
-                    elevation="20">
+                    class="back"
+                    @click="back()">
                     戻る
                   </v-btn>
                 </v-col>
@@ -64,12 +60,8 @@
                   cols="3"
                   class="text-center">
                   <v-btn
-                    class="font-weight-black"
-                    @click="addBookMarkFolder"
-                    width="25%"
-                    color="orange lighten-2"
-                    elevation="20"
-                    rounded>
+                    class="go"
+                    @click="addBookMarkFolder">
                     登録
                   </v-btn>
                 </v-col>
@@ -128,6 +120,7 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
   private initialize(): void {
     Object.keys(this.newBookMarkFolder).forEach(key => this.newBookMarkFolder[key] = '');
     this.newBookMarkFolder.user_id = this.$store.state.userInfo.userId;
+    this.errors = [];
   };
   /**
    * カラーセット
@@ -144,9 +137,11 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
     this.errors = [];
     // 成功MSGリセット
     let succueseMsg: string = '';
+    this.setLoading();
     Axios.post('/api/bookMarkFolder',{
       newBookMarkFolder: this.newBookMarkFolder
     }).then((res) => {
+      this.closeLoading();
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
