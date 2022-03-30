@@ -20,6 +20,7 @@ class CreateBookMarksTable extends Migration
             $table->string('title')->nullable(false);
             $table->longText('link')->nullable(false);
             $table->string('memo')->nullable(true);
+            $table->tinyInteger('fixed')->default(0);
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
 

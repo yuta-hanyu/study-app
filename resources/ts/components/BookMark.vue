@@ -5,12 +5,11 @@
         v-if="this.succueseMsg"
         align="center"
         dense
-        dark
+        class="mt-3"
         dismissible
-        color="cyan"
+        color="#B2DFDB"
         border="left"
         elevation="2"
-        colored-border
         icon="mdi-check">
           {{this.succueseMsg}}
       </v-alert>
@@ -73,6 +72,11 @@
               <span style="color: black;">ブックマークインポート</span>
             </v-tooltip>
           </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+
         </v-col>
       </v-row>
       <!-- ブックマーク一覧 -->
@@ -323,9 +327,10 @@ export default class BookMark extends Mixins(Const, Util) {
   .bg {
     top: 20px;
     left: 0;
-    min-height: 1000px;
-    background-size: cover;
-    background-image: url("../../../public/images/school.jpeg");
+    min-height: 1200px;
+    background-size: contain;
+    background: url("../../../public/images/school.jpeg") center center / cover no-repeat fixed;
+    background-attachment: fixed;
   }
   .v-application a {
     color: white;

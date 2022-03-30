@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Emit,Prop } from 'vue-property-decorator';
+import { Component, Mixins, Emit, Prop } from 'vue-property-decorator';
 import Const from '../../common/const';
 import Util from '../../common/util';
 import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
