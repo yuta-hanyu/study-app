@@ -5,7 +5,7 @@
         v-if="this.succueseMsg"
         align="center"
         dense
-        class="mt-3"
+        class="mt-6"
         dismissible
         color="#B2DFDB"
         border="left"
@@ -29,10 +29,10 @@
         </v-col>
         <v-col md="6">
           <v-row justify="end">
-            <v-tooltip bottom color="#FFEE58">
+            <v-tooltip bottom color="#a60">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
-                  color="#FFEE58"
+                  color="#a60"
                   v-bind="attrs"
                   v-on="on"
                   size="50"
@@ -43,10 +43,10 @@
               </template>
               <span style="color: black;">ブックマークを追加</span>
             </v-tooltip>
-            <v-tooltip bottom color="#FFEE58">
+            <v-tooltip bottom color="#a60">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
-                  color="#FFEE58"
+                  color="#a60"
                   v-bind="attrs"
                   v-on="on"
                   size="60"
@@ -57,10 +57,10 @@
               </template>
               <span style="color: black;">フォルダを追加</span>
             </v-tooltip>
-            <v-tooltip bottom color="#FFEE58">
+            <v-tooltip bottom color="#a60">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
-                  color="#FFEE58"
+                  color="#a60"
                   v-bind="attrs"
                   v-on="on"
                   size="60"
@@ -75,9 +75,6 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
-
-        </v-col>
       </v-row>
       <!-- ブックマーク一覧 -->
       <v-row>
@@ -324,26 +321,26 @@ export default class BookMark extends Mixins(Const, Util) {
 </script>
 
 <style scoped>
-  .bg {
-    top: 20px;
-    left: 0;
-    min-height: 1200px;
-    background-size: contain;
-    background: url("../../../public/images/school.jpeg") center center / cover no-repeat fixed;
-    background-attachment: fixed;
-  }
-  .v-application a {
-    color: white;
-    text-decoration: none;
-  }
-  .table-body {
-    max-height: 300px;
-    overflow-y: scroll;
-  }
-  .table th,td.link{
-    border-top: 1px solid #5a5858;
-    width: 800px;
-  }
+.bg {
+  padding-top: 3%;
+  left: 0;
+  min-height: 1200px;
+  background-size: contain;
+  background: url("../../../public/images/school.jpeg") center center / cover no-repeat fixed;
+  background-attachment: fixed;
+}
+.v-application a {
+  color: white;
+  text-decoration: none;
+}
+.table-body {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+.table th,td.link{
+  border-top: 1px solid #5a5858;
+  width: 800px;
+}
 </style>
 
 

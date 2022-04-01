@@ -7,7 +7,7 @@
           @logout-dialog="logoutDialogOpen">
         </Header>
       </header>
-      <main class="body pt-15">
+      <main class="body">
       <RouterView />
       <loading :loadingDialog="IsLoadingShow" />
       <v-dialog
@@ -74,12 +74,16 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-  .theme--light.v-application {
-    background-color: #666666;
-    color: #fff;
-  }
-  .v-application{
-    font-family: "M Plus 1c" !important;
-    font-weight: bolder;
+.theme--light.v-application {
+  background-color: #666666;
+  color: #fff;
 }
+.v-application{
+  font-family: "M Plus 1c" !important;
+  font-weight: bolder;
+}
+// .body {
+//   margin-top: 60px;
+// }
+
 </style>

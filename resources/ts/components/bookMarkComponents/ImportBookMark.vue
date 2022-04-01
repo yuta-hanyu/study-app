@@ -4,6 +4,20 @@
       <v-form>
         <v-container>
           <v-row justify="center">
+            <v-col md="12" class="d-flex flex-row-reverse my-n3 py-0 pr-0">
+              <v-btn
+                class="font-weight-black"
+                text
+                color="#03A9F4"
+                dark
+                @click="howToImportDialog = true">
+                <v-icon
+                  dark
+                  left>
+                  mdi-open-in-new
+                </v-icon>使い方
+              </v-btn>
+            </v-col>
             <p class="dialog-title">ブックマークインポート</p>
               <v-alert
                 v-for="(error, index) in this.errors" :key=index
@@ -51,6 +65,15 @@
         </v-container>
       </v-form>
     </v-sheet>
+    <!-- 使い方ダイアログ -->
+      <v-dialog
+        width="800px"
+        v-model="howToImportDialog"
+        persistent>
+        <how-to-import
+          @back="howToImportDialog = !howToImportDialog">
+        </how-to-import>
+      </v-dialog>
   </div>
 </template>
 
@@ -58,14 +81,15 @@
 import {Component, Mixins, Emit} from 'vue-property-decorator';
 import Const from '../../common/const';
 import Util from '../../common/util';
-
-import Loading from '../../global/Loading.vue'
+import Loading from '../../global/Loading.vue';
 import Axios from 'axios';
+import HowToImport from './HowToImport.vue'
 
 @Component({
   name: 'ImportBookMark',
   components: {
     Loading,
+    HowToImport,
   }
 })
 
@@ -83,6 +107,8 @@ export default class ImportBookMark extends Mixins(Const, Util) {
     importFinished(succueseMsg: string): void {
       this.initialize()
     };
+  // 使い方ダイアログ
+  private howToImportDialog: boolean = false;
   // ブックマークインポート
   private bookMarkImports: any = {};
   // フォームバリデーションエラー

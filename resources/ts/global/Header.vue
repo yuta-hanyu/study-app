@@ -2,7 +2,6 @@
   <div>
     <v-app-bar
       app
-      fixed
       dark>
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
     <v-toolbar-title>StudyApp</v-toolbar-title>

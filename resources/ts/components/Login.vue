@@ -194,7 +194,7 @@ export default class Login extends Mixins(Const, Util){
 	justify-content: center;
 }
 .title-container {
-  margin-top: 10%;
+  margin-top: 5%;
   text-align: center;
   height: 300px;
 	display: flex;
