@@ -7,7 +7,9 @@
         </v-col>
         <v-col md=12>
           <dd>１．以下のサイトを参考にgoogleからブックマークをエクスポートしてください</dd>
-          <a href="https://pc-karuma.net/google-chrome-export-import-bookmarks/" target=”_blank”>Chrome | ブックマークをエクスポート・インポートする方法 | PC設定のカルマ</a>
+          <div class="d-flex flex-column justify-space-between align-center pt-1">
+            <a href="https://pc-karuma.net/google-chrome-export-import-bookmarks/" target=”_blank”>Chrome | ブックマークをエクスポート・インポートする方法 | PC設定のカルマ</a>
+          </div>
         </v-col>
         <v-col md=12>
           <dd>２．エクスポートされたhtmlファイルをアップロードし、登録ボタンを押下してください</dd>
