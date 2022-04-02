@@ -12,7 +12,7 @@ export default class Const extends Vue {
   });
   /** -----サイドメニュー----- */
   MENU_ITEMS = Object.freeze([
-    {name: 'トップ', url: '/'},
+    // {name: 'トップ', url: '/'},
     {name: 'タスク管理', url: '/todo'},
     {name: 'ブックマーク管理', url: '/bookMark'},
   ]);

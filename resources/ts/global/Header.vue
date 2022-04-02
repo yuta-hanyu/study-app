@@ -4,7 +4,9 @@
       app
       dark>
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>
-    <v-toolbar-title>StudyApp</v-toolbar-title>
+    <p class="my-auto">StudyApp</p>
+    <v-spacer></v-spacer>
+    <v-toolbar-title>{{$route.meta.title}}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-chip
       class="mx-2"

@@ -14,7 +14,8 @@ const router = new VueRouter({
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {title: 'ログイン'}
     },
     {
       path: '/logout',
@@ -22,23 +23,23 @@ const router = new VueRouter({
       component: Logout,
       meta: {isAuthenticated: true},
     },
-    {
-      path: '/',
-      name: 'Top',
-      component: Top,
-      meta: {isAuthenticated: true},
-    },
+    // {
+    //   path: '/',
+    //   name: 'Top',
+    //   component: Top,
+    //   meta: {isAuthenticated: true},
+    // },
     {
       path: '/todo',
       name: 'Todo',
       component: Todo,
-      meta: {isAuthenticated: true},
+      meta: {isAuthenticated: true, title: 'タスク管理'},
     },
     {
       path: '/bookMark',
       name: 'bookMark',
       component: bookMark,
-      meta: {isAuthenticated: true},
+      meta: {isAuthenticated: true, title: 'ブックマーク管理'},
     },
   ]
 });
