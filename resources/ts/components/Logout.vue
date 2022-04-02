@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="kokuban" dark>
+    <v-card class="kokuban my-0" dark>
       <v-card-title class="justify-center title text-h6">ログアウト</v-card-title>
       <v-card-actions>
         <v-row justify="center" class="mb-auto">

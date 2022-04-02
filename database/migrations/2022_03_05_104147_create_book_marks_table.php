@@ -16,7 +16,7 @@ class CreateBookMarksTable extends Migration
         Schema::create('book_marks', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned()->nullable(false);
-            $table->bigInteger('book_mark_folders_id')->unsigned()->nullable(false);
+            $table->bigInteger('book_mark_folders_id')->unsigned()->nullable(true);
             $table->string('title')->nullable(false);
             $table->longText('link')->nullable(false);
             $table->string('memo')->nullable(true);
