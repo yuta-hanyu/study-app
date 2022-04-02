@@ -384,7 +384,7 @@ export default class BookMark extends Mixins(Const, Util) {
   text-decoration: none;
 }
 .container {
-  padding: 3% 10%;
+  padding: 3% 7%;
 }
 .table-body {
   max-height: 300px;
@@ -407,7 +407,7 @@ export default class BookMark extends Mixins(Const, Util) {
   width: 80px;
   border-radius: 60%;
   margin-bottom: 5px;
-  background: rgba(118, 116, 116, 0.5);
+  background: rgba(187, 185, 185, 0.5);
 }
 .favicon-img {
   position:absolute;

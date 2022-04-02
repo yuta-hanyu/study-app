@@ -58,6 +58,12 @@ export default class App extends Vue {
   get IsLoadingShow() {
     return this.$store.state.userInfo.isLoading;
   }
+
+  mounted() {
+    let routeInstance = this.$route;
+    console.log(routeInstance);
+    this.createTitle(routeInstance);
+  }
   /**
   * ログアウトダイアログを表示
   */
@@ -70,6 +76,26 @@ export default class App extends Vue {
   backLogout(): void {
     this.LogoutDialog = false;
   };
+  /**
+  * ページタイトル取得
+  */
+  private createTitle(routeInstance: any): void{
+    if(routeInstance.meta.title){
+      console.log(routeInstance.meta.title)
+        const setTitle = routeInstance.meta.title + ' | StudyApp';
+        document.title = setTitle;
+    } else {
+        document.title = 'StudyApp'
+    }
+  }
+  /**
+  * ルータを監視し、動的にページタイトル変更
+  */
+  @Watch('$route', {immediate: true})
+    private onChangeRoute(routeInstance: object, oldRouteInstance: object) {
+      console.log("Watch::::" + routeInstance);
+    this.createTitle(routeInstance);
+  }
 }
 </script>
 
@@ -82,8 +108,5 @@ export default class App extends Vue {
   font-family: "M Plus 1c" !important;
   font-weight: bolder;
 }
-// .body {
-//   margin-top: 60px;
-// }
 
 </style>
