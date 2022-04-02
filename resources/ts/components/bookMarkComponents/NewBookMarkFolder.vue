@@ -101,11 +101,7 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
       this.initialize()
     };
   // 新規登録フォルダ情報
-  private newBookMarkFolder: BookMarkFolders = {
-    title: '',
-    color: '',
-    user_id: this.$store.state.userInfo.userId,
-  }
+  private newBookMarkFolder: BookMarkFolders = {}
   // カラーピッカーダイアログ
   private colorPockerDialog: boolean = false;
   // フォームバリデーションエラー
@@ -118,8 +114,7 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
    * データ初期化
    */
   private initialize(): void {
-    Object.keys(this.newBookMarkFolder).forEach(key => this.newBookMarkFolder[key] = '');
-    this.newBookMarkFolder.user_id = this.$store.state.userInfo.userId;
+    this.newBookMarkFolder = Object.assign({}, {})
     this.errors = [];
   };
   /**

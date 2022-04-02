@@ -54,6 +54,14 @@
                 label="メモ">
               </v-textarea>
             </v-col>
+            <v-col cols="5" class="d-flex flex-column justify-space-between align-center">
+              <v-checkbox
+                v-model="newBookMark.fixed"
+                label="上部へ固定する"
+                value=1
+                class="my-0 d-flex flex-column justify-space-between align-center">
+              </v-checkbox>
+            </v-col>
             <v-container>
               <v-row justify="center">
                 <v-col
@@ -107,27 +115,17 @@ export default class NewBookMark extends Mixins(Const, Util) {
   // 登録成功
   @Emit('bookMark-registered')
     bookMarkRegistered(succueseMsg: string): void {
-      this.initialize()
+      this.initialize();
     };
   // フォームバリデーションエラー
   private errors: string[] = [];
   // 新規登録ブックマーク情報
-  private newBookMark: BookMarks = {
-    book_mark_folders_id: null,
-    title: '',
-    link: '',
-    memo: '',
-    user_id: this.$store.state.userInfo.userId,
-  }
-  mounted() {
-    this.initialize();
-  }
+  private newBookMark: BookMarks = {}
   /**
    * データ初期化
    */
   private initialize(): void {
-    Object.keys(this.newBookMark).forEach(key => this.newBookMark[key] = '');
-    this.newBookMark.user_id = this.$store.state.userInfo.userId;
+    this.newBookMark = Object.assign({}, {})
     this.errors = [];
   };
   /**
@@ -146,6 +144,7 @@ export default class NewBookMark extends Mixins(Const, Util) {
         return;
       }
       this.newBookMark.title = res.data;
+      this.$forceUpdate();
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);

@@ -1,6 +1,6 @@
 <template>
   <div class="bg">
-    <v-container>
+    <v-container class="container">
       <v-alert
         v-if="this.succueseMsg"
         align="center"
@@ -76,6 +76,44 @@
       </v-row>
       <v-row>
       </v-row>
+      <hr class="hr-up mt-10 mb-5">
+      <!-- ブックマーク上部固定一覧 -->
+      <v-row justify="center">
+        <v-col
+          md="2"
+          sm="3"
+          class="d-flex flex-column justify-space-between align-center"
+          v-for="(getBookMarkFixed, index) in getBookMarkFixeds" :key=index>
+          <v-tooltip bottom color="#1E1E1E">
+            <template v-slot:activator="{ on, attrs }">
+              <a
+                class="favicon-wrapper"
+                v-on="on"
+                v-bind="attrs"
+                target="_blank"
+                :href=getBookMarkFixed.link>
+                <v-img
+                  class="favicon-img"
+                  :src="getBookMarkFixedFavicon(getBookMarkFixed.link)">
+                </v-img>
+              </a>
+            </template>
+              <span style="color: white;">リンクへ遷移</span>
+          </v-tooltip>
+          <v-tooltip bottom color="#1E1E1E">
+            <template v-slot:activator="{ on, attrs }">
+              <p
+                @click="chengeEditBoookMark(getBookMarkFixed)"
+                class="lineClamp"
+                v-on="on"
+                v-bind="attrs">{{getBookMarkFixed.title}}
+              </p>
+            </template>
+              <span style="color: white;">ブックマークを編集</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
+      <hr class="hr-down mt-10 mb-5">
       <!-- ブックマーク一覧 -->
       <v-row>
         <v-col md="4" sm="6"
@@ -248,15 +286,27 @@ export default class BookMark extends Mixins(Const, Util) {
   private editBookMark: BookMarks | null = null;;
   // ブックマークフォルダー（表示用）
   private bookMarkFolders: BookMarkFolders[] = [];
-  // ブックマーク
+  // ブックマーク（表示用）
   private bookMarks: BookMarks[] = [];
   // ブックマーク（検索用）
   private serchBookMark: string = '';
-  // ブックマーク（フォルダーと紐付け）
+  // ブックマーク（フォルダーと紐付け、上部固定は排除）
   get getBookMarkFolders(): any {
     return (id: number) => {
-      const filterBookMarks = this.bookMarks.filter(bookMark => bookMark.book_mark_folders_id === id)
+      const filterBookMarks =
+      this.bookMarks.filter(bookMark => bookMark.book_mark_folders_id === id && bookMark.fixed !== this.BOOKMARKFIXED)
       return filterBookMarks;
+    }
+  }
+  // ブックマーク（上部固定のみ）
+  get getBookMarkFixeds(): BookMarks[] {
+    const filterBookMarkFiexds = this.bookMarks.filter(bookMark => bookMark.fixed === this.BOOKMARKFIXED);
+      return filterBookMarkFiexds;
+  }
+  // ブックマーク（上部固定のみ）ファビコン取得
+  get getBookMarkFixedFavicon(): any {
+    return(url: string) => {
+      return `http://www.google.com/s2/favicons?domain=${url}`; //google非公式APIを活用
     }
   }
   mounted(){
@@ -277,7 +327,7 @@ export default class BookMark extends Mixins(Const, Util) {
     });
   };
   /**
-   * ブックマーク/フォルダー新規登録完了
+   * ブックマーク/フォルダー新規登録・編集完了
    */
   private registered(succueseMsg: string): void {
     this.addBookMarkDialog = false;
@@ -333,6 +383,9 @@ export default class BookMark extends Mixins(Const, Util) {
   color: white;
   text-decoration: none;
 }
+.container {
+  padding: 3% 10%;
+}
 .table-body {
   max-height: 300px;
   overflow-y: scroll;
@@ -340,6 +393,49 @@ export default class BookMark extends Mixins(Const, Util) {
 .table th,td.link{
   border-top: 1px solid #5a5858;
   width: 800px;
+}
+.lineClamp {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+.favicon-wrapper {
+  position: relative;
+  height: 80px;
+  width: 80px;
+  border-radius: 60%;
+  margin-bottom: 5px;
+  background: rgba(118, 116, 116, 0.5);
+}
+.favicon-img {
+  position:absolute;
+  top:33%;
+  left: 32%;
+  height: 30px;
+  width: 30px;
+  border-radius: 30%;
+}
+hr {
+  border: 1px solid #aaa7a7;
+  text-align: left;
+}
+.hr-up::after {
+  content: '固定';
+  display: inline-block;
+  position: relative;
+  top: -30px;
+  color: #aaa7a7;
+  font-size: 15px;
+}
+.hr-down::after {
+  content: 'その他';
+  display: inline-block;
+  position: relative;
+  top: -30px;
+  color: #aaa7a7;
+  font-size: 15px;
 }
 </style>
 

@@ -5,17 +5,21 @@ import Vue from 'vue';
   name: "Const",
 })
 export default class Const extends Vue {
-  // ゲストユーザー
+  /** -----ゲストユーザー----- */
   GUEST_USER = Object.freeze({
     email: 'guest@gmail.com',
     password: 'guest'
   });
-  // サイドメニュー
+  /** -----サイドメニュー----- */
   MENU_ITEMS = Object.freeze([
     {name: 'トップ', url: '/'},
     {name: 'タスク管理', url: '/todo'},
     {name: 'ブックマーク管理', url: '/bookMark'},
   ]);
+  /** -----プロパティ関連----- */
+  // ブックマーク上部固定
+  BOOKMARKFIXED = Object.freeze(1);
+  /** -----メッセージ関連----- */
   // エラーMSG
   ERROR_MSG = Object.freeze({
     EXPAIRED_SESSION: 'セッションの有効期間が切れています。再度、ログインしてください',

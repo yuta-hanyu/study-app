@@ -41,6 +41,7 @@ class BookMarkController extends Controller
                     'book_marks.book_mark_folders_id',
                     'book_marks.title',
                     'book_marks.link',
+                    'book_marks.fixed',
                     'book_marks.memo',
                   )
                   ->where('book_marks.user_id', '=', $user_id)
@@ -62,6 +63,10 @@ class BookMarkController extends Controller
   {
     Log::info('ブックマークフォルダ登録開始');
     $input = $request['newBookMarkFolder'];
+    // ログインユーザーID取得
+    $user_id = Auth::id();
+    // user_idをマージ
+    $input = array_merge($input, array('user_id'=>$user_id));
     // バリデーション
     $bookMarkFolder = new BookMarkFolder();
     $validate = $bookMarkFolder->validate($input);
@@ -94,8 +99,10 @@ class BookMarkController extends Controller
   {
     Log::info('ブックマークフォルダ編集開始');
     $input = $request['editFolder'];
+    // ログインユーザーID取得
+    $user_id = Auth::id();
     // user_idをマージ
-    $input = array_merge($input,array('user_id'=>$request['user_id']));
+    $input = array_merge($input, array('user_id'=>$user_id));
     // バリデーション
     $bookMarkFolder = new BookMarkFolder();
     $validate = $bookMarkFolder->validate($input);
@@ -162,6 +169,10 @@ class BookMarkController extends Controller
   {
     Log::info('ブックマーク登録開始');
     $input = $request['newBookMark'];
+    // ログインユーザーID取得
+    $user_id = Auth::id();
+    // user_idをマージ
+    $input = array_merge($input, array('user_id'=>$user_id));
     // バリデーション
     $bookMark = new BookMark();
     $validate = $bookMark->validate($input);

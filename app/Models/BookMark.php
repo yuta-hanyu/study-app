@@ -19,6 +19,7 @@ class BookMark extends Model
     'title',
     'link',
     'memo',
+    'fixed',
     'is_deleted'
   ];
   /**
