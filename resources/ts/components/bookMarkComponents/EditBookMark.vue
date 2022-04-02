@@ -54,6 +54,14 @@
                 label="メモ">
               </v-textarea>
             </v-col>
+            <v-col cols="5" class="d-flex flex-column justify-space-between align-center">
+              <v-checkbox
+                v-model="targetEditBookMark.fixed"
+                label="上部へ固定する"
+                :value=1
+                class="my-0 d-flex flex-column justify-space-between align-center">
+              </v-checkbox>
+            </v-col>
             <v-container>
               <v-row justify="center">
                 <v-col

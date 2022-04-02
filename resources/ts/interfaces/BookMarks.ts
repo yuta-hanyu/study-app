@@ -5,5 +5,6 @@ export interface BookMarks {
   title?: string;
   link?: string;
   memo?: string;
+  fixed?: number | null;
   is_deleted?: number | null;
 };
