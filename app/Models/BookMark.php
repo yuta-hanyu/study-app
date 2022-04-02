@@ -47,7 +47,7 @@ class BookMark extends Model
       'link' => 'required|url'
     ];
     // 上部固定の場合はフォルダIDに関するバリデーションを行わない
-    if((int)$input['fixed'] !== 1) {
+    if((int)$input['fixed'] !== config('const.BOOKMARKFIXED')) {
       $rules = array_merge($rules,array('book_mark_folders_id'=>'required|integer'));
     }
     return Validator::make($input, $rules);
