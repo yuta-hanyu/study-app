@@ -39,6 +39,14 @@
               </router-link>
             </v-list-item>
             <v-list-item
+              @click="inquiryDialog">
+              <router-link
+                to="#"
+                class="font-weight-black list">
+                お問い合わせ
+              </router-link>
+            </v-list-item>
+            <v-list-item
               @click="LogoutDialog">
               <router-link
                 to="#"
@@ -66,7 +74,12 @@ export default class Header extends Mixins(Const){
    */
   @Emit('logout-dialog')
   LogoutDialog(): void{};
-  // サイドメニュー閉じる開く
+  /**
+   * お問い合わせ
+   */
+  @Emit('inquiry-dialog')
+  inquiryDialog(): void{};
+  // サイドメニュー開閉
   private drawer: Boolean = false;
 }
 </script>

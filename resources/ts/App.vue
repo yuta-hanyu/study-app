@@ -4,19 +4,32 @@
       <header>
         <Header
           v-show="headerFlag"
-          @logout-dialog="logoutDialogOpen">
+          @inquiry-dialog="inquiryDialog = !inquiryDialog"
+          @logout-dialog="LogoutDialog = !LogoutDialog">
         </Header>
       </header>
       <main class="body">
       <RouterView />
+      <!-- ローディングダイアログ -->
       <loading :loadingDialog="IsLoadingShow" />
+      <!-- お問い合わせダイアログ -->
+      <v-dialog
+        persistent
+        v-model="inquiryDialog"
+        height="600px"
+        width="500px">
+        <inquiry
+          @back-inquiry="inquiryDialog = !inquiryDialog">
+        </inquiry>
+      </v-dialog>
+      <!-- ログアウトダイアログ -->
       <v-dialog
         persistent
         v-model="LogoutDialog"
         height="200px"
         width="300px">
         <logout
-          @back-logout="backLogout">
+          @back-logout="LogoutDialog = !LogoutDialog">
         </logout>
       </v-dialog>
       </main>
@@ -33,7 +46,8 @@ import Top from './components/Top.vue';
 import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import BookMark from './components/BookMark.vue';
-import Loading from './global/Loading.vue'
+import Loading from './global/Loading.vue';
+import Inquiry from './components/Inquiry.vue';
 
 @Component({
   components: {
@@ -44,12 +58,15 @@ import Loading from './global/Loading.vue'
     Logout,
     BookMark,
     Loading,
+    Inquiry,
   },
 })
 
 export default class App extends Vue {
   // ログアウトダイアログ
   private LogoutDialog: boolean = false;
+  // お問い合わせダイアログ
+  private inquiryDialog: boolean = false;
   // ヘッダー表示判定
   get headerFlag(): boolean {
     return this.$store.state.userInfo.isAuth ? true : false;
@@ -65,27 +82,14 @@ export default class App extends Vue {
     this.createTitle(routeInstance);
   }
   /**
-  * ログアウトダイアログを表示
-  */
-  private logoutDialogOpen(): void {
-    this.LogoutDialog = true;
-  };
-  /**
-  * ログアウトダイアログを非表示
-  */
-  backLogout(): void {
-    this.LogoutDialog = false;
-  };
-  /**
   * ページタイトル取得
   */
   private createTitle(routeInstance: any): void{
     if(routeInstance.meta.title){
-      console.log(routeInstance.meta.title)
-        const setTitle = routeInstance.meta.title + ' | StudyApp';
-        document.title = setTitle;
+      const setTitle = routeInstance.meta.title + ' | StudyApp';
+      document.title = setTitle;
     } else {
-        document.title = 'StudyApp'
+      document.title = 'StudyApp'
     }
   }
   /**
@@ -93,7 +97,6 @@ export default class App extends Vue {
   */
   @Watch('$route', {immediate: true})
     private onChangeRoute(routeInstance: object, oldRouteInstance: object) {
-      console.log("Watch::::" + routeInstance);
     this.createTitle(routeInstance);
   }
 }

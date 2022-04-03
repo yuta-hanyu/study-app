@@ -17,7 +17,7 @@ class CreateBookMarkFoldersTable extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned()->nullable(false);
             $table->string('title')->nullable(false);
-            $table->char('color', 15)->default('#757575FF');
+            $table->char('color', 15)->default('#757575FF')->nullable(true);
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
 

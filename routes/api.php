@@ -83,6 +83,10 @@ Route::middleware('auth:sanctum')->group(function () {
    * ブックマークインポート
    */
   Route::post('/bookMarks/import', 'App\Http\Controllers\BookMarkController@bookMarksImport');
+  /**
+   * お問い合わせ
+   */
+  Route::post('/api/inquiry', 'App\Http\Controllers\BookMarkController@bookMarksImport');
 });
 
 

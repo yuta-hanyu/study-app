@@ -5,6 +5,7 @@
 ## migration作成
 php artisan make:migration create_users_table
 php artisan make:migration create_todos_table
+php artisan make:migration create_inquirys_table
 
 ## migraton実行
 php artisan migrate
@@ -47,8 +48,17 @@ if(e.response.status === 401) {
 
 # コントローラー作成
 php artisan make:controller BookMarkController
+php artisan make:controller InquiryController
 
 # トランケイト
 mysql> set foreign_key_checks = 0;
 mysql> truncate table hoge;
 mysql> set foreign_key_checks = 1;
+
+#  ブックマーク全消しsql
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE `study_app`.`book_mark_folders`;
+TRUNCATE `study_app`.`book_marks`;
+SET FOREIGN_KEY_CHECKS=1;
+
+SELECT * FROM study_app.book_mark_folders;
