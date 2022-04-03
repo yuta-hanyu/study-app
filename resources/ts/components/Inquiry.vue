@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-sheet width="500px" dark class="kokuban">
+    <v-sheet width="500px" dark class="kokuban my-0">
       <v-form>
         <v-container>
           <v-row justify="center">
             <p class="dialog-title mb-n3">お問いわせ</p>
-            <v-col cols="10">
+            <v-col cols="12">
                 <v-alert
                   v-for="(error, index) in this.errors" :key=index
                   dense
@@ -18,14 +18,14 @@
                 </v-alert>
             </v-col>
             <v-col cols="10 pt-n1">
-              <v-text prepend-icon="mdi-book-open" style="color: hsla(0,0%,100%,.7)">
+              <p prepend-icon="mdi-book-open" style="color: hsla(0,0%,100%,.7)">
                 <v-icon
                   dark
                   left>
                   mdi-check-circle
                 </v-icon>
                 お問い合わせ種別
-              </v-text>
+              </p>
               <v-radio-group
                 class="ml-8"
                 v-model="inquiry.type"
@@ -75,6 +75,17 @@
         </v-container>
       </v-form>
     </v-sheet>
+    <!-- 完了ダイアログ -->
+    <v-dialog
+      width="400px"
+      v-model="comoleteDialog"
+      persistent>
+      <complete
+        @back="comoleteDialog = !comoleteDialog, back()">
+         <template #title>{{SUCCESS_MSG.REGISTER_SUCCESS}}</template>
+         <template #content>ご登録のメールアドレスへお問い合わせ内容確認のメールを送付しております。</template>
+      </complete>
+    </v-dialog>
   </div>
 </template>
 
@@ -83,10 +94,14 @@ import {Component, Mixins, Emit} from 'vue-property-decorator';
 import Const from '../common/const';
 import Util from '../common/util';
 import Axios from 'axios';
+import Complete from './utilComponent/Complete.vue';
 import { Inquirys } from '../interfaces/Inquirys';
 
 @Component({
   name: "Inquiry",
+  components: {
+    Complete
+  }
 })
 
 export default class Inquiry extends Mixins(Const, Util) {
@@ -99,6 +114,8 @@ export default class Inquiry extends Mixins(Const, Util) {
   private inquiry: Inquirys = {};
   // フォームバリデーションエラー
   private errors: string[] = [];
+  // 完了ダイアログ
+  private comoleteDialog: boolean = false;
   /**
    * データ初期化
    */
@@ -110,6 +127,10 @@ export default class Inquiry extends Mixins(Const, Util) {
    * お問い合わせ開始
   */
   private submitMail(): void {
+    this.errors = [];
+    if(!window.confirm(this.CONFIRM_MSG.REGISTER)) {
+      return;
+    };
     this.setLoading();
     Axios.post('/api/inquiry',{
       inquiry: this.inquiry
@@ -125,6 +146,7 @@ export default class Inquiry extends Mixins(Const, Util) {
         };
         return;
       }
+      this.comoleteDialog = !this.comoleteDialog;
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);

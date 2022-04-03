@@ -176,10 +176,10 @@ class BookMarkController extends Controller
     $input = array_merge($input, array('user_id'=>$user_id));
     // 上部固定が存在しない場合は0を代入し、以降のチェックを適切に行う
     if(empty($input['fixed'])) {
-      $input['fixed'] = config('const.BOOKMARKNOTFIXED');
+      $input['fixed'] = config('const.BOOK_MARK_NOT_FIXED');
     }
     // 上部固定の場合はフォルダIDをnullへ更新
-    if($input['fixed'] === config('const.BOOKMARKFIXED')) {
+    if($input['fixed'] === config('const.BOOK_MARK_FIXED')) {
       $input['book_mark_folders_id'] = null;
     }
     // バリデーション
@@ -219,7 +219,7 @@ class BookMarkController extends Controller
     // user_idをマージ
     $input = array_merge($input,array('user_id'=>$user_id));
     // 上部固定の場合はフォルダIDをnullへ更新
-    if($input['fixed'] === config('const.BOOKMARKFIXED')) {
+    if($input['fixed'] === config('const.BOOK_MARK_FIXED')) {
       $input['book_mark_folders_id'] = null;
     }
     // バリデーション
@@ -367,7 +367,7 @@ class BookMarkController extends Controller
           'book_mark_folders_id' => $bookMarkFoldersId,
           'title' => $title[1] ? $title[1] : $link[1], // タイトル不存在の場合はタイトルはURLとする
           'link' => $link[1],
-          'fixed' => config('const.BOOKMARKNOTFIXED') // インポートの場合は全て上部固定なしとする
+          'fixed' => config('const.BOOK_MARK_NOT_FIXED') // インポートの場合は全て上部固定なしとする
         ];
         // バリデーション
         $bookMark = new BookMark();

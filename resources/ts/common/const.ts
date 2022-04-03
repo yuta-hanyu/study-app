@@ -36,10 +36,12 @@ export default class Const extends Vue {
     EDIT_SUCCESS: 'を編集しました',
     DELETE_SUCCESS: 'を削除しました',
     IMPORT_SUCCESS: '取込が完了しました',
+    REGISTER_SUCCESS: '登録が完了しました',
   });
   // 確認MSG
   CONFIRM_MSG = Object.freeze({
     DELETE: 'を削除しますか？',
-    CANSEL: 'キャンセルしました。'
+    CANSEL: 'キャンセルしました。',
+    REGISTER: '以下の内容にて登録しますか？'
   });
 }
