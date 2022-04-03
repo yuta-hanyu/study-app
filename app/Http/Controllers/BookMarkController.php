@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
+
 use function PHPUnit\Framework\isNull;
 
 class BookMarkController extends Controller
@@ -173,6 +174,14 @@ class BookMarkController extends Controller
     $user_id = Auth::id();
     // user_idをマージ
     $input = array_merge($input, array('user_id'=>$user_id));
+    // 上部固定が存在しない場合は0を代入し、以降のチェックを適切に行う
+    if(empty($input['fixed'])) {
+      $input['fixed'] = config('const.BOOKMARKNOTFIXED');
+    }
+    // 上部固定の場合はフォルダIDをnullへ更新
+    if($input['fixed'] === config('const.BOOKMARKFIXED')) {
+      $input['book_mark_folders_id'] = null;
+    }
     // バリデーション
     $bookMark = new BookMark();
     $validate = $bookMark->validate($input);
@@ -209,6 +218,10 @@ class BookMarkController extends Controller
     $user_id = Auth::id();
     // user_idをマージ
     $input = array_merge($input,array('user_id'=>$user_id));
+    // 上部固定の場合はフォルダIDをnullへ更新
+    if($input['fixed'] === config('const.BOOKMARKFIXED')) {
+      $input['book_mark_folders_id'] = null;
+    }
     // バリデーション
     $bookMark= new BookMark();
     $validate = $bookMark->validate($input);

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTodosTable extends Migration
+class CreateInquirysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateTodosTable extends Migration
      */
     public function up()
     {
-        Schema::create('todos', function (Blueprint $table) {
+        Schema::create('inquirys', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned()->nullable(false);
-            $table->string('title')->nullable(false);
-            $table->string('content',2000)->nullable(true);
-            $table->tinyInteger('state')->nullable(false);
-            $table->tinyInteger('book_mark')->nullable(true)->default(0);
-            $table->dateTime('reminder')->nullable(true);
+            $table->string('type')->nullable(false);
+            $table->string('content',1000)->nullable(true);
             $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
 
@@ -38,6 +35,6 @@ class CreateTodosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('todos');
+        Schema::dropIfExists('inquirys');
     }
 }

@@ -41,13 +41,15 @@ class BookMark extends Model
    */
   public function validate(array $input)
   {
-    Log::info($input);
     $rules = [
       'user_id' => 'required|integer',
-      'book_mark_folders_id' => 'required|integer',
       'title' => 'required|max:255',
       'link' => 'required|url'
     ];
+    // 上部固定の場合はフォルダIDに関するバリデーションを行わない
+    if((int)$input['fixed'] !== config('const.BOOKMARKFIXED')) {
+      $rules = array_merge($rules,array('book_mark_folders_id'=>'required|integer'));
+    }
     return Validator::make($input, $rules);
   }
   /**
