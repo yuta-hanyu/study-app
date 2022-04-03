@@ -5,7 +5,7 @@
 ## migration作成
 php artisan make:migration create_users_table
 php artisan make:migration create_todos_table
-php artisan make:migration create_inquirys_table
+php artisan make:migration create_inquiries_table
 
 ## migraton実行
 php artisan migrate
@@ -15,6 +15,8 @@ php artisan migrate:rollback --step=2
 # model作成
 php artisan make:model BookMarkFolder
 php artisan make:model BookMark
+php artisan make:model Inquiry
+
 
 # seed
 ## seedファイル作成
@@ -49,6 +51,10 @@ if(e.response.status === 401) {
 # コントローラー作成
 php artisan make:controller BookMarkController
 php artisan make:controller InquiryController
+php artisan make:controller MailController
+
+# クラス作成
+php artisan make:mail SendMail
 
 # トランケイト
 mysql> set foreign_key_checks = 0;
@@ -62,3 +68,4 @@ TRUNCATE `study_app`.`book_marks`;
 SET FOREIGN_KEY_CHECKS=1;
 
 SELECT * FROM study_app.book_mark_folders;
+

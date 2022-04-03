@@ -5,7 +5,7 @@
         <v-container>
           <v-row justify="center">
             <p class="dialog-title">ブックマーク登録</p>
-            <v-col cols="10">
+            <v-col cols="12">
                 <v-alert
                   v-for="(error, index) in this.errors" :key=index
                   dense

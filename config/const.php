@@ -1,13 +1,12 @@
 <?php
-// namespace Config\Consts;
-return[
-  'BOOKMARKFIXED' => 1,
-  'BOOKMARKNOTFIXED' => 0,
+return [
+  /** -----ブックマーク関連----- */
+  'BOOK_MARK_FIXED' => 1,
+  'BOOK_MARK_NOT_FIXED' => 0,
+  /** -----メール送信関連----- */
+  'Inquiry' => 1,
+  'TO_BCC_MAIL' => 'remakeremake9011@gmail.com',
 ];
 
-  // const STATUS_LIST = [
-  //     self::STATUS_RECEPT => STATUS_RECEPT_NAME,
-  //     self::STATUS_SENT => STATUS_SENT_NAME,
-  //     self::STATUS_CANCEL => STATUS_CANCEL_NAME
-  // ];
+
 

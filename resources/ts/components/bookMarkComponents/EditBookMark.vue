@@ -5,7 +5,7 @@
         <v-container>
           <v-row justify="center">
             <p class="dialog-title">ブックマーク編集</p>
-            <v-col cols="10">
+            <v-col cols="12">
               <v-alert
                 v-for="(error, index) in this.errors" :key=index
                 dense
@@ -196,6 +196,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
    * ブックマーク削除
    */
   private removeBookMark(): void {
+    this.errors = [];
     if(!window.confirm(`「${this.editBookMark.title}」${this.CONFIRM_MSG.DELETE}`)) {
       return;
     };

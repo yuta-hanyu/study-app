@@ -78,7 +78,6 @@ export default class App extends Vue {
 
   mounted() {
     let routeInstance = this.$route;
-    console.log(routeInstance);
     this.createTitle(routeInstance);
   }
   /**
