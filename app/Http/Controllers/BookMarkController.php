@@ -367,6 +367,7 @@ class BookMarkController extends Controller
           'book_mark_folders_id' => $bookMarkFoldersId,
           'title' => $title[1] ? $title[1] : $link[1], // タイトル不存在の場合はタイトルはURLとする
           'link' => $link[1],
+          'fixed' => config('const.BOOKMARKNOTFIXED') // インポートの場合は全て上部固定なしとする
         ];
         // バリデーション
         $bookMark = new BookMark();
