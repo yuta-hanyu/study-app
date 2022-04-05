@@ -148,7 +148,7 @@
       <new-todo
         @back-todos="back"
         @todo-register="todoRegister"
-        :userId=userId>
+        :user_id=user_id>
       </new-todo>
     </v-dialog>
     <!-- 一括削除ダイアログ -->
@@ -160,7 +160,7 @@
       <all-delete-todo
         @back-todos="back"
         @remove-all="removeAll"
-        :userId=userId>
+        :user_id=user_id>
       </all-delete-todo>
     </v-dialog>
     <!-- 詳細ダイアログ -->
@@ -215,7 +215,7 @@ import { Todos } from '../interfaces/Todos';
 export default class Todo extends Mixins(Const) {
   $refs: any = {}
   // ユーザーID
-  private userId: User = this.$store.state.userInfo.userId;
+  private user_id: User = this.$store.state.userInfo.user_id;
   // 固定表示一覧
   private bookMarkTodos: Todos[] = [];
   // その他一覧
@@ -267,7 +267,7 @@ export default class Todo extends Mixins(Const) {
   private getTodos(): void {
     this.bookMarkTodos = [];
     this.todos = [];
-    Axios.get(`/api/todos/${this.userId}`).then((res) => {
+    Axios.get(`/api/todos/${this.user_id}`).then((res) => {
       let todos: Todos[] = [];
       todos = res.data.result;
       // 固定表示とその他を分別（ステータス完了非表示）

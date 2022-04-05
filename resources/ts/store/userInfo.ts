@@ -10,8 +10,8 @@ type UserState = User & {
 };
 // ログイン情報(param）
 interface userInfoParam {
-  loginUserName: string
-  userId: string
+  name: string
+  user_id: string
   isAuth: boolean
   omitEmail: string
   isLoading: boolean
@@ -19,8 +19,8 @@ interface userInfoParam {
 
 const userInfo = {
   state: {
-    loginUserName: '',
-    userId: '',
+    name: '',
+    user_id: '',
     isAuth: false,
     omitEmail: '',
     isLoading: false,
@@ -32,8 +32,8 @@ const userInfo = {
      * @param any userInfo
      */
     setLoginUser(state: UserState, userInfo: userInfoParam) {
-      state.loginUserName = userInfo.loginUserName
-      state.userId = userInfo.userId,
+      state.name = userInfo.name
+      state.user_id = userInfo.user_id,
       state.isAuth = true
     },
     /**
@@ -44,8 +44,8 @@ const userInfo = {
     resetUserInfo(state: UserState) {
       Object.assign(state,
         {
-          loginUserName: '',
-          userId: '',
+          name: '',
+          user_id: '',
           isAuth: false,
         });
     },

@@ -1,6 +1,8 @@
 export interface User {
-  loginUserName?: string;
-  userId?: string;
+  name?: string;
+  user_id?: string;
   isAuth?: boolean;
-  // isDeleted: Boolean;
 };
+
+// loginUserName?: string;
+//   userId?: string;

@@ -15,10 +15,10 @@ class CreateInquiriesTable extends Migration
     {
         Schema::create('inquiries', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->nullable(false);
-            $table->string('type')->nullable(false);
-            $table->string('content',1000)->nullable(true);
-            $table->tinyInteger('is_deleted')->default(0);
+            $table->bigInteger('user_id')->unsigned()->nullable(false)->comment('ユーザーID');
+            $table->string('type')->nullable(false)->comment('種別');
+            $table->string('content',1000)->nullable(true)->comment('コンテンツ');
+            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
             $table->timestamps();
 
             $table->foreign('user_id')

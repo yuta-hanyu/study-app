@@ -17,8 +17,8 @@ export default new Vuex.Store({
     createPersistedState({
       key: 'study_app_userinfo',
       paths: [
-        'userInfo.userId',
-        'userInfo.loginUserName',
+        'userInfo.user_id',
+        'userInfo.name',
         'userInfo.isAuth',
         'userInfo.omitEmail',
       ],

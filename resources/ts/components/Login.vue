@@ -1,100 +1,126 @@
 <template>
-  <!-- <div> -->
-    <v-container>
-      <v-row justify="center" style="height: 800px;">
-        <v-col class="title-container">
-          <div :class="title">
-            <span>S</span>
-            <span>T</span>
-            <span>U</span>
-            <span>D</span>
-            <span>Y</span>
-            <span>&nbsp;</span>
-            <span>A</span>
-            <span>P</span>
-            <span>P</span>
-          </div>
-        </v-col>
-        <v-col
-          md="10"
-          sm="10"
-          v-if="this.message">
-          <v-row
-            class="mt-3"
-            justify="center">
+  <v-container>
+    <v-row justify="center" style="height: 800px;">
+      <v-col md="7" class="title-container">
+        <div :class="title">
+          <span>S</span>
+          <span>T</span>
+          <span>U</span>
+          <span>D</span>
+          <span>Y</span>
+          <span>&nbsp;</span>
+          <span>A</span>
+          <span>P</span>
+          <span>P</span>
+        </div>
+      </v-col>
+      <v-col
+        md="10"
+        sm="10">
+        <v-row
+          class="mt-3"
+          justify="center">
+          <v-col cols="12">
             <v-alert
+              v-for="(error, index) in errors" :key=index
               dense
-              text
               border="left"
               type="error"
-              class="px-auto"
+              class="px-6 mx-auto"
               width="70%">
-              {{message}}
+                {{error}}
             </v-alert>
-          </v-row>
-        </v-col>
-        <v-col md="10" mx="10">
-          <v-row justify="center">
-            <v-col md="10" mx="10">
-              <v-form>
-                <v-col md="12" align="center">
-                  <v-text-field
-                    dark
-                    class="px-10"
-                    v-model="email"
-                    label="メールアドレス"
-                    required
-                    :counter="255"
-                  ></v-text-field>
-                </v-col>
-                <v-col md="12" align="center">
-                  <v-text-field
-                    dark
-                    class="px-10"
-                    v-model="password"
-                    :counter="8"
-                    label="パスワード"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col class="checkbox">
-                  <v-checkbox
-                    dark
-                    v-model="omitEmailSend"
-                    label="次回以降、メールアドレスの入力をスキップ"
-                    color="red"
-                    dense
-                  ></v-checkbox>
-                </v-col>
-              </v-form>
-            </v-col>
-          </v-row>
-          <v-row justify="center">
-            <v-col md="3" align="center">
-              <v-btn
-                class="font-weight-black"
-                dark
-                width="70%"
-                @click="login(false)"
-                color="orange lighten-2">
-                ログイン
-              </v-btn>
-            </v-col>
-            <v-col md="3">
-              <v-btn
-                class="font-weight-black"
-                align="right"
-                width="70%"
-                color="success"
-                @click="login(true)">
-                ゲストログイン
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-container>
-  <!-- </div> -->
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col md="10" mx="10">
+        <v-row justify="center">
+          <v-col md="10" mx="10">
+            <v-form>
+              <v-col md="12" align="center">
+                <v-text-field
+                  dark
+                  class="px-10"
+                  v-model="email"
+                  label="メールアドレス"
+                  required
+                  :counter="255"
+                ></v-text-field>
+              </v-col>
+              <v-col md="12" align="center">
+                <v-text-field
+                  dark
+                  class="px-10"
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  @click:append="showPassword = !showPassword"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :counter="8"
+                  label="パスワード"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col class="checkbox">
+                <v-checkbox
+                  dark
+                  v-model="omitEmailSend"
+                  label="次回以降、メールアドレスの入力をスキップ"
+                  color="red"
+                  dense
+                ></v-checkbox>
+              </v-col>
+            </v-form>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col md="3" align="right" class="mr-0">
+            <v-btn
+              @click="TemporarySignUpDialog = !TemporarySignUpDialog"
+              class="font-weight-black"
+              dark
+              width="60%"
+              elevation="11"
+              color="success">
+              会員登録
+            </v-btn>
+          </v-col>
+          <v-col md="3" align="center">
+            <v-btn
+              class="font-weight-black"
+              dark
+              width="60%"
+              elevation="11"
+              @click="login(false)"
+              color="success">
+              ログイン
+            </v-btn>
+          </v-col>
+          <v-col md="3" align="left" class="mr-0">
+            <v-btn
+              dark
+              class="font-weight-black"
+              align="right"
+              width="60%"
+              elevation="11"
+              color="success"
+              @click="login(true)">
+              ゲストログイン
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <!-- 新規会員登録ダイアログ -->
+    <v-dialog
+      v-model="TemporarySignUpDialog"
+      persistent
+      width="600px">
+      <temporary-sign-up
+        @back="TemporarySignUpDialog=!TemporarySignUpDialog"
+        @sign-uped="TemporarySignUpDialog=!TemporarySignUpDialog">
+      </temporary-sign-up>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -102,24 +128,39 @@ import {Component, Mixins} from 'vue-property-decorator';
 import Const from '../common/const';
 import Axios from 'axios';
 import Util from '../common/util';
-
+import SignUp from './accountComponents/SignUp.vue';
+import TemporarySignUp from './accountComponents/TemporarySignUp.vue';
 
 @Component ({
   name: "Login",
+  components: {
+    SignUp,
+    TemporarySignUp
+  },
 })
 
-export default class Login extends Mixins(Const, Util){
+export default class Login extends Mixins(Const, Util) {
   // 認証メールアドレス
   private email: string = this.$store.state.userInfo.omitEmail;
   // 認証パスワード
   private password: string = "";
+  // パスワード表示非表示フラグ
+  private showPassword: boolean = false;
   // バリデーションMSG
   private validatMessage: string[] = [];
   // 結果MSG
   private message: string = "";
   // メールアドレススキップ
   private omitEmailSend: boolean = false;
+  // アプリ名タイトル
   private title: string = 'title';
+  // バリデーションエラー
+  private errors: string[] = [];
+  // 会員登録ダイアログ
+  private signUpDialog: boolean = false;
+  // 仮会員登録ダイアログ
+  private TemporarySignUpDialog: boolean = false;
+
   mounted() {
     this.closeLoading();
     // タイトル表示制御
@@ -133,7 +174,9 @@ export default class Login extends Mixins(Const, Util){
   /**
    * ログインボタン押下
    */
-  login(gestFlag: boolean): void {
+  private login(gestFlag: boolean): void {
+    this.errors = [];
+    this.setLoading();
     // ゲストログインの場合
     if(gestFlag === true) {
         this.email = this.GUEST_USER.email;
@@ -149,40 +192,40 @@ export default class Login extends Mixins(Const, Util){
         email: this.email,
         password: this.password,
       },{withCredentials:true}).then((res) => {
-        if( res.data.retultFlag == true ) {
+        this.closeLoading();
+        if(res.data.retultFlag === true ) {
           // vuexにユーザー情報をセット
           this.$store.dispatch('setLoginUser', {
-            loginUserName: res.data.userInfo.name,
-            userId: res.data.userInfo.userId,
+            name: res.data.userInfo.name,
+            user_id: res.data.userInfo.user_id,
           });
           // vuexにメールアドレスをセット
-          if(this.omitEmailSend == true) {
+          if(this.omitEmailSend === true) {
             this.$store.dispatch('setOmitEmail', {
               omitEmail: this.email
             });
           };
           this.$router.push("/bookMark");
-        } else {
-          this.validatMessage = this.changeErrors(res.data.validatMessage);
-        };
+        }
+        if(res.data.retultFlag === false) {
+          for (let [key, value] of Object.entries(res.data.validatMessage)) {
+            if(typeof value === 'object') {
+              if(value !== undefined && value !== null){
+                this.errors.push(value[0]);
+              }
+            }
+          };
+          return;
+        }
       }).catch((e) => {
         //認証エラー
-        this.message = this.ERROR_MSG.LOGIN_FAILD
+        this.errors.push(this.ERROR_MSG.LOGIN_FAILD);
       });
     }).catch((e) => {
+      this.closeLoading();
       //認証エラー
-      window.alert(this.ERROR_MSG.AUTH_FAILD)
+      window.alert(this.ERROR_MSG.AUTH_FAILD);
     });
-  }
-  /**
-   * エラーメッセージをオブジェクトから配列へ変換
-   */
-  private changeErrors(message: string[]): string[] {
-    let errors: string[] = [];
-    for (let [key, value] of Object.entries(message)) {
-      errors.push(value[0]);
-    }
-    return errors;
   }
 }
 </script>

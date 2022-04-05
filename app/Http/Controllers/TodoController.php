@@ -65,7 +65,7 @@ class TodoController extends Controller
     DB::beginTransaction();
     try{
       $todo = new Todo();
-      $todo->user_id = $request->userId;
+      $todo->user_id = $request->user_id;
       $todo->title = $request->title;
       $todo->content = $request->content;
       $todo->state = $request->state;
@@ -135,7 +135,7 @@ class TodoController extends Controller
     DB::beginTransaction();
     try {
       $todo = new Todo();
-      $updateTodo = $todo->where('user_id', $request->userId)->get();
+      $updateTodo = $todo->where('user_id', $request->user_id)->get();
       foreach($request->id as $id){
         $updateTodo = $updateTodo->where('id', $id)->first();
         $updateTodo->reminder = null;

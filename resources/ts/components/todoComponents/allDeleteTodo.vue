@@ -45,7 +45,7 @@ import Axios from 'axios';
 
 export default class AllDeleteTodo extends Vue {
   @Prop({type: Number, default: false})
-    userId!: number;
+    user_id!: number;
   // 戻るボタン押下
   @Emit('back-todos')
     backTodos(): void {
@@ -60,7 +60,7 @@ export default class AllDeleteTodo extends Vue {
    * 削除ボタン押下
    */
   private removeAll(): void {
-    Axios.delete(`/api/todos/${this.userId}`).then((res) => {
+    Axios.delete(`/api/todos/${this.user_id}`).then((res) => {
       this.succueseMsg = 'todoを全て削除しました'
       this.emitRemoveAll(this.succueseMsg);
       this.backTodos();

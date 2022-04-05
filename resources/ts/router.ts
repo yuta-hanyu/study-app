@@ -6,6 +6,7 @@ import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import Inquiry from './components/inquiry.vue';
 import bookMark from './components/BookMark.vue';
+import Verify from './components/Verify.vue';
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,12 @@ const router = new VueRouter({
       name: 'bookMark',
       component: bookMark,
       meta: {isAuthenticated: true, title: 'ブックマーク管理'},
+    },
+    {
+      path: '/verify/:token',
+      name: 'verify',
+      component: Verify,
+      meta: {title: '会員本登録'},
     },
 
   ]

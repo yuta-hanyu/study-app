@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
-
 use function PHPUnit\Framework\isNull;
 
 class BookMarkController extends Controller
@@ -20,10 +19,10 @@ class BookMarkController extends Controller
   */
   public function index($user_id)
   {
-    Log::info('BookMark_BookMarkFolder一覧取得開始');
+    Log::info('ブックマーク_ブックマークフォルダ一覧取得開始');
     $bookMarkFolder = new BookMarkFolder();
     $bookMark = new BookMark();
-    // userIdに紐づくフォルダ情報取得
+    // user_idに紐づくフォルダ情報取得
     $bookMarkFolders = $bookMarkFolder
                         ->select(
                           'id',
@@ -35,7 +34,7 @@ class BookMarkController extends Controller
                         ->orderBy('book_mark_folders.created_at', 'desc')
                         ->get()
                         ->toArray();
-    // userIdに紐づくブックマーク情報取得
+    // user_idに紐づくブックマーク情報取得
     $bookMarks = $bookMark
                   ->select(
                     'id',
@@ -50,7 +49,7 @@ class BookMarkController extends Controller
                   ->orderBy('book_marks.created_at', 'desc')
                   ->get()
                   ->toArray();
-    Log::info('BookMark_BookMarkFolder一覧取得終了');
+    Log::info('ブックマーク_ブックマークフォルダ一覧取得終了');
     return response()->json([
       'bookMarks' => $bookMarks,
       'bookMarkFolders' => $bookMarkFolders,
@@ -80,7 +79,6 @@ class BookMarkController extends Controller
     // 登録開始
     DB::beginTransaction();
     try{
-      $bookMarkFolder = new BookMarkFolder();
       $bookMarkFolder->fill($input);
       $bookMarkFolder->save();
       DB::commit();

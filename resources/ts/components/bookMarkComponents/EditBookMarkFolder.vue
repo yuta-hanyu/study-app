@@ -142,7 +142,7 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
     this.setLoading();
     Axios.post('/api/editBookMarkFolder',{
       editFolder: this.targetEditBookMarkFolder!,
-      user_id: this.$store.state.userInfo.userId
+      user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
       this.closeLoading();
       if(res.data.validateState === false) {
@@ -172,7 +172,7 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
     this.setLoading();
     Axios.post('/api/removeBookMarkFolder',{
       editFolder: this.editFolder,
-      user_id: this.$store.state.userInfo.userId
+      user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
       this.closeLoading();
       let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;

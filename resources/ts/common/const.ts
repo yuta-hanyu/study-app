@@ -37,6 +37,7 @@ export default class Const extends Vue {
     DELETE_SUCCESS: 'を削除しました',
     IMPORT_SUCCESS: '取込が完了しました',
     REGISTER_SUCCESS: '登録が完了しました',
+    REGISTER_TEMPORART_SIGN_UP: '仮登録メールをお送りしました',
   });
   // 確認MSG
   CONFIRM_MSG = Object.freeze({
