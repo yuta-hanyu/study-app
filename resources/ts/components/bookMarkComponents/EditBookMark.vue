@@ -127,7 +127,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
   @Emit('bookMark-edited')
     bookMarkEdited(succueseMsg: string): void {
     };
-  // フォームバリデーションエラー
+  // バリデーションエラー
   private errors: string[] = [];
   // ブックマーク（編集用）
   private targetEditBookMark: BookMarks | null = Object.assign({}, this.editBookMark);
@@ -172,7 +172,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     this.setLoading();
     Axios.post('/api/editBookMark',{
       editBookMark: this.targetEditBookMark,
-      user_id: this.$store.state.userInfo.userId
+      user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
       this.closeLoading();
       if(res.data.validateState === false) {
@@ -203,7 +203,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     this.setLoading();
     Axios.post('/api/removeBookMark',{
       editBookMark: this.editBookMark,
-      user_id: this.$store.state.userInfo.userId
+      user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
       let succueseMsg = `「${this.editBookMark.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;
       this.bookMarkEdited(succueseMsg);

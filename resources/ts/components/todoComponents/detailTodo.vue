@@ -155,9 +155,9 @@ import TimePicker from '../utilComponent/TimePicker.vue';
 import Const from '../../common/const';
 import { Todos } from '../../interfaces/Todos';
 import Axios from 'axios';
-// Todo型にuserIdを付与
+// Todo型にuser_idを付与
 type typeEditTodo = Todos & {
-  userId: number;
+  user_id: number;
 };
 
 @Component({
@@ -185,7 +185,7 @@ export default class DetailTodo extends Mixins(Const) {
   };
   // 編集todo
   private editTodo: typeEditTodo = {
-    userId: this.detailTodo.userId,
+    user_id: this.detailTodo.user_id,
     title: this.detailTodo.title,
     content: this.detailTodo.content,
     state: this.detailTodo.state,
@@ -280,7 +280,7 @@ export default class DetailTodo extends Mixins(Const) {
    * 初期データセット
    */
   private setVal(): void {
-    this.editTodo.userId = this.detailTodo.userId,
+    this.editTodo.user_id = this.detailTodo.user_id,
     this.editTodo.title = this.detailTodo.title,
     this.editTodo.content = this.detailTodo.content,
     this.editTodo.state = this.detailTodo.state,

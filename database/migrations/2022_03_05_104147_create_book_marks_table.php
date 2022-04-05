@@ -15,13 +15,13 @@ class CreateBookMarksTable extends Migration
     {
         Schema::create('book_marks', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->nullable(false);
-            $table->bigInteger('book_mark_folders_id')->unsigned()->nullable(true);
-            $table->string('title')->nullable(false);
-            $table->longText('link')->nullable(false);
-            $table->string('memo',1000)->nullable(true);
-            $table->tinyInteger('fixed')->default(0)->nullable(true);
-            $table->tinyInteger('is_deleted')->default(0);
+            $table->bigInteger('user_id')->unsigned()->nullable(false)->comment('ユーザーID');
+            $table->bigInteger('book_mark_folders_id')->unsigned()->nullable(true)->comment('フォルダID');
+            $table->string('title')->nullable(false)->comment('タイトル');
+            $table->longText('link')->nullable(false)->comment('リンク');
+            $table->string('memo',1000)->nullable(true)->comment('メモ');
+            $table->tinyInteger('fixed')->default(0)->nullable(true)->comment('固定');
+            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
             $table->timestamps();
 
             $table->foreign('user_id')

@@ -154,7 +154,7 @@ import { Todos } from '../../interfaces/Todos';
 
 export default class NewTodo extends Mixins(Const) {
   @Prop({type: Number, default: false})
-    userId!: number;
+    user_id!: number;
   // 新規登録todo
   private newTodo: Todos = {
     title: '',
@@ -203,7 +203,7 @@ export default class NewTodo extends Mixins(Const) {
       state: this.newTodo.state,
       book_mark: this.newTodo.book_mark,
       reminder: this.newTodo.reminder,
-      userId: this.userId,
+      user_id: this.user_id,
       reminderDate: this.newTodo.reminderDate,
       reminderTime: this.newTodo.reminderTime,
     }).then((res) => {

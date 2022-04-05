@@ -6,6 +6,7 @@
 php artisan make:migration create_users_table
 php artisan make:migration create_todos_table
 php artisan make:migration create_inquiries_table
+php artisan make:migration create_email_verification_table
 
 ## migraton実行
 php artisan migrate
@@ -16,7 +17,7 @@ php artisan migrate:rollback --step=2
 php artisan make:model BookMarkFolder
 php artisan make:model BookMark
 php artisan make:model Inquiry
-
+php artisan make:model EmailVerification
 
 # seed
 ## seedファイル作成
@@ -52,9 +53,12 @@ if(e.response.status === 401) {
 php artisan make:controller BookMarkController
 php artisan make:controller InquiryController
 php artisan make:controller MailController
+php artisan make:controller UserController
+php artisan make:controller RegisterController
+
 
 # クラス作成
-php artisan make:mail SendMail
+php artisan make:mail InquiryMail
 
 # トランケイト
 mysql> set foreign_key_checks = 0;

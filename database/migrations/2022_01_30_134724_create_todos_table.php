@@ -15,13 +15,13 @@ class CreateTodosTable extends Migration
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->nullable(false);
-            $table->string('title')->nullable(false);
-            $table->string('content',2000)->nullable(true);
-            $table->tinyInteger('state')->nullable(false);
-            $table->tinyInteger('book_mark')->nullable(true)->default(0);
-            $table->dateTime('reminder')->nullable(true);
-            $table->tinyInteger('is_deleted')->default(0);
+            $table->bigInteger('user_id')->unsigned()->nullable(false)->comment('ユーザーID');
+            $table->string('title')->nullable(false)->comment('タイトル');
+            $table->string('content',2000)->nullable(true)->comment('コンテンツ');
+            $table->tinyInteger('state')->nullable(false)->comment('状態');
+            $table->tinyInteger('book_mark')->nullable(true)->default(0)->comment('ブックマークフラグ');
+            $table->dateTime('reminder')->nullable(true)->comment('リマインダー');
+            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
             $table->timestamps();
 
             $table->foreign('user_id')

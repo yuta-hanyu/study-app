@@ -21,6 +21,15 @@ Route::post('/login', 'App\Http\Controllers\LoginController@login');
  * ログアウト
  */
 Route::post('/logout', 'App\Http\Controllers\LoginController@logout');
+/**
+ *仮会員登録
+ */
+Route::post('/register', 'App\Http\Controllers\RegisterController@emailVerification');
+/**
+ *本会員登録
+ */
+Route::post('/register/verify', 'App\Http\Controllers\RegisterController@store');
+
 
 Route::middleware('auth:sanctum')->group(function () {
   /**

@@ -15,10 +15,10 @@ class CreateBookMarkFoldersTable extends Migration
     {
         Schema::create('book_mark_folders', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->nullable(false);
-            $table->string('title')->nullable(false);
-            $table->char('color', 15)->default('#757575FF')->nullable(true);
-            $table->tinyInteger('is_deleted')->default(0);
+            $table->bigInteger('user_id')->unsigned()->nullable(false)->comment('ユーザーID');
+            $table->string('title')->nullable(false)->comment('タイトル');
+            $table->char('color', 15)->default('#757575FF')->nullable(true)->comment('背景色');
+            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
             $table->timestamps();
 
             $table->foreign('user_id')

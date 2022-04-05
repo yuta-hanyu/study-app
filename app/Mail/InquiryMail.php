@@ -8,41 +8,42 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SendMail extends Mailable
+class InquiryMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     protected $title;
     protected $type;
     protected $content;
+    protected $studyAppUrl;
 
     /**
-     * Create a new message instance.
+     * お問い合わせ専用
      *
      * @return void
      */
-    public function __construct($mailType, $name, $type, $content)
+    public function __construct($name, $type, $content)
     {
-      // お問い合わせメールの場合の値をセット
-      if($mailType === config('const.Inquiry')) {
         $this->title = sprintf('%sさん、お問い合わせ頂きありがとうございます。', $name);
         $this->type = $type;
         $this->content = $content;
-      }
+        $this->studyAppUrl = env('APP_URL')."login";
     }
 
     /**
-     * Build the message.
+     * お問い合わせ専用
      *
      * @return $this
      */
     public function build()
     {
+      Log::info($this->studyAppUrl);
       return $this->view('emails.inquiryReplay')
                     ->subject($this->title)
                     ->with([
                         'type' => $this->type,
                         'content' => $this->content,
+                        'studyAppUrl' => $this->studyAppUrl,
                       ]);
     }
 }

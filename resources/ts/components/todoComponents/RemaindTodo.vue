@@ -64,7 +64,7 @@ export default class RemaindTodo extends Mixins(Const) {
       return todo.id;
     });
     Axios.put(`/api/todo/updateRemaind`, {
-      userId: this.$store.state.userInfo.userId,
+      user_id: this.$store.state.userInfo.user_id,
       id: ids,
     }).then((res) => {
       this.backTodos();

@@ -16,7 +16,7 @@
           dark
           left>
           mdi-human-greeting-variant
-        </v-icon>{{$store.state.userInfo.loginUserName}}
+        </v-icon>{{$store.state.userInfo.name}}
     </v-chip>
     </v-app-bar>
       <v-navigation-drawer

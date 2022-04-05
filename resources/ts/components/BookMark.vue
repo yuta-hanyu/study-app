@@ -252,7 +252,7 @@ import EditBookMarkFolder from './bookMarkComponents/EditBookMarkFolder.vue';
 import NewBookMark from './bookMarkComponents/NewBookMark.vue';
 import EditBookMark from './bookMarkComponents/EditBookMark.vue';
 import ImportBookMark from './bookMarkComponents/ImportBookMark.vue';
-import Loading from '../global/Loading.vue'
+import Loading from '../global/Loading.vue';
 
 @Component({
   name: 'BookMark',
@@ -317,7 +317,7 @@ export default class BookMark extends Mixins(Const, Util) {
    */
   private getBookMarks(): void {
     this.setLoading();
-    Axios.get(`/api/bookMarks/${this.$store.state.userInfo.userId}`).then((res) => {
+    Axios.get(`/api/bookMarks/${this.$store.state.userInfo.user_id}`).then((res) => {
       this.bookMarkFolders = res.data.bookMarkFolders;
       this.bookMarks = res.data.bookMarks;
       this.closeLoading();
