@@ -128,13 +128,13 @@ import {Component, Mixins} from 'vue-property-decorator';
 import Const from '../common/const';
 import Axios from 'axios';
 import Util from '../common/util';
-import SignUp from './accountComponents/SignUp.vue';
+// import SignUp from './accountComponents/SignUp.vue';
 import TemporarySignUp from './accountComponents/TemporarySignUp.vue';
 
 @Component ({
   name: "Login",
   components: {
-    SignUp,
+    // SignUp,
     TemporarySignUp
   },
 })
