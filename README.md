@@ -73,3 +73,6 @@ SET FOREIGN_KEY_CHECKS=1;
 
 SELECT * FROM study_app.book_mark_folders;
 
+# docker 
+docker-compose up -d
+
