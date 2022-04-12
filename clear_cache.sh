@@ -1,5 +1,5 @@
 #!/bin/sh
-docker exec -i -t 29de9ad28435 bash -c "
+docker exec -i -t 650469629f2a bash -c "
 php artisan cache:clear
 php artisan config:clear
 php artisan config:cache
