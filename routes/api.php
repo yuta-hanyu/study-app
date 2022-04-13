@@ -26,9 +26,13 @@ Route::post('/logout', 'App\Http\Controllers\LoginController@logout');
  */
 Route::post('/register', 'App\Http\Controllers\RegisterController@emailVerification');
 /**
+ *トークン認証
+ */
+Route::post('/register/tokenVerify', 'App\Http\Controllers\RegisterController@tokenVerify');
+/**
  *本会員登録
  */
-Route::post('/register/verify', 'App\Http\Controllers\RegisterController@store');
+Route::post('/register/newUser', 'App\Http\Controllers\RegisterController@store');
 
 
 Route::middleware('auth:sanctum')->group(function () {

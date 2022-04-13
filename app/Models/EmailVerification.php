@@ -45,4 +45,19 @@ class EmailVerification extends Model
     ];
     return Validator::make($input->input(), $rules);
   }
+  /**
+   * 認証対象tokenの抽出
+   */
+  public static function findByToken($token)
+  {
+    return self::where('token', '=', $token)->first();
+  }
+
+  // /**
+  //  * 本登録完了後のステータス更新
+  //  */
+  // public function register()
+  // {
+  //   $this->status = config('const.REGISTERED');
+  // }
 }
