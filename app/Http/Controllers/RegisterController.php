@@ -9,9 +9,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 class RegisterController extends Controller
 {
+  /**
+  * ユーザー情報取得
+  * @return Http response
+  */
+  public function index(Request $request)
+  {
+    Log::info('ユーザー情報取得開始');
+    $id = Auth::id();
+    $user = new User;
+    $userInfo = $user->where('id', '=', $id)->first();
+    return response()->json(['userInfo' => $userInfo]);
+    Log::info('ユーザー情報取得終了');
+  }
   /**
   * 仮登録情報を登録
   * @return Http response

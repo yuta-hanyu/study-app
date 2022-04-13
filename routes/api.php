@@ -100,6 +100,10 @@ Route::middleware('auth:sanctum')->group(function () {
    * お問い合わせ
    */
   Route::post('/inquiry', 'App\Http\Controllers\InquiryController@store');
+  /**
+   * ユーザー情報取得
+   */
+  Route::get('/register/index', 'App\Http\Controllers\RegisterController@index');
 });
 
 

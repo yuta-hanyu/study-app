@@ -7,6 +7,7 @@ import Logout from './components/Logout.vue';
 import Inquiry from './components/inquiry.vue';
 import bookMark from './components/BookMark.vue';
 import Verify from './components/Verify.vue';
+import Account from './components/Account.vue'
 
 Vue.use(VueRouter)
 
@@ -48,6 +49,12 @@ const router = new VueRouter({
       name: 'verify',
       component: Verify,
       meta: {title: '会員本登録'},
+    },
+    {
+      path: '/account',
+      name: 'Account',
+      component: Account,
+      meta: {isAuthenticated: true, title: '会員情報'},
     },
 
   ]
