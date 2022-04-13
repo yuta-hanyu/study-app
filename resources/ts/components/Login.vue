@@ -128,7 +128,6 @@ import {Component, Mixins} from 'vue-property-decorator';
 import Const from '../common/const';
 import Axios from 'axios';
 import Util from '../common/util';
-// import SignUp from './accountComponents/SignUp.vue';
 import TemporarySignUp from './accountComponents/TemporarySignUp.vue';
 
 @Component ({
@@ -192,7 +191,6 @@ export default class Login extends Mixins(Const, Util) {
         email: this.email,
         password: this.password,
       },{withCredentials:true}).then((res) => {
-        this.closeLoading();
         if(res.data.retultFlag === true ) {
           // vuexにユーザー情報をセット
           this.$store.dispatch('setLoginUser', {
@@ -222,10 +220,9 @@ export default class Login extends Mixins(Const, Util) {
         this.errors.push(this.ERROR_MSG.LOGIN_FAILD);
       });
     }).catch((e) => {
-      this.closeLoading();
       //認証エラー
       window.alert(this.ERROR_MSG.AUTH_FAILD);
-    });
+    }).finally(() => this.closeLoading());
   }
 }
 </script>

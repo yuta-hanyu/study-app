@@ -8,7 +8,6 @@
   <p>お問い合わせ種別：{{$type}}</p>
   <p>お問い合わせ内容：{{$content}}</p>
   <p>お問い合わせ内容：{{$studyAppUrl}}</p>
-
   <hr>
   <a href="{{ $studyAppUrl }}">StudyAppへログイン</a>
 </body>

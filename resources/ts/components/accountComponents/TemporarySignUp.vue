@@ -7,15 +7,23 @@
             <p class="dialog-title">仮会員登録</p>
               <v-col cols="12" v-if="errors.length">
                 <v-alert
-                v-for="(error, index) in this.errors" :key=index
-                dense
-                text
-                border="left"
-                type="error"
-                class="px-6 mx-auto"
-                width="70%">
-                {{error}}
+                  v-for="(error, index) in this.errors" :key=index
+                  dense
+                  text
+                  border="left"
+                  type="error"
+                  class="px-6 mx-auto"
+                  width="70%">
+                  {{error}}
               </v-alert>
+              </v-col>
+              <v-col cols="10" class="mt-n5">
+                <v-sheet class="px-2 py-2" color="#1B5E20" rounded>
+                  <p class="mb-0">会員登録の仮登録を行います。<br/>
+                  メールアドレスをご入力の上、仮登録ボタンを押下してください。<br/>
+                  入力したメールアドレスへ本登録を行うURLを送信致しますので、メール記載のURLへアクセスし、本登録を行なってください。
+                  </p>
+                </v-sheet>
               </v-col>
               <v-col cols="10">
                 <v-row justify="center">

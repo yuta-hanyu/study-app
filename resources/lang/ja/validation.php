@@ -85,7 +85,7 @@ return [
     'max' => [
         'numeric' => 'The :attribute must not be greater than :max.',
         'file' => 'The :attribute must not be greater than :max kilobytes.',
-        'string' => ':attribute は15文字以内で入力してください',
+        'string' => ':attribute は :max 文字以内で入力してください',
         'array' => 'The :attribute must not have more than :max items.',
     ],
     'mimes' => 'The :attribute must be a file of type: :values.',
@@ -124,9 +124,9 @@ return [
     'starts_with' => 'The :attribute must start with one of the following: :values.',
     'string' => 'The :attribute は文字列でご入力ください。',
     'timezone' => 'The :attribute must be a valid timezone.',
-    'unique' => 'この:attributeはすでに登録されています。',
+    'unique' => 'この:attributeはすでに登録されています',
     'uploaded' => 'The :attribute failed to upload.',
-    'url' => 'URLではありません。',
+    'url' => 'URLではありません',
     'uuid' => 'The :attribute must be a valid UUID.',
 
     /*
@@ -167,6 +167,7 @@ return [
       'book_mark_folders_id' => 'ブックマークフォルダ',
       'type' => '種別',
       'content' => 'お問い合わせ内容',
+      'name' => 'お名前',
     ],
 
 ];
