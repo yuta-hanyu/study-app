@@ -104,6 +104,10 @@ Route::middleware('auth:sanctum')->group(function () {
    * ユーザー情報取得
    */
   Route::get('/register/index', 'App\Http\Controllers\RegisterController@index');
+  /**
+   *会員情報編集
+  */
+  Route::post('/register/edit_user', 'App\Http\Controllers\RegisterController@update');
 });
 
 

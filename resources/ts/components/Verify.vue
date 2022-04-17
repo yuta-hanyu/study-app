@@ -32,7 +32,7 @@
                     <v-col cols="10">
                       <v-text-field
                         v-model="newUserInfo.name"
-                        prepend-icon="mdi-email"
+                        prepend-icon="mdi-account"
                         label="お名前">
                       </v-text-field>
                     </v-col>
@@ -201,7 +201,11 @@ export default class Verify extends Mixins(Const, Util) {
       this.errors.push('パスワードが一致していません。');
       return;
     }
-    if(!window.confirm(`ご入力いただいた内容で本登録を行います？`)) {
+    if (!this.newUserInfo.password || !this.confirmPassword) {
+      this.errors.push('パスワードを入力してください。');
+      return;
+    }
+    if(!window.confirm(`ご入力いただいた内容で本登録を行いますか？`)) {
       return;
     };
     this.setLoading();
@@ -209,7 +213,6 @@ export default class Verify extends Mixins(Const, Util) {
       token: this.$route.params.token,
       newUserInfo: this.newUserInfo
     }).then((res) => {
-      console.log(res);
       if(res.data.validateState === false) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
