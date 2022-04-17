@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-app-bar
+      color="teal darken-4"
       app
       dark>
     <v-app-bar-nav-icon @click="drawer=true"></v-app-bar-nav-icon>

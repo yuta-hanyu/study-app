@@ -15,6 +15,7 @@ export default class Const extends Vue {
     // {name: 'トップ', url: '/'},
     {name: 'タスク管理', url: '/todo'},
     {name: 'ブックマーク管理', url: '/bookMark'},
+    {name: '会員情報', url: '/account'},
   ]);
   /** -----プロパティ関連----- */
   // ブックマーク上部固定

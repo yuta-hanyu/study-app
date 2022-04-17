@@ -103,7 +103,7 @@ export default class App extends Vue {
 
 <style lang="scss">
 .theme--light.v-application {
-  background-color: #666666;
+  background-color: #212121;
   color: #fff;
 }
 .v-application{

@@ -9,9 +9,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 class RegisterController extends Controller
 {
+  /**
+  * ユーザー情報取得
+  * @return Http response
+  */
+  public function index(Request $request)
+  {
+    Log::info('ユーザー情報取得開始');
+    $id = Auth::id();
+    $user = new User;
+    $userInfo = $user
+                  ->select(
+                    'id',
+                    'name',
+                    'email'
+                  )
+                  ->where('id', '=', $id)->first();
+    Log::info('ユーザー情報取得終了');
+    return response()->json(['userInfo' => $userInfo]);
+  }
   /**
   * 仮登録情報を登録
   * @return Http response
@@ -86,7 +107,6 @@ class RegisterController extends Controller
   {
     Log::info('本会員登録開始');
     $input = $request['newUserInfo'];
-    Log::info($input);
     // バリデーション
     $user = new User();
     $validate = $user->validate($input);
@@ -115,4 +135,67 @@ class RegisterController extends Controller
     }
     Log::info('本会員登録終了');
   }
+  /**
+  * 会員情報編集
+  * @return Http response
+  */
+  public function update(Request $request)
+  {
+    Log::info('会員情報編集開始');
+    $userInfo = User::find(Auth::id());
+    $user = new User();
+    // ゲストユーザー編集不可チェック
+    $checkGuest = [];
+    $checkGuest['gestUserEmail'] = $userInfo->email;
+    $validate = $user->guestUserValidate($checkGuest);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::warning("会員情報編集失敗_ゲストユーザー編集不可チェックバリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 既存パスワードとの相関チェック
+    $checkPassword = [];
+    $checkPassword = [
+      'passwordComparison' => [
+        'hashPassword' => $userInfo->password,
+        'inputPassword' => $request['oldPassword'],
+      ]
+    ];
+    $validate = $user->passwordComparisonValidate($checkPassword);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::warning("会員情報編集失敗_既存パスワードとの相関チェックバリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 会員情報更新バリデーション
+    $input = [];
+    $input = $request['editUserInfo'];
+    $input['password'] = $request['newPassword'];
+    $editFlag = true;
+    $validate = $user->validate($input, $editFlag);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::warning("会員情報編集失敗_バリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $input['password'] = Hash::make($input['password']);
+      $userInfo->fill($input);
+      $userInfo->save();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('会員情報編集失敗');
+      Log::info($e);
+      DB::rollback();
+      return response()->json([], 500);
+    }
+    Log::info('会員情報編集終了');
+    return;
+  }
+
 }

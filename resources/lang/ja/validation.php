@@ -128,6 +128,9 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'URLではありません',
     'uuid' => 'The :attribute must be a valid UUID.',
+    'passwordComparison' => '既存の:attributeと一致しません',
+    'gestUserEmail' => ':attribute情報は編集・削除できません',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -162,12 +165,14 @@ return [
       'state' => 'ステータス',
       'email' => 'メールアドレス',
       'password' => 'パスワード',
+      'passwordComparison' => 'パスワード',
       'color' => 'カラー',
       'link' => 'リンク',
       'book_mark_folders_id' => 'ブックマークフォルダ',
       'type' => '種別',
       'content' => 'お問い合わせ内容',
       'name' => 'お名前',
+      'gestUserEmail' => 'ゲストユーザー'
     ],
 
 ];

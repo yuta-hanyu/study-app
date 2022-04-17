@@ -13,6 +13,7 @@ return [
   'MAIL_VERIFYED' => 1, //メールアドレス認証
   'REGISTERED' => 2,    // 本会員登録完了
   'TEMPORARY_EXPIRATION_DATETIME' => 1, // 仮登録有効期限
+  'GUEST_USER_Email' => 'guest@gmail.com', // ゲストユーザー
 ];
 
 

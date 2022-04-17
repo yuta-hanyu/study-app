@@ -4,7 +4,7 @@
       <v-form>
         <v-container>
           <v-row justify="center">
-            <p class="dialog-title mb-n3">お問いわせ</p>
+            <p class="dialog-title mb-n3">お問い合わせ</p>
             <v-col cols="12">
                 <v-alert
                   v-for="(error, index) in this.errors" :key=index
