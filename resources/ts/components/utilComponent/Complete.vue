@@ -3,7 +3,7 @@
     <v-sheet dark width="400px" class="kokuban my-0">
       <v-row justify="center" class="px-2">
         <v-col md=10 class="text-center">
-          <h4 class="dialog-title"><slot name="title"></slot></h4>
+          <h5 class="dialog-title"><slot name="title"></slot></h5>
         </v-col>
         <v-col md=12>
           <p><slot name="content"></slot></p>
