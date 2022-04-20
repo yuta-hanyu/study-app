@@ -152,6 +152,16 @@
     </v-tabs-items>
   </v-card>
 </v-row>
+<!-- 退会完了ダイアログ -->
+  <v-dialog
+    width="400px"
+    v-model="completeDialog"
+    persistent>
+    <complete
+      @back="completeDialog = !completeDialog, backLogin()">
+      <template #title>退会しました</template>
+    </complete>
+  </v-dialog>
 </v-container>
 </template>
 
@@ -162,11 +172,14 @@ import Const from '../common/const';
 import Util from '../common/util';
 import { User } from '../interfaces/User';
 import AlertMsg from '../components/utilComponent/AlertMsg.vue';
+import Complete from './utilComponent/Complete.vue';
+
 
 @Component({
   name: 'Account',
   components: {
-    AlertMsg
+    AlertMsg,
+    Complete
   },
 })
 
@@ -195,6 +208,8 @@ export default class Account extends Mixins(Const, Util) {
   private alertType: 'error'|'success'|'' = '';
   // 処理成功MSG
   private succueseMsg: string = '';
+  // 完了ダイアログ
+  private completeDialog: boolean = false;
 
   mounted(){
     this.getUserInfo();
@@ -283,7 +298,7 @@ export default class Account extends Mixins(Const, Util) {
         return;
       }
       this.$store.dispatch('resetUserInfo');
-      this.$router.push('/login');
+      this.completeDialog = !this.completeDialog;
     }).catch((e) => {
       this.serverError(e);
       this.authCheck(e);
@@ -297,6 +312,12 @@ export default class Account extends Mixins(Const, Util) {
       this.succueseMsg = '';
     }, 10000);
   }
+  /**
+   * ログイン画面へ戻る
+   */
+  private backLogin(): void {
+    this.$router.push("/login");
+  };
 }
 </script>
 
