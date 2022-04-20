@@ -3,19 +3,16 @@
 <v-row justify="center" align-content="center">
 
   <v-card color="basil">
-
     <v-tabs
       v-model="tab"
       background-color="transparent"
       color="basil"
-      grow
-      >
-      <v-tab href="#tab-1">会員情報</v-tab>
-      <v-tab href="#tab-2">会員情報編集</v-tab>
-      <v-tab href="#tab-3">退会</v-tab>
+      grow>
+      <v-tab @click="alertMsgs = []" href="#tab-1">会員情報</v-tab>
+      <v-tab @click="alertMsgs = []" href="#tab-2">会員情報編集</v-tab>
+      <v-tab @click="alertMsgs = []" href="#tab-3">退会</v-tab>
       <v-tabs-slider color="orange" />
     </v-tabs>
-
     <v-tabs-items v-model="tab">
       <!-- 会員情報 -->
       <v-tab-item value="tab-1">
@@ -44,33 +41,19 @@
         </v-card>
       </v-tab-item>
       <!-- 会員情報編集 -->
-      <v-tab-item value="tab-2">
+      <v-tab-item value="tab-2" v-if="editUserInfo">
         <v-card
           width="800px"
           color="basil"
           flat
           style="padding-top: 50px;">
           <v-form>
-
-            <v-alert
-              v-for="(error, index) in this.errors" :key=index
-              dense
-              border="left"
-              type="error"
-              class="px-6 mx-auto"
-              width="70%">
-              {{error}}
-            </v-alert>
-            <v-alert
-              v-if="succueseMsg"
-              border="left"
-              type="success"
-              class="px-6 mx-auto"
-              width="70%">
-                {{succueseMsg}}
-            </v-alert>
-
-              <v-row justify="center">
+            <alert-msg
+              v-if="alertMsgs.length"
+              :alertType=alertType
+              :alertMsgs=alertMsgs>
+            </alert-msg>
+            <v-row justify="center">
                 <v-col cols="10">
                   <v-row justify="center">
                     <v-col cols="10">
@@ -144,6 +127,11 @@
             class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
             color="black"
             dark width="800px" height="300px">
+            <alert-msg
+              v-if="alertMsgs.length"
+              :alertType=alertType
+              :alertMsgs=alertMsgs>
+            </alert-msg>
             <div class="grey--text text--lighten-1 text-h6 mb-4" align="center" style="padding-top: 50px;">
               退会すると全てのコンテンツが削除となります。<br>よろしいですか？<br>
               ※ 元には戻りません
@@ -153,7 +141,8 @@
                 <v-btn
                   class="ma-1"
                   color="error"
-                  plain>
+                  plain
+                  @click="removeUser()">
                   <div class="text-h6">退会</div>
                 </v-btn>
               </v-col>
@@ -172,10 +161,12 @@ import Axios from 'axios';
 import Const from '../common/const';
 import Util from '../common/util';
 import { User } from '../interfaces/User';
+import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'Account',
   components: {
+    AlertMsg
   },
 })
 
@@ -198,8 +189,10 @@ export default class Account extends Mixins(Const, Util) {
   private userInfo: User = {};
   // 編集用ログインユーザー情報
   private editUserInfo: User | null = null;
-  // バリデーションエラー
-  private errors: string[] = [];
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // 処理成功MSG
   private succueseMsg: string = '';
 
@@ -212,7 +205,6 @@ export default class Account extends Mixins(Const, Util) {
   private getUserInfo(): void {
     this.setLoading();
     Axios.get(`/api/register/index`).then((res) => {
-      console.log(res)
       this.userInfo = Object.assign({}, res.data.userInfo);
       this.editUserInfo = Object.assign({}, this.userInfo);
     }).catch((e) => {
@@ -225,14 +217,17 @@ export default class Account extends Mixins(Const, Util) {
    */
   private editUser(): void {
     // エラーMSGリセット
-    this.errors = [];
+    this.alertMsgs = [];
+    this.alertType = '';
     // パスワード一致チェック
     if (this.newPassword !== this.confirmPassword) {
-      this.errors.push('パスワードが一致していません。');
+      this.alertType = 'error';
+      this.alertMsgs.push('パスワードが一致していません。');
       return;
     }
     if (!this.newPassword || !this.confirmPassword) {
-      this.errors.push('パスワードを入力してください。');
+      this.alertType = 'error';
+      this.alertMsgs.push('パスワードを入力してください。');
       return;
     }
     if(!window.confirm(`ご入力いただいた内容で会員情報を編集しますか？`)) {
@@ -248,28 +243,60 @@ export default class Account extends Mixins(Const, Util) {
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertType = 'error';
+              this.alertMsgs.push(value[0]);
             }
           }
         };
         return;
       }
+      this.alertType = 'success';
+      this.alertMsgs.push('会員情報を編集しました');
       this.setSuccueseMsg();
       this.getUserInfo();
     }).catch((e) => {
       this.serverError(e);
+      this.authCheck(e);
+    }).finally(() => this.closeLoading())
+  };
+  /**
+   * 退会
+   */
+   private removeUser(): void {
+    // エラーMSGリセット
+    this.alertMsgs = [];
+    this.alertType = '';
+    if(!window.confirm(`【再確認】本当によろしいですか？`)) {
+      return;
+    };
+    this.setLoading();
+    Axios.delete('/api/register/remove_user',).then((res) => {
+      if(res.data.validateState === false) {
+        for (let [key, value] of Object.entries(res.data.message)) {
+          if(typeof value === 'object') {
+            if(value !== undefined && value !== null){
+              this.alertType = 'error';
+              this.alertMsgs.push(value[0]);
+            }
+          }
+        };
+        return;
+      }
+      this.$store.dispatch('resetUserInfo');
+      this.$router.push('/login');
+    }).catch((e) => {
+      this.serverError(e);
+      this.authCheck(e);
     }).finally(() => this.closeLoading())
   };
   /**
    * 処理成功MSG表示
    */
   private setSuccueseMsg(): void {
-    this.succueseMsg = '会員情報を編集しました';
     setTimeout(() => {
       this.succueseMsg = '';
     }, 10000);
   }
-
 }
 </script>
 

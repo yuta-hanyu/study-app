@@ -8,10 +8,12 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class EmailVerification extends Model
 {
+  use SoftDeletes;
   /**
    * @var array
    */

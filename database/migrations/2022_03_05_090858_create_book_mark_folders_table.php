@@ -18,7 +18,7 @@ class CreateBookMarkFoldersTable extends Migration
             $table->bigInteger('user_id')->unsigned()->nullable(false)->comment('ユーザーID');
             $table->string('title')->nullable(false)->comment('タイトル');
             $table->char('color', 15)->default('#757575FF')->nullable(true)->comment('背景色');
-            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')

@@ -108,6 +108,10 @@ Route::middleware('auth:sanctum')->group(function () {
    *会員情報編集
   */
   Route::post('/register/edit_user', 'App\Http\Controllers\RegisterController@update');
+  /**
+   *退会処理
+  */
+  Route::delete('/register/remove_user', 'App\Http\Controllers\RegisterController@delete');
 });
 
 

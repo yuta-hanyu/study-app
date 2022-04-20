@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inquiry extends Model
 {
   use HasFactory;
+  use SoftDeletes;
   /**
    * @var array
    */
@@ -17,7 +19,6 @@ class Inquiry extends Model
     'user_id',
     'type',
     'content',
-    'is_deleted'
   ];
   /**
    * ユーザーを取得

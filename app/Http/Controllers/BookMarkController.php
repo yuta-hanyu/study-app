@@ -29,7 +29,6 @@ class BookMarkController extends Controller
                           'title',
                           'color',
                         )
-                        ->where('book_mark_folders.is_deleted', '=', 0)
                         ->where('book_mark_folders.user_id', '=', $user_id)
                         ->orderBy('book_mark_folders.created_at', 'desc')
                         ->get()
@@ -45,7 +44,6 @@ class BookMarkController extends Controller
                     'book_marks.memo',
                   )
                   ->where('book_marks.user_id', '=', $user_id)
-                  ->where('book_marks.is_deleted', '=', 0)
                   ->orderBy('book_marks.created_at', 'desc')
                   ->get()
                   ->toArray();

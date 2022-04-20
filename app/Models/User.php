@@ -9,11 +9,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Rules\CustomPasswordComparisonValidation;
 use App\Rules\CustomGuestUserValidation;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 // class User extends Authenticatable
 {
     use HasFactory;
+    use SoftDeletes;
     /**
      * @var array
      */
@@ -21,7 +23,6 @@ class User extends Authenticatable
       'name',
       'email',
       'password',
-      'is_deleted',
     ];
     /**
      * 既存バリデーションとの相関チェックバリデーション

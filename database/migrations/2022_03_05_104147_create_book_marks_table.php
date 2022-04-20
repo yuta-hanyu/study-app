@@ -21,7 +21,7 @@ class CreateBookMarksTable extends Migration
             $table->longText('link')->nullable(false)->comment('リンク');
             $table->string('memo',1000)->nullable(true)->comment('メモ');
             $table->tinyInteger('fixed')->default(0)->nullable(true)->comment('固定');
-            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')
