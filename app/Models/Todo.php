@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Todo extends Model
 {
+  use SoftDeletes;
   /**
    * @var array
    */
@@ -17,7 +19,6 @@ class Todo extends Model
     'state',
     'book_mark',
     'remainder',
-    'is_deleted'
   ];
   /**
    * ユーザーを取得

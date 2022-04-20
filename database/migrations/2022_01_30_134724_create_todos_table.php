@@ -21,7 +21,7 @@ class CreateTodosTable extends Migration
             $table->tinyInteger('state')->nullable(false)->comment('状態');
             $table->tinyInteger('book_mark')->nullable(true)->default(0)->comment('ブックマークフラグ');
             $table->dateTime('reminder')->nullable(true)->comment('リマインダー');
-            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')

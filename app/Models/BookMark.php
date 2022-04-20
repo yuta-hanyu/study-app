@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BookMark extends Model
 {
   use HasFactory;
+  use SoftDeletes;
+
   /**
    * @var array
    */
@@ -20,7 +23,6 @@ class BookMark extends Model
     'link',
     'memo',
     'fixed',
-    'is_deleted'
   ];
   /**
    * ユーザーを取得

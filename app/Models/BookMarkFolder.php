@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class BookMarkFolder extends Model
 {
   use HasFactory;
+  use SoftDeletes;
   /**
    * @var array
    */
@@ -17,7 +20,6 @@ class BookMarkFolder extends Model
     'user_id',
     'title',
     'color',
-    'is_deleted'
   ];
   /**
    * ユーザーを取得

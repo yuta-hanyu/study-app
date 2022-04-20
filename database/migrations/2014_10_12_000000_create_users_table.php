@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable(false)->comment('名前');
             $table->string('email')->unique()->nullable(false)->comment('メールアドレス');
             $table->string('password')->nullable(false)->comment('パスワード');
-            $table->tinyInteger('is_deleted')->default(0)->comment('論理削除');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

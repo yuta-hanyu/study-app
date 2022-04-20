@@ -197,5 +197,40 @@ class RegisterController extends Controller
     Log::info('会員情報編集終了');
     return;
   }
+  /**
+  * 退会処理
+  * @return Http response
+  */
+  public function delete(Request $request)
+  {
+    Log::info('退会処理開始');
+    $userInfo = User::find(Auth::id());
+    $user = new User();
+    // ゲストユーザー編集不可チェック
+    $checkGuest = [];
+    $checkGuest['gestUserEmail'] = $userInfo->email;
+    $validate = $user->guestUserValidate($checkGuest);
+    if($validate->fails()) {
+      $message = $validate->errors();
+      $validateState = false;
+      Log::warning("退会処理失敗_ゲストユーザー削除不可チェックバリデーションエラー");
+      return response()->json(['message' => $message, 'validateState' => $validateState]);
+    }
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $user = Auth::user();
+      $user->delete();
+      Auth::guard('web')->logout();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('退会処理失敗');
+      Log::info($e);
+      DB::rollback();
+      return response()->json([], 500);
+    }
+    Log::info('退会処理終了');
+    return;
+  }
 
 }
