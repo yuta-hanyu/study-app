@@ -7,7 +7,8 @@ import Logout from './components/Logout.vue';
 import Inquiry from './components/inquiry.vue';
 import bookMark from './components/BookMark.vue';
 import Verify from './components/Verify.vue';
-import Account from './components/Account.vue'
+import Account from './components/Account.vue';
+import NotFound from './components/NotFound.vue';
 
 Vue.use(VueRouter)
 
@@ -56,6 +57,12 @@ const router = new VueRouter({
       component: Account,
       meta: {isAuthenticated: true, title: '会員情報'},
     },
+    {
+      name: '/notFound',
+      path: '*',
+      component: NotFound,
+      meta: {title: 'お探しのページが見つかりません'},
+    }
 
   ]
 });

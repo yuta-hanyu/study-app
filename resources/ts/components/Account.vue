@@ -354,8 +354,8 @@ export default class Account extends Mixins(Const, Util) {
   background-color: #FFFBE6 !important;
 }
 .container {
-  padding: 10% 3%;
-  margin-top: 50px;
+  padding: 5% 3%;
+  margin-top: 30px;
 }
 </style>
 
