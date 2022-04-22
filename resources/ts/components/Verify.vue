@@ -15,17 +15,11 @@
                   </p>
                 </v-sheet>
               </v-col>
-              <v-col cols="12" v-if="errors.length">
-                <v-alert
-                  v-for="(error, index) in this.errors" :key=index
-                  dense
-                  text
-                  border="left"
-                  type="error"
-                  class="px-6 mx-auto"
-                  width="70%">
-                  {{error}}
-                </v-alert>
+              <v-col cols="12" v-if="alertMsgs.length">
+                <alert-msg class="mt-4"
+                  :alertType=alertType
+                  :alertMsgs=alertMsgs>
+                </alert-msg>
                 </v-col>
                 <v-col cols="10">
                   <v-row justify="center">
@@ -128,12 +122,14 @@ import Util from '../common/util';
 import Alert from './utilComponent/Alert.vue';
 import Complete from './utilComponent/Complete.vue';
 import { User } from '../interfaces/User';
+import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'Verify',
   components:{
     Alert,
     Complete,
+    AlertMsg,
   }
 })
 
@@ -141,15 +137,18 @@ export default class Verify extends Mixins(Const, Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      this.initialize()
+      this.initialize();
+      this.msgReset();
     };
 
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // パスワード表示非表示フラグ
   private showPassword: boolean = false;
   // 確認用パスワード表示非表示フラグ
   private confirmShowPassword: boolean = false;
-  // フォームバリデーションエラー
-  private errors: string[] = [];
   // フォームバリデーションエラー
   private tokenVerifyFeilMsg: string = '';
   // 登録ユーザー情報
@@ -165,19 +164,24 @@ export default class Verify extends Mixins(Const, Util) {
 
   mounted(){
     this.tokenVerify();
-    console.log(this.$route.params.token);
   };
+  /**
+   * メッセージ初期化
+   */
+  private msgReset(): void {
+    this.alertMsgs = [];
+    this.alertType = '';
+    this.tokenVerifyFeilMsg = '';
+  }
   /**
    * トークン認証
    */
   private tokenVerify(): void {
-    // エラーMSGリセット
-    this.tokenVerifyFeilMsg = '';
+    this.msgReset();
     this.setLoading();
     Axios.post('/api/register/tokenVerify',{
       token: this.$route.params.token
     }).then((res) => {
-      console.log(res);
       if(res.data.resultFlag === false) {
         this.tokenVerifyFeilMsg = res.data.message;
         this.AlertDialog = !this.AlertDialog;
@@ -194,15 +198,16 @@ export default class Verify extends Mixins(Const, Util) {
    * 会員本登録
    */
   private userRegister(): void {
-    // エラーMSGリセット
-    this.errors = [];
+    this.msgReset();
     // パスワード一致チェック
     if (this.newUserInfo.password !== this.confirmPassword) {
-      this.errors.push('パスワードが一致していません。');
+      this.alertType = 'error';
+      this.alertMsgs.push('パスワードが一致していません。');
       return;
     }
     if (!this.newUserInfo.password || !this.confirmPassword) {
-      this.errors.push('パスワードを入力してください。');
+      this.alertType = 'error';
+      this.alertMsgs.push('パスワードを入力してください。');
       return;
     }
     if(!window.confirm(`ご入力いただいた内容で本登録を行いますか？`)) {
@@ -214,10 +219,11 @@ export default class Verify extends Mixins(Const, Util) {
       newUserInfo: this.newUserInfo
     }).then((res) => {
       if(res.data.validateState === false) {
+        this.alertType = 'error';
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertMsgs.push(value[0]);
             }
           }
         };
@@ -232,6 +238,7 @@ export default class Verify extends Mixins(Const, Util) {
    * 会員登録成功後のログイン認証
    */
   private login(): void {
+    this.msgReset();
     this.setLoading();
     Axios.get('/api/csrf-cookie', {withCredentials:true}).then((res) => {
       // ログイン認証開始
@@ -248,10 +255,11 @@ export default class Verify extends Mixins(Const, Util) {
           this.$router.push("/bookMark");
         }
         if(res.data.retultFlag === false) {
+          this.alertType = 'error';
           for (let [key, value] of Object.entries(res.data.validatMessage)) {
             if(typeof value === 'object') {
               if(value !== undefined && value !== null){
-                this.errors.push(value[0]);
+                this.alertMsgs.push(value[0]);
               }
             }
           };
@@ -259,20 +267,18 @@ export default class Verify extends Mixins(Const, Util) {
         }
       }).catch((e) => {
         //認証エラー
-        this.errors.push(this.ERROR_MSG.LOGIN_FAILD);
+        this.alertMsgs.push(this.ERROR_MSG.LOGIN_FAILD);
       });
     }).catch((e) => {
       //認証エラー
       window.alert(this.ERROR_MSG.AUTH_FAILD);
     }).finally(() => this.closeLoading());
   }
-
   /**
    * データ初期化
    */
   private initialize(): void {
     this.newUserInfo = Object.assign({}, {})
-    this.errors = [];
   };
   /**
    * ログイン画面へ戻る

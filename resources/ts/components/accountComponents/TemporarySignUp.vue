@@ -1,21 +1,15 @@
 <template>
-  <div class="bg">
+  <div>
     <v-sheet class="kokuban my-0" width="600px" dark>
       <v-form>
         <v-container>
           <v-row justify="center">
             <p class="dialog-title">仮会員登録</p>
-              <v-col cols="12" v-if="errors.length">
-                <v-alert
-                  v-for="(error, index) in this.errors" :key=index
-                  dense
-                  text
-                  border="left"
-                  type="error"
-                  class="px-6 mx-auto"
-                  width="70%">
-                  {{error}}
-              </v-alert>
+              <v-col cols="12" v-if="alertMsgs.length">
+                <alert-msg class="mt-4"
+                  :alertType=alertType
+                  :alertMsgs=alertMsgs>
+                </alert-msg>
               </v-col>
               <v-col cols="10" class="mt-n5">
                 <v-sheet class="px-2 py-2" color="#1B5E20" rounded>
@@ -78,11 +72,13 @@ import Axios from 'axios';
 import Const from '../../common/const';
 import Util from '../../common/util';
 import Complete from '../utilComponent/Complete.vue';
+import AlertMsg from '../utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'TemporarySignUp',
   components:{
     Complete,
+    AlertMsg,
   }
 })
 
@@ -90,30 +86,39 @@ export default class TemporarySignUp extends Mixins(Const, Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      this.initialize()
+      this.initialize();
+      this.msgReset();
     };
-  // フォームバリデーションエラー
-  private errors: string[] = [];
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // 登録ユーザー情報
   private email: string = '';
   // 完了ダイアログ
   private comoleteDialog: boolean = false;
   /**
+   * メッセージ初期化
+   */
+  private msgReset(): void {
+    this.alertMsgs = [];
+    this.alertType = '';
+  }
+  /**
    * 仮登録
    */
   private temporaryRegister(): void {
-    // エラーMSGリセット
-    this.errors = [];
+    this.msgReset();
     this.setLoading();
     Axios.post('/api/register',{
       email: this.email
     }).then((res) => {
-      this.closeLoading();
       if(res.data.validateState === false) {
+        this.alertType = 'error';
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertMsgs.push(value[0]);
             }
           }
         };
@@ -123,14 +128,13 @@ export default class TemporarySignUp extends Mixins(Const, Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading());
   }
   /**
    * データ初期化
    */
   private initialize(): void {
     this.email = '';
-    this.errors = [];
   };
 }
 </script>

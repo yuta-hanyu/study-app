@@ -2,10 +2,10 @@
   <div>
     <v-sheet dark width="400px" class="kokuban my-0">
       <v-row justify="center" class="px-2">
-        <v-col md=10 class="text-center">
-          <h5 class="dialog-title"><slot name="title"></slot></h5>
+        <v-col md=10 class="text-center" v-if="this.$scopedSlots.title">
+          <h6 class="dialog-title"><slot name="title"></slot></h6>
         </v-col>
-        <v-col md=12>
+        <v-col md=12 v-if="this.$scopedSlots.content">
           <p><slot name="content"></slot></p>
         </v-col>
         <v-col

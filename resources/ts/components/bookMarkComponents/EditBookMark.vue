@@ -6,16 +6,11 @@
           <v-row justify="center">
             <p class="dialog-title">ブックマーク編集</p>
             <v-col cols="12">
-              <v-alert
-                v-for="(error, index) in this.errors" :key=index
-                dense
-                text
-                border="left"
-                type="error"
-                class="px-6 mx-auto"
-                width="70%">
-                {{error}}
-              </v-alert>
+              <alert-msg class="mt-4"
+                v-if="alertMsgs.length"
+                :alertType=alertType
+                :alertMsgs=alertMsgs>
+              </alert-msg>
             </v-col>
             <v-col cols="10">
               <v-text-field
@@ -103,10 +98,12 @@ import Util from '../../common/util';
 import { BookMarks } from '../../interfaces/BookMarks';
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
+import AlertMsg from '../utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'EditBookMark',
   components: {
+    AlertMsg,
   },
 })
 
@@ -120,15 +117,16 @@ export default class EditBookMark extends Mixins(Const, Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      // エラーMSGリセット
-      this.errors = [];
+      this.msgReset();
     };
   // 登録成功
   @Emit('bookMark-edited')
     bookMarkEdited(succueseMsg: string): void {
     };
-  // バリデーションエラー
-  private errors: string[] = [];
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // ブックマーク（編集用）
   private targetEditBookMark: BookMarks | null = Object.assign({}, this.editBookMark);
   /**
@@ -138,9 +136,17 @@ export default class EditBookMark extends Mixins(Const, Util) {
     this.targetEditBookMark = Object.assign({}, this.editBookMark)
   }
   /**
+   * メッセージ初期化
+   */
+  private msgReset(): void {
+    this.alertMsgs = [];
+    this.alertType = '';
+  }
+  /**
    * リンクからタイトル取得
    */
   private getTitle(): void {
+    this.msgReset();
     this.setLoading();
     Axios.post('/api/bookMark/getTitle', {
       // 新規登録時とロジックを共有するためkeyはnewBookMarkとする
@@ -148,38 +154,34 @@ export default class EditBookMark extends Mixins(Const, Util) {
         link: this.targetEditBookMark!.link
       }
     }).then((res) => {
-      this.closeLoading();
       if(res.data.validateState === false) {
-        this.errors.push(res.data.message.link[0]);
+        this.alertType = 'error';
+        this.alertMsgs.push(res.data.message.link[0]);
         return;
       }
       this.targetEditBookMark!.title = res.data;
       this.$forceUpdate(); //強制的にDOM更新（変更がDOMに反映されないため）
     }).catch((e) => {
-      this.closeLoading();
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading());
   }
   /**
    * ブックマーク編集
    */
   private editToBookMark(): void {
-    // エラーMSGリセット
-    this.errors = [];
-    // 成功MSGリセット
-    let succueseMsg: string = '';
+    this.msgReset();
     this.setLoading();
     Axios.post('/api/editBookMark',{
       editBookMark: this.targetEditBookMark,
       user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
-      this.closeLoading();
       if(res.data.validateState === false) {
+        this.alertType = 'error';
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertMsgs.push(value[0]);
             }
           }
         };
@@ -190,13 +192,13 @@ export default class EditBookMark extends Mixins(Const, Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading())
   }
   /**
    * ブックマーク削除
    */
   private removeBookMark(): void {
-    this.errors = [];
+    this.msgReset();
     if(!window.confirm(`「${this.editBookMark.title}」${this.CONFIRM_MSG.DELETE}`)) {
       return;
     };
@@ -210,7 +212,7 @@ export default class EditBookMark extends Mixins(Const, Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading())
   }
 
 }

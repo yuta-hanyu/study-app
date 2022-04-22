@@ -3,13 +3,12 @@
     class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
     color="black"
     dark
-    height="350px"
     width="600px">
     <v-row justify="center" class="px-2">
-    <v-col md=10 class="text-center">
+    <v-col md=10 class="text-center" v-if="this.$scopedSlots.title">
       <h3 class="dialog-title"><slot name="title"></slot></h3>
     </v-col>
-    <v-col md=12>
+    <v-col md=12 v-if="this.$scopedSlots.content">
       <p><slot name="content"></slot></p>
     </v-col>
     <v-col

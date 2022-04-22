@@ -1,168 +1,179 @@
 <template>
-<v-container class="container">
-<v-row justify="center" align-content="center">
-
-  <v-card color="basil">
-    <v-tabs
-      v-model="tab"
-      background-color="transparent"
-      color="basil"
-      grow>
-      <v-tab @click="alertMsgs = []" href="#tab-1">会員情報</v-tab>
-      <v-tab @click="alertMsgs = []" href="#tab-2">会員情報編集</v-tab>
-      <v-tab @click="alertMsgs = []" href="#tab-3">退会</v-tab>
-      <v-tabs-slider color="orange" />
-    </v-tabs>
-    <v-tabs-items v-model="tab">
-      <!-- 会員情報 -->
-      <v-tab-item value="tab-1">
-        <v-card
-          width="800px"
-          color="basil"
-          flat>
-            <v-row justify="center">
-              <v-col cols="8" style="margin-top: 50px;">
-                <v-text-field
-                  readonly
-                  v-model="userInfo.name"
-                  prepend-icon="mdi-account"
-                  label="お名前">
-                </v-text-field>
-              </v-col>
-              <v-col cols="8" style="margin-bottom: 50px;">
-                <v-text-field
-                  readonly
-                  v-model="userInfo.email"
-                  prepend-icon="mdi-email"
-                  label="メールアドレス">
-                </v-text-field>
-              </v-col>
-            </v-row>
-        </v-card>
-      </v-tab-item>
-      <!-- 会員情報編集 -->
-      <v-tab-item value="tab-2" v-if="editUserInfo">
-        <v-card
-          width="800px"
-          color="basil"
-          flat
-          style="padding-top: 50px;">
-          <v-form>
-            <alert-msg
-              v-if="alertMsgs.length"
-              :alertType=alertType
-              :alertMsgs=alertMsgs>
-            </alert-msg>
-            <v-row justify="center">
-                <v-col cols="10">
+  <div class="bg">
+    <v-container class="container">
+      <v-row justify="center" align-content="center">
+        <v-card color="basil">
+          <v-tabs
+            v-model="tab"
+            background-color="transparent"
+            color="basil"
+            grow>
+            <v-tab @click="alertMsgs = []" href="#tab-1">会員情報</v-tab>
+            <v-tab @click="alertMsgs = []" href="#tab-2">会員情報編集</v-tab>
+            <v-tab @click="alertMsgs = []" href="#tab-3">退会</v-tab>
+            <v-tabs-slider color="orange" />
+          </v-tabs>
+          <v-tabs-items v-model="tab">
+            <!-- 会員情報 -->
+            <v-tab-item value="tab-1">
+              <v-card
+                width="800px"
+                color="basil"
+                flat>
                   <v-row justify="center">
-                    <v-col cols="10">
+                    <v-col cols="8" style="margin-top: 50px;">
                       <v-text-field
-                        v-model="editUserInfo.name"
+                        readonly
+                        v-model="userInfo.name"
                         prepend-icon="mdi-account"
                         label="お名前">
                       </v-text-field>
                     </v-col>
-                    <v-col cols="10">
+                    <v-col cols="8" style="margin-bottom: 50px;">
                       <v-text-field
-                        v-model="editUserInfo.email"
+                        readonly
+                        v-model="userInfo.email"
                         prepend-icon="mdi-email"
                         label="メールアドレス">
                       </v-text-field>
                     </v-col>
-                    <v-col cols="10">
-                      <v-text-field
-                        v-model="oldPassword"
-                        :type="showOldPassword ? 'text' : 'password'"
-                        @click:append="showOldPassword = !showOldPassword"
-                        :append-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                        :counter="8"
-                        label="今のパスワード"
-                        required
-                        prepend-icon="mdi-lock"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="5">
-                      <v-text-field
-                        v-model="newPassword"
-                        :type="showPassword ? 'text' : 'password'"
-                        @click:append="showPassword = !showPassword"
-                        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                        :counter="8"
-                        label="新しいパスワード"
-                        required
-                        prepend-icon="mdi-lock"
-                      ></v-text-field>
-                    </v-col>
-                  <v-col cols="5">
-                    <v-text-field
-                      v-model="confirmPassword"
-                      :type="confirmShowPassword ? 'text' : 'password'"
-                      @click:append="confirmShowPassword = !confirmShowPassword"
-                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                      :counter="8"
-                      label="新しいパスワード確認用"
-                      required
-                      prepend-icon="mdi-lock-outline"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="10" class="text-center py-10">
-                    <v-btn
-                      dark
-                      @click="editUser()"
-                      class="go"
-                      width="200px">
-                      編集
-                    </v-btn>
-                  </v-col>
                   </v-row>
-                </v-col>
-              </v-row>
-          </v-form>
+              </v-card>
+            </v-tab-item>
+            <!-- 会員情報編集 -->
+            <v-tab-item value="tab-2" v-if="editUserInfo">
+              <v-card
+                width="800px"
+                color="basil"
+                flat
+                style="padding-top: 50px;">
+                <v-form>
+                  <alert-msg
+                    v-if="alertMsgs.length"
+                    :alertType=alertType
+                    :alertMsgs=alertMsgs>
+                  </alert-msg>
+                  <v-row justify="center">
+                      <v-col cols="10">
+                        <v-row justify="center">
+                          <v-col cols="10">
+                            <v-text-field
+                              v-model="editUserInfo.name"
+                              prepend-icon="mdi-account"
+                              label="お名前">
+                            </v-text-field>
+                          </v-col>
+                          <v-col cols="10">
+                            <v-text-field
+                              v-model="editUserInfo.email"
+                              prepend-icon="mdi-email"
+                              label="メールアドレス">
+                            </v-text-field>
+                          </v-col>
+                          <v-col cols="10">
+                            <v-text-field
+                              v-model="oldPassword"
+                              :type="showOldPassword ? 'text' : 'password'"
+                              @click:append="showOldPassword = !showOldPassword"
+                              :append-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              :counter="8"
+                              label="今のパスワード"
+                              required
+                              prepend-icon="mdi-lock"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="5">
+                            <v-text-field
+                              v-model="newPassword"
+                              :type="showPassword ? 'text' : 'password'"
+                              @click:append="showPassword = !showPassword"
+                              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              :counter="8"
+                              label="新しいパスワード"
+                              required
+                              prepend-icon="mdi-lock"
+                            ></v-text-field>
+                          </v-col>
+                        <v-col cols="5">
+                          <v-text-field
+                            v-model="confirmPassword"
+                            :type="confirmShowPassword ? 'text' : 'password'"
+                            @click:append="confirmShowPassword = !confirmShowPassword"
+                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                            :counter="8"
+                            label="新しいパスワード確認用"
+                            required
+                            prepend-icon="mdi-lock-outline"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="10" class="text-center py-10">
+                          <v-btn
+                            dark
+                            @click="editUser()"
+                            class="go"
+                            width="200px">
+                            編集
+                          </v-btn>
+                        </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                </v-form>
+              </v-card>
+            </v-tab-item>
+            <!-- 退会 -->
+            <v-tab-item value="tab-3">
+                <v-sheet
+                  class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
+                  color="black"
+                  dark width="800px" height="300px">
+                  <alert-msg
+                    v-if="alertMsgs.length"
+                    :alertType=alertType
+                    :alertMsgs=alertMsgs>
+                  </alert-msg>
+                  <div class="grey--text text--lighten-1 text-h6 mb-4" align="center" style="padding-top: 50px;">
+                    退会すると全てのコンテンツが削除となります。<br>よろしいですか？<br>
+                    ※ 元には戻りません
+                  </div>
+                  <v-row justify="center">
+                    <v-col cols="4">
+                      <v-btn
+                        class="ma-1"
+                        color="error"
+                        plain
+                        @click="removeUserConfirm()">
+                        <div class="text-h6">退会</div>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-sheet>
+            </v-tab-item>
+          </v-tabs-items>
         </v-card>
-      </v-tab-item>
-      <!-- 退会 -->
-      <v-tab-item value="tab-3">
-          <v-sheet
-            class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
-            color="black"
-            dark width="800px" height="300px">
-            <alert-msg
-              v-if="alertMsgs.length"
-              :alertType=alertType
-              :alertMsgs=alertMsgs>
-            </alert-msg>
-            <div class="grey--text text--lighten-1 text-h6 mb-4" align="center" style="padding-top: 50px;">
-              退会すると全てのコンテンツが削除となります。<br>よろしいですか？<br>
-              ※ 元には戻りません
-            </div>
-            <v-row justify="center">
-              <v-col cols="4">
-                <v-btn
-                  class="ma-1"
-                  color="error"
-                  plain
-                  @click="removeUser()">
-                  <div class="text-h6">退会</div>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-sheet>
-      </v-tab-item>
-    </v-tabs-items>
-  </v-card>
-</v-row>
-<!-- 退会完了ダイアログ -->
-  <v-dialog
-    width="400px"
-    v-model="completeDialog"
-    persistent>
-    <complete
-      @back="completeDialog = !completeDialog, backLogin()">
-      <template #title>退会しました</template>
-    </complete>
-  </v-dialog>
-</v-container>
+      </v-row>
+    <!-- アラートダイアログ -->
+      <v-dialog
+        width="600px"
+        v-model="AlertDialog">
+        <alert
+          @back="AlertDialog = !AlertDialog, removeUser()">
+          <template #title>再確認</template>
+          <template #content>退会でお間違いないですか？</template>
+        </alert>
+      </v-dialog>
+    <!-- 退会完了ダイアログ -->
+      <v-dialog
+        width="400px"
+        v-model="completeDialog"
+        persistent>
+        <complete
+          @back="completeDialog = !completeDialog, backLogin()">
+          <template #title>退会しました</template>
+        </complete>
+      </v-dialog>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -173,11 +184,12 @@ import Util from '../common/util';
 import { User } from '../interfaces/User';
 import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 import Complete from './utilComponent/Complete.vue';
-
+import Alert from './utilComponent/Alert.vue';
 
 @Component({
   name: 'Account',
   components: {
+    Alert,
     AlertMsg,
     Complete
   },
@@ -210,6 +222,8 @@ export default class Account extends Mixins(Const, Util) {
   private succueseMsg: string = '';
   // 完了ダイアログ
   private completeDialog: boolean = false;
+  // アラートダイアログ
+  private AlertDialog: boolean = false;
 
   mounted(){
     this.getUserInfo();
@@ -274,6 +288,10 @@ export default class Account extends Mixins(Const, Util) {
       this.authCheck(e);
     }).finally(() => this.closeLoading())
   };
+
+  private removeUserConfirm(): void {
+    this.AlertDialog = !this.AlertDialog;
+  }
   /**
    * 退会
    */
@@ -281,9 +299,6 @@ export default class Account extends Mixins(Const, Util) {
     // エラーMSGリセット
     this.alertMsgs = [];
     this.alertType = '';
-    if(!window.confirm(`【再確認】本当によろしいですか？`)) {
-      return;
-    };
     this.setLoading();
     Axios.delete('/api/register/remove_user',).then((res) => {
       if(res.data.validateState === false) {
@@ -302,7 +317,7 @@ export default class Account extends Mixins(Const, Util) {
     }).catch((e) => {
       this.serverError(e);
       this.authCheck(e);
-    }).finally(() => this.closeLoading())
+    }).finally(() => this.closeLoading());
   };
   /**
    * 処理成功MSG表示
@@ -322,6 +337,14 @@ export default class Account extends Mixins(Const, Util) {
 </script>
 
 <style scoped>
+.bg {
+  padding-top: 3%;
+  left: 0;
+  min-height: 1200px;
+  background-size: contain;
+  background: url("../../../public/images/account.jpeg") center center / cover no-repeat fixed;
+  background-attachment: fixed;
+}
 .v-tab {
   font-weight: bold !important;
   font-size: 20px;
