@@ -5,18 +5,14 @@
         <v-container>
           <v-row justify="center">
             <p class="dialog-title">フォルダ編集</p>
-              <v-alert
-                v-for="(error, index) in this.errors" :key=index
-                dense
-                text
-                border="left"
-                type="error"
-                class="px-6"
-                width="70%">
-                {{error}}
-              </v-alert>
-            <v-col
-              cols="10">
+              <v-col cols="12">
+                <alert-msg class="mt-4"
+                  v-if="alertMsgs.length"
+                  :alertType=alertType
+                  :alertMsgs=alertMsgs>
+                </alert-msg>
+            </v-col>
+            <v-col cols="10">
               <v-text-field
                 v-model="targetEditBookMarkFolder.title"
                 prepend-icon="mdi-folder-plus-outline"
@@ -90,11 +86,13 @@ import Util from '../../common/util';
 import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
+import AlertMsg from '../utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'EditBookMarkFolder',
   components: {
     ColorPicker,
+    AlertMsg,
   },
 })
 
@@ -105,19 +103,28 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      // エラーMSGリセット
-      this.errors = [];
+      this.msgReset();
     };
   // 登録成功
   @Emit('folder-edited')
     folderEdited(succueseMsg: string): void {
+      this.msgReset();
     };
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // カラーピッカーダイアログ
   private colorPockerDialog: boolean = false;
-  // フォームバリデーションエラー
-  private errors: string[] = [];
     // ブックマークフォルダ（編集用）
   private targetEditBookMarkFolder: BookMarkFolders | null = Object.assign({}, this.editFolder);
+  /**
+   * メッセージ初期化
+   */
+  private msgReset(): void {
+    this.alertMsgs = [];
+    this.alertType = '';
+  }
   /**
    * ブックマークフォルダ（編集用）データセット
    */
@@ -135,21 +142,18 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
    * フォルダー編集
    */
   private editBookMarkFolder(): void {
-    // エラーMSGリセット
-    this.errors = [];
-    // 成功MSGリセット
-    let succueseMsg: string = '';
+    this.msgReset();
     this.setLoading();
     Axios.post('/api/editBookMarkFolder',{
       editFolder: this.targetEditBookMarkFolder!,
       user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
-      this.closeLoading();
       if(res.data.validateState === false) {
+        this.alertType = 'error';
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertMsgs.push(value[0]);
             }
           }
         };
@@ -160,12 +164,13 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading());
   }
   /**
    * フォルダー削除
    */
   private removeBookMarkFolder(): void {
+    this.msgReset();
     if(!window.confirm(`「${this.editFolder.title}」${this.CONFIRM_MSG.DELETE}`)) {
       return;
     };
@@ -174,13 +179,12 @@ export default class EditBookMarkFolder extends Mixins(Const, Util) {
       editFolder: this.editFolder,
       user_id: this.$store.state.userInfo.user_id
     }).then((res) => {
-      this.closeLoading();
       let succueseMsg = `「${this.editFolder.title}」${this.SUCCESS_MSG.DELETE_SUCCESS}`;
       this.folderEdited(succueseMsg);
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading());
   }
 }
 </script>

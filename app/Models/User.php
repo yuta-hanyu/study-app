@@ -50,7 +50,7 @@ class User extends Authenticatable
     public function validate(array $input, bool $editFlag = false)
     {
       // 会員情報編集の場合はメールのユニークチェックは行わない
-      $editFlag === false ? $uniqueCheck = '|unique:users,email' : $uniqueCheck = '';
+      $editFlag === false ? $uniqueCheck = '|unique:users,deleted_at,email' : $uniqueCheck = '';
       $rules = [
         'name' => 'required',
         'email' => 'required|string|email'.$uniqueCheck,

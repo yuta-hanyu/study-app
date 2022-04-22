@@ -6,16 +6,11 @@
           <v-row justify="center">
             <p class="dialog-title mb-n3">お問い合わせ</p>
             <v-col cols="12">
-                <v-alert
-                  v-for="(error, index) in this.errors" :key=index
-                  dense
-                  text
-                  border="left"
-                  type="error"
-                  class="px-6 mx-auto"
-                  width="70%">
-                  {{error}}
-                </v-alert>
+              <alert-msg class="mt-4"
+                v-if="alertMsgs.length"
+                :alertType=alertType
+                :alertMsgs=alertMsgs>
+              </alert-msg>
             </v-col>
             <v-col cols="10 pt-n1">
               <p prepend-icon="mdi-book-open" style="color: hsla(0,0%,100%,.7)">
@@ -96,11 +91,13 @@ import Util from '../common/util';
 import Axios from 'axios';
 import Complete from './utilComponent/Complete.vue';
 import { Inquirys } from '../interfaces/Inquirys';
+import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 
 @Component({
   name: "Inquiry",
   components: {
-    Complete
+    Complete,
+    AlertMsg,
   }
 })
 
@@ -109,25 +106,34 @@ export default class Inquiry extends Mixins(Const, Util) {
   @Emit('back-inquiry')
   back(): void {
     this.initialize();
+    this.msgReset();
   };
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // お問い合わせ内容
   private inquiry: Inquirys = {};
-  // フォームバリデーションエラー
-  private errors: string[] = [];
   // 完了ダイアログ
   private comoleteDialog: boolean = false;
+  /**
+   * メッセージ初期化
+   */
+  private msgReset(): void {
+    this.alertMsgs = [];
+    this.alertType = '';
+  }
   /**
    * データ初期化
    */
   private initialize(): void {
     this.inquiry = Object.assign({}, {})
-    this.errors = [];
   };
   /**
    * お問い合わせ開始
   */
   private submitMail(): void {
-    this.errors = [];
+    this.msgReset();
     if(!window.confirm(this.CONFIRM_MSG.REGISTER)) {
       return;
     };
@@ -135,12 +141,12 @@ export default class Inquiry extends Mixins(Const, Util) {
     Axios.post('/api/inquiry',{
       inquiry: this.inquiry
     }).then((res) => {
-      this.closeLoading();
       if(res.data.validateState === false) {
+        this.alertType = 'error';
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertMsgs.push(value[0]);
             }
           }
         };
@@ -150,7 +156,7 @@ export default class Inquiry extends Mixins(Const, Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    });
+    }).finally(() => this.closeLoading());
   }
 }
 </script>

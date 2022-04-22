@@ -43,7 +43,7 @@ class EmailVerification extends Model
   public function validate($input)
   {
     $rules = [
-      'email' => 'required|string|email|unique:users,email',
+      'email' => 'required|string|email|unique:users,deleted_at,email',
     ];
     return Validator::make($input->input(), $rules);
   }
@@ -54,12 +54,4 @@ class EmailVerification extends Model
   {
     return self::where('token', '=', $token)->first();
   }
-
-  // /**
-  //  * 本登録完了後のステータス更新
-  //  */
-  // public function register()
-  // {
-  //   $this->status = config('const.REGISTERED');
-  // }
 }

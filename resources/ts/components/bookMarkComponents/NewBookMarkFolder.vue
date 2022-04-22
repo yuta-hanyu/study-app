@@ -1,22 +1,18 @@
 <template>
   <div>
-    <v-sheet width="400px" dark class="kokuban">
+    <v-sheet width="450px" dark class="kokuban">
       <v-form>
         <v-container>
           <v-row justify="center">
             <p class="dialog-title">フォルダ登録</p>
-              <v-alert
-                v-for="(error, index) in this.errors" :key=index
-                dense
-                text
-                border="left"
-                type="error"
-                class="px-6"
-                width="70%">
-                {{error}}
-              </v-alert>
-            <v-col
-              cols="10">
+            <v-col cols="12">
+              <alert-msg class="mt-4"
+                v-if="alertMsgs.length"
+                :alertType=alertType
+                :alertMsgs=alertMsgs>
+              </alert-msg>
+            </v-col>
+            <v-col cols="10">
               <v-text-field
                 v-model="newBookMarkFolder.title"
                 prepend-icon="mdi-folder-plus-outline"
@@ -81,11 +77,13 @@ import Util from '../../common/util';
 import ColorPicker from '../../components/utilComponent/ColorPicker.vue'
 import { BookMarkFolders } from '../../interfaces/BookMarkFolders';
 import Axios from 'axios';
+import AlertMsg from '../utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'NewBookMarkFolder',
   components: {
     ColorPicker,
+    AlertMsg,
   },
 })
 
@@ -93,29 +91,39 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
   // 戻るボタン押下
   @Emit('back')
     back(): void {
-      this.initialize()
+      this.initialize();
+      this.msgReset();
     };
   // 登録成功
   @Emit('folder-registered')
     folderRegistered(succueseMsg: string): void {
-      this.initialize()
+      this.initialize();
+      this.msgReset();
     };
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // 新規登録フォルダ情報
   private newBookMarkFolder: BookMarkFolders = {}
   // カラーピッカーダイアログ
   private colorPockerDialog: boolean = false;
-  // フォームバリデーションエラー
-  private errors: string[] = [];
 
   mounted() {
     this.initialize();
+  }
+  /**
+   * メッセージ初期化
+   */
+  private msgReset(): void {
+    this.alertMsgs = [];
+    this.alertType = '';
   }
   /**
    * データ初期化
    */
   private initialize(): void {
     this.newBookMarkFolder = Object.assign({}, {})
-    this.errors = [];
   };
   /**
    * カラーセット
@@ -128,20 +136,17 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
    * フォルダー登録
    */
   private addBookMarkFolder(): void {
-    // エラーMSGリセット
-    this.errors = [];
-    // 成功MSGリセット
-    let succueseMsg: string = '';
+    this.msgReset();
     this.setLoading();
     Axios.post('/api/bookMarkFolder',{
       newBookMarkFolder: this.newBookMarkFolder
     }).then((res) => {
-      this.closeLoading();
       if(res.data.validateState === false) {
+        this.alertType = 'error';
         for (let [key, value] of Object.entries(res.data.message)) {
           if(typeof value === 'object') {
             if(value !== undefined && value !== null){
-              this.errors.push(value[0]);
+              this.alertMsgs.push(value[0]);
             }
           }
         };
@@ -152,7 +157,7 @@ export default class NewBookMarkFolder extends Mixins(Const,Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    })
+    }).finally(() => this.closeLoading());
   }
 }
 </script>

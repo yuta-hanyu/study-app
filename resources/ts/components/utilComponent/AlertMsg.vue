@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-alert
-      v-for="(alertMsg, index) in this.alertMsgs" :key=index
+      v-for="(alertMsg, index) in this.getAlertMsgs" :key=index
       dense
       border="left"
       :type="alertType"
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Mixins} from 'vue-property-decorator';
+import {Component, Prop, Mixins, Watch} from 'vue-property-decorator';
 import Const from '../../common/const';
 
 @Component({
@@ -25,7 +25,20 @@ export default class AlertMsg extends Mixins(Const) {
     alertType!: 'error'|'success'|'';
   @Prop({type: Array, default: false})
     alertMsgs!: string[];
+
+  private getAlertMsgs: string[] = this.alertMsgs;
+
+  @Watch('alertMsgs', {immediate: true})
+    private onChangeRoute(routeInstance: object, oldRouteInstance: object) {
+      this.getAlertMsgs = this.alertMsgs;
+      if(this.alertType === 'success') {
+        setTimeout(() => {
+          this.getAlertMsgs = [];
+        }, 10000);
+      }
+  }
 }
+
 </script>
 
 <style>

@@ -1,18 +1,11 @@
 <template>
   <div class="bg">
     <v-container class="container">
-      <v-alert
-        v-if="this.succueseMsg"
-        align="center"
-        dense
-        class="mt-6"
-        dismissible
-        color="#B2DFDB"
-        border="left"
-        elevation="2"
-        icon="mdi-check">
-          {{this.succueseMsg}}
-      </v-alert>
+      <alert-msg class="mt-4"
+        v-if="alertMsgs.length"
+        :alertType=alertType
+        :alertMsgs=alertMsgs>
+      </alert-msg>
       <v-row class="mt-4">
         <v-col md="6" sm="12">
           <v-autocomplete
@@ -184,7 +177,7 @@
       <v-dialog
         v-model="addFolderDialog"
         persistent
-        width="400px">
+        width="450px">
         <new-book-mark-folder
           @back="addFolderDialog=!addFolderDialog"
           @folder-registered="registered">
@@ -194,7 +187,7 @@
       <v-dialog
         v-model="editFolderDialog"
         persistent
-        width="400px">
+        width="450px">
         <edit-book-mark-folder
           ref="child"
           :editFolder=editFolder
@@ -252,7 +245,7 @@ import EditBookMarkFolder from './bookMarkComponents/EditBookMarkFolder.vue';
 import NewBookMark from './bookMarkComponents/NewBookMark.vue';
 import EditBookMark from './bookMarkComponents/EditBookMark.vue';
 import ImportBookMark from './bookMarkComponents/ImportBookMark.vue';
-import Loading from '../global/Loading.vue';
+import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 
 @Component({
   name: 'BookMark',
@@ -262,12 +255,16 @@ import Loading from '../global/Loading.vue';
     NewBookMark,
     EditBookMark,
     ImportBookMark,
-    Loading,
+    AlertMsg,
   },
 })
 
 export default class BookMark extends Mixins(Const, Util) {
   $refs: any = {}
+  // 処理完了Msg
+  private alertMsgs: string[] = [];
+  // 処理完了Msgタイプ
+  private alertType: 'error'|'success'|'' = '';
   // 処理成功MSG
   private succueseMsg: string = '';
   // ブックマーク追加ダイアログ
@@ -324,7 +321,7 @@ export default class BookMark extends Mixins(Const, Util) {
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
-    });
+    }).finally(() => this.closeLoading());
   };
   /**
    * ブックマーク/フォルダー新規登録・編集完了
@@ -335,10 +332,10 @@ export default class BookMark extends Mixins(Const, Util) {
     this.editFolderDialog = false;
     this.editBookMarkDialog = false;
     this.importBookMarkDialog = false;
-    this.succueseMsg = succueseMsg;
-    setTimeout(() => {
-      this.succueseMsg = '';
-    }, 10000);
+    this.alertType = '';
+    this.alertMsgs = [];
+    this.alertType = 'success';
+    this.alertMsgs.push(succueseMsg);
     this.getBookMarks();
   };
   /**
