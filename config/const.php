@@ -14,6 +14,12 @@ return [
   'REGISTERED' => 2,    // 本会員登録完了
   'TEMPORARY_EXPIRATION_DATETIME' => 1, // 仮登録有効期限
   'GUEST_USER_Email' => 'guest@gmail.com', // ゲストユーザー
+  /** -----todo関連----- */
+  'TODO_FIXED' => 1,
+  'UNTREATED' => 0, //未対応
+  'ON_THE_WAY' => 1, //対応中
+  'ON_HPLD' => 2, //保留
+  'FINISH' => 3, //完了
 ];
 
 

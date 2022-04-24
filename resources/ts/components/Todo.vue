@@ -53,10 +53,12 @@
           <div class="mt-5" align="left">固定済み</div>
           <hr class="hr-down mt-1 mb-1">
         </v-col>
-        <v-col cols="3"
+
+        <draggable @end="sortChange(true)" v-model="bookMarkTodos" flat draggable=".bookMarkTodos" class="d-flex flex-wrap justify-center">
+        <div class="bookMarkTodos mx-2 my-2"
           v-for="(todo,index) in bookMarkTodos"
           :key=index
-          v-show="todo.book_mark === TODO_BOOKMARK_FIXED">
+          style="min-width:200px">
           <v-tooltip bottom color="#EEEEEE">
             <template v-slot:activator="{ on, attrs }">
               <v-card
@@ -90,7 +92,9 @@
             </template>
             <span style="color: black;">タスク編集・削除</span>
           </v-tooltip>
-        </v-col>
+        </div>
+        </draggable>
+
       </v-row>
       <!-- ブックマークなし -->
       <v-row justify="center">
@@ -98,74 +102,48 @@
           <div class="mt-5" align="left">その他</div>
           <hr class="hr-down mt-1 mb-1">
         </v-col>
-        <v-col cols="3"
-          v-for="(todo,index) in todos"
-          :key=index
-          v-show="todo.book_mark !== TODO_BOOKMARK_FIXED">
-          <v-tooltip bottom color="#EEEEEE">
-            <template v-slot:activator="{ on, attrs }">
-              <v-card
-                dark
-                @click="goDetail(todo)"
-                elevation="10"
-                class="mx-auto"
-                outlined
-                :style="{backgroundColor: color(todo)}"
-                v-bind="attrs"
-                v-on="on">
-                <v-card-title>{{todo.title}}</v-card-title>
-                <v-card-subtitle class="mb-n7">
-                  <span v-if="todo.state === TOD0_STATUS.UNTREATED">
-                  未対応
-                  </span>
-                  <span v-else-if="todo.state === TOD0_STATUS.ON_THE_WAY">
-                  対応中
-                  </span>
-                  <span v-else-if="todo.state === TOD0_STATUS.ON_HPLD">
-                  保留
-                  </span>
-                  <span v-else>
-                  完了
-                  </span>
-                </v-card-subtitle>
-                <v-banner single-line></v-banner>
-                <v-card-text class="new_line" v-text="todo.content">
-                </v-card-text>
-              </v-card>
-            </template>
-            <span style="color: black;">タスク編集・削除</span>
-          </v-tooltip>
-        </v-col>
+        <draggable @end="sortChange" v-model="todos" flat draggable=".todos" class="d-flex flex-wrap justify-center">
+          <div class="todos mx-2 my-2"
+            v-for="(todo,index) in todos"
+            :key=index
+            style="min-width:200px">
+            <v-tooltip bottom color="#EEEEEE">
+              <template v-slot:activator="{ on, attrs }">
+                <v-card
+                  dark
+                  @click="goDetail(todo)"
+                  elevation="10"
+                  class="mx-auto"
+                  outlined
+                  :style="{backgroundColor: color(todo)}"
+                  v-bind="attrs"
+                  v-on="on">
+                  <v-card-title>{{todo.title}}</v-card-title>
+                  <v-card-subtitle class="mb-n7">
+                    <span v-if="todo.state === TOD0_STATUS.UNTREATED">
+                    未対応
+                    </span>
+                    <span v-else-if="todo.state === TOD0_STATUS.ON_THE_WAY">
+                    対応中
+                    </span>
+                    <span v-else-if="todo.state === TOD0_STATUS.ON_HPLD">
+                    保留
+                    </span>
+                    <span v-else>
+                    完了
+                    </span>
+                  </v-card-subtitle>
+                  <v-banner single-line></v-banner>
+                  <v-card-text class="new_line" v-text="todo.content">
+                  </v-card-text>
+                </v-card>
+              </template>
+              <span style="color: black;">タスク編集・削除</span>
+            </v-tooltip>
+          </div>
+        </draggable>
       </v-row>
     </v-container>
-    <!-- 新規登録ボタン -->
-    <!-- <v-tooltip bottom color="primary">
-      <template v-slot:activator="{ on, attrs }">
-        <v-icon
-          color="primary"
-          v-bind="attrs"
-          v-on="on"
-          id="plus-circle"
-          @click="newTodoOpen">
-        mdi-plus-circle
-        </v-icon>
-      </template>
-      <span>todo追加</span>
-    </v-tooltip> -->
-    <!-- 一括削除ボタン -->
-    <!-- <v-tooltip bottom color="red">
-      <template v-slot:activator="{ on, attrs }">
-        <v-icon
-          color="red"
-          id="delete-alert"
-          @click="allDeleteOpen"
-          v-bind="attrs"
-          v-on="on">
-        mdi-delete-alert
-        </v-icon>
-      </template>
-      <span>todo一括削除</span>
-    </v-tooltip> -->
     <!-- 新規作成ダイアログ -->
     <v-dialog
       persistent
@@ -199,8 +177,6 @@
         :detailTodo=detailTodo>
       </detail-todo>
     </v-dialog>
-        <!-- @todo-update="updateTodo"
-        @delete-todo="deleteTodo" -->
     <!-- リマインダーダイアログ -->
     <!-- <v-dialog
       persistent
@@ -226,6 +202,7 @@ import { User } from '../interfaces/User';
 import { Todos } from '../interfaces/Todos';
 import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 import Util from '../common/util';
+import draggable from 'vuedraggable'
 
 @Component({
   name: 'Todo',
@@ -235,6 +212,7 @@ import Util from '../common/util';
     DetailTodo,
     RemaindTodo,
     AlertMsg,
+    draggable
   },
 })
 
@@ -272,54 +250,17 @@ export default class Todo extends Mixins(Const, Util) {
     // }
   };
   /**
-   * リマインダー管理
-   */
-  // private checkReminder(): void {
-  //   // 要リマインドデータを初期化
-  //   this.onRemindTodos = [];
-  //   // 現在時刻を取得
-  //   const now = new Date();
-  //   // 現在時刻とリマインドを比較
-  //   this.bookMarkTodos.map((todo) => {
-  //     let reminder = new Date((todo.reminderDate!.replace(/-/g,'/')) + ' ' + todo.reminderTime);
-  //     if(reminder.getTime() < now.getTime()) {
-  //       this.remaindDialog = true;
-  //       this.onRemindTodos.push(todo);
-  //     };
-  //   });
-  // };
-  /**
    * todo一覧取得
    */
   private getTodos(): void {
     this.setLoading();
     this.bookMarkTodos = [];
     this.todos = [];
-    Axios.get(`/api/todo/`).then((res) => {
-      // 固定表示とその他を分別（ステータス完了非表示）
-      if (this.finishFlag === false) {
-        for (let todo of res.data.todos) {
-          if (todo.state !== this.TOD0_STATUS.FINISH && todo.book_mark === this.TODO_BOOKMARK_FIXED) {
-            this.bookMarkTodos.push(todo);
-          } else if(todo.state !== this.TOD0_STATUS.FINISH) {
-            this.todos.push(todo);
-          } else {
-            continue;
-          }
-        }
-        return;
-      };
-      // 固定表示とその他を分別（ステータス完了表示）
-      if (this.finishFlag === true) {
-        for (let todo of res.data.todos) {
-          if (todo.book_mark === this.TODO_BOOKMARK_FIXED) {
-            this.bookMarkTodos.push(todo);
-          } else {
-            this.todos.push(todo);
-          }
-        }
-        return;
-      };
+    Axios.post(`/api/todo/`,{
+      finishFlag: this.finishFlag
+    }).then((res) => {
+      this.bookMarkTodos = res.data.bookMarkTodos;
+      this.todos = res.data.todos;
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
@@ -340,18 +281,28 @@ export default class Todo extends Mixins(Const, Util) {
       return "#020202"
     }
   };
-  // /**
-  //  * 新規登録ダイアログを表示
-  //  */
-  // private newTodoOpen(): void {
-  //   this.newDialog = true;
-  // };
-  // /**
-  //  * 新規登録ダイアログを非表示
-  //  */
-  // private newTodoClose(): void {
-  //   this.newDialog = false;
-  // };
+  /**
+   * ソート順変更
+   */
+  private sortChange(flag: boolean): void {
+    this.setLoading();
+    this.alertType = '';
+    this.alertMsgs = [];
+    let targetTodos: Todos[] = [];
+    flag === true ? targetTodos = this.bookMarkTodos : targetTodos = this.todos;
+    targetTodos.map((todo, index) => {
+      todo.sort_order = index;
+    })
+    Axios.post(`/api/todo/update_sort`,{
+      targetTodos :targetTodos
+    }).then((res) => {
+      this.alertType = 'success';
+      this.alertMsgs.push(`タスクの並び順を${this.SUCCESS_MSG.EDIT_SUCCESS}`);
+    }).catch((e) => {
+      this.authCheck(e);
+      this.serverError(e);
+    }).finally(() => this.closeLoading());
+  }
   /**
    * todo新規登録・削除・編集完了
    */
@@ -367,28 +318,6 @@ export default class Todo extends Mixins(Const, Util) {
     this.getTodos();
   };
   /**
-   * 全削除ダイアログを表示
-   */
-  // private allDeleteOpen(): void {
-  //   this.allDeleteDialog = true;
-  // };
-  // /**
-  //  * 全削除ダイアログを非表示
-  //  */
-  // private allDeleteClose(): void {
-  //   this.allDeleteDialog = false;
-  // };
-  /**
-   * 全削除成功
-   */
-  // private removeAll(succueseMsg: string): void {
-  //   this.succueseMsg = succueseMsg;
-  //   setTimeout(() => {
-  //     this.succueseMsg = '';
-  //   }, 3000);
-  //   this.getTodos();
-  // };
-  /**
    * todo詳細
    */
   async goDetail(todo: Todos): Promise<void> {
@@ -401,46 +330,21 @@ export default class Todo extends Mixins(Const, Util) {
     this.$refs.child.setInitializeValue();
   };
   /**
-   * todo編集完了
+   * リマインダー管理
    */
-  // private updateTodo(succueseMsg: string): void {
-  //   this.detailDialogClose();
-  //   this.succueseMsg = succueseMsg;
-  //   setTimeout(() => {
-  //     this.succueseMsg = '';
-  //   }, 3000);
-  //   this.getTodos();
-  // }
-  /**
-   * 削除成功
-   */
-  // private deleteTodo(succueseMsg: string): void {
-  //   this.detailDialogClose();
-  //   this.succueseMsg = succueseMsg;
-  //   setTimeout(() => {
-  //     this.succueseMsg = '';
-  //   }, 3000);
-  //   this.getTodos();
-  // }
-  /**
-   * 詳細ダイアログを非表示
-   */
-  // private detailDialogClose(): void {
-  //   this.detailDialog = false;
-  // }
-  /**
-   * 各ダイアログから戻る
-   */
-  // private back(): void {
-  //   if(this.newDialog = true) {
-  //     this.newTodoClose();
-  //   };
-  //   if(this.allDeleteDialog = true) {
-  //     this.allDeleteClose();
-  //   };
-  //   if(this.detailDialog = true) {
-  //     this.detailDialogClose();
-  //   };
+  // private checkReminder(): void {
+  //   // 要リマインドデータを初期化
+  //   this.onRemindTodos = [];
+  //   // 現在時刻を取得
+  //   const now = new Date();
+  //   // 現在時刻とリマインドを比較
+  //   this.bookMarkTodos.map((todo) => {
+  //     let reminder = new Date((todo.reminderDate!.replace(/-/g,'/')) + ' ' + todo.reminderTime);
+  //     if(reminder.getTime() < now.getTime()) {
+  //       this.remaindDialog = true;
+  //       this.onRemindTodos.push(todo);
+  //     };
+  //   });
   // };
   /**
    * リマインダーダイアログから戻る
