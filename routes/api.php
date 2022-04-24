@@ -35,31 +35,32 @@ Route::post('/register/tokenVerify', 'App\Http\Controllers\RegisterController@to
 Route::post('/register/newUser', 'App\Http\Controllers\RegisterController@store');
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum','getUserInfo')->group(function () {
   /**
    * todo一覧表示
    */
-  Route::get('/todos/{user_id}', 'App\Http\Controllers\TodoController@index');
+  Route::get('/todo', 'App\Http\Controllers\TodoController@index');
+    // ->middleware('getUserInfo');
   /**
    * todo新規登録
    */
-  Route::post('/todos', 'App\Http\Controllers\TodoController@store');
+  Route::post('/todo/store', 'App\Http\Controllers\TodoController@store');
   /**
    * todo更新
    */
-  Route::put('/todo/update', 'App\Http\Controllers\TodoController@update');
+  Route::post('/todo/update', 'App\Http\Controllers\TodoController@update');
   /**
    * todoリマインダー更新
    */
-  Route::put('/todo/updateRemaind', 'App\Http\Controllers\TodoController@updateRemaind');
+  Route::post('/todo/updateRemaind', 'App\Http\Controllers\TodoController@updateRemaind');
   /**
    * todo削除
    */
-  Route::delete('/todo/{id}', 'App\Http\Controllers\TodoController@destroy');
+  Route::post('/todo/remove', 'App\Http\Controllers\TodoController@destroy');
   /**
    * todo全削除
    */
-  Route::delete('/todos/{user_id}', 'App\Http\Controllers\TodoController@allDestroy');
+  Route::post('/todo/remove_all', 'App\Http\Controllers\TodoController@allDestroy');
   /**
    * ブックマーク一覧表示
    */

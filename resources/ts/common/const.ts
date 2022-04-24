@@ -20,6 +20,15 @@ export default class Const extends Vue {
   /** -----プロパティ関連----- */
   // ブックマーク上部固定
   BOOKMARKFIXED = Object.freeze(1);
+  // todoステータス
+  TOD0_STATUS = Object.freeze({
+    UNTREATED: 0, //未対応
+    ON_THE_WAY: 1, //対応中
+    ON_HPLD: 2, //保留
+    FINISH: 3, //完了
+  });
+  // todoブックマーク上部固定
+  TODO_BOOKMARK_FIXED = Object.freeze(1);
   /** -----メッセージ関連----- */
   // エラーMSG
   ERROR_MSG = Object.freeze({
@@ -36,6 +45,7 @@ export default class Const extends Vue {
     STORE_SUCCESS: 'を新たに登録しました',
     EDIT_SUCCESS: 'を編集しました',
     DELETE_SUCCESS: 'を削除しました',
+    ALL_ELETE_SUCCESS: 'を全て削除しました',
     IMPORT_SUCCESS: '取込が完了しました',
     REGISTER_SUCCESS: '登録が完了しました',
     REGISTER_TEMPORART_SIGN_UP: '仮登録メールをお送りしました',

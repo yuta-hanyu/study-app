@@ -4,10 +4,9 @@
       class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
       color="black"
       dark
-      height="200px"
       width="400px">
       <div class="grey--text text--lighten-1 text-h6 mb-4" align="center">
-        全てのtodoを削除しますか？<br>
+        全てのタスクを削除しますか？<br>
         ※ 元には戻りません
       </div>
       <v-row justify="center">
@@ -16,7 +15,7 @@
             class="ma-1"
             color="grey"
             plain
-            @click="backTodos">
+            @click="back">
             <div class="text-h6">戻る</div>
           </v-btn>
         </v-col>
@@ -35,39 +34,34 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Emit} from 'vue-property-decorator';
-import Vue from 'vue';
+import {Component, Emit, Mixins} from 'vue-property-decorator';
 import Axios from 'axios';
+import Const from '../../common/const';
+import Util from '../../common/util';
 
 @Component({
   name: 'AllDeleteTodo',
 })
 
-export default class AllDeleteTodo extends Vue {
-  @Prop({type: Number, default: false})
-    user_id!: number;
+export default class AllDeleteTodo extends Mixins(Util, Const) {
   // 戻るボタン押下
-  @Emit('back-todos')
-    backTodos(): void {
-  };
-  // 全削除成功
+  @Emit('back')
+    back(): void {};
+  // 削除ボタン押下
   @Emit('remove-all')
-    emitRemoveAll(succueseMsg: string): void {
-  };
-  // 削除成功時MSG
-  private succueseMsg: string = '';
+    emitRemoveAll(succueseMsg: string): void {};
   /**
    * 削除ボタン押下
    */
   private removeAll(): void {
-    Axios.delete(`/api/todos/${this.user_id}`).then((res) => {
-      this.succueseMsg = 'todoを全て削除しました'
-      this.emitRemoveAll(this.succueseMsg);
-      this.backTodos();
+    this.setLoading();
+    Axios.post(`/api/todo/remove_all`).then((res) => {
+      let succueseMsg = `タスクを${this.SUCCESS_MSG.ALL_ELETE_SUCCESS}`
+      this.emitRemoveAll(succueseMsg);
     }).catch((e) => {
-      window.alert('データの削除に失敗しました')
-      console.log(e);
-    });
+      this.authCheck(e);
+      this.serverError(e);
+    }).finally(() => this.closeLoading());
   }
 }
 </script>
