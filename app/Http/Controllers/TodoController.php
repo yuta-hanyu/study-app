@@ -7,8 +7,7 @@ use App\Models\Todo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
-use function PHPUnit\Framework\isNull;
+use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
@@ -16,23 +15,23 @@ class TodoController extends Controller
   * 一覧表示
   * @return Http response
   */
-  public function index($user_id)
+  public function index(Request $request)
   {
     Log::info('todo一覧取得開始');
-    $todos = new Todo();
-    $result = $todos
-                ->where('user_id', '=', $user_id)
+    $todo = new Todo();
+    $todos = $todo
+                ->where('user_id', '=', $request['userInfo']['id'])
                 ->orderBy('updated_at', 'desc')
                 ->get();
     // リマインド（reminder）をフロント表示用に分割
-    foreach($result as $todo) {
-      $todo->reminderDate = substr($todo->reminder, 0, 10);
-      $todo->reminderTime = substr($todo->reminder, 11, 5);
-      unset($todo->reminder);
-    };
+    // foreach($result as $todo) {
+    //   $todo->reminderDate = substr($todo->reminder, 0, 10);
+    //   $todo->reminderTime = substr($todo->reminder, 11, 5);
+    //   unset($todo->reminder);
+    // };
     Log::info('todo一覧取得終了');
     return response()->json([
-      'result' => $result
+      'todos' => $todos
     ]);
   }
   /**
@@ -41,42 +40,37 @@ class TodoController extends Controller
   */
   public function store(Request $request)
   {
+    Log::info($request['userInfo']['id']);
+    Log::info($request);
     Log::info('todo新規登録開始');
     // バリデーション
-    $validate = Validator::make($request->all(), [
-      'title' => 'required|max:15',
-      'content' => 'max:255',
-      'state' => 'required',
-    ]);
-    if ($validate->fails()) {
-      // バリデーションエラーメッセージ
+    $todo = new Todo();
+    $validate = $todo->validate($request['newTodo']);
+    if($validate->fails()) {
       $message = $validate->errors();
-      // エラー判定
       $validateState = false;
+      Log::error("todo登録失敗_バリデーションエラー");
       return response()->json(['message' => $message, 'validateState' => $validateState]);
     }
     // リマインド日付、時間を合算し保存（空の場合はnullを保存）
-    if(!is_null($request->reminderDate) && !is_null($request->reminderTime)) {
-      $reminder = $request->reminderDate.' '.$request->reminderTime.':00';
-    } else {
-      $reminder = null;
-    };
+    // if(!is_null($request->reminderDate) && !is_null($request->reminderTime)) {
+    //   $reminder = $request->reminderDate.' '.$request->reminderTime.':00';
+    // } else {
+    //   $reminder = null;
+    // };
+    $input = $request['newTodo'];
+    $input = array_merge($input, array('user_id'=>$request['userInfo']['id']));
     // 登録開始
     DB::beginTransaction();
     try{
-      $todo = new Todo();
-      $todo->user_id = $request->user_id;
-      $todo->title = $request->title;
-      $todo->content = $request->content;
-      $todo->state = $request->state;
-      $todo->book_mark = $request->book_mark;
-      $todo->reminder = $reminder;
+      $todo->fill($input);
       $todo->save();
       DB::commit();
     } catch (\Exception $e) {
-      DB::rollback();
+      Log::error($e->getMessage());
       Log::error('todo新規登録失敗');
-      Log::info($e);
+      DB::rollback();
+      return response()->json([], 500);
     }
     Log::info('todo新規登録終了');
     return;

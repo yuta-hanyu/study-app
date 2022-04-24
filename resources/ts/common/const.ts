@@ -20,6 +20,15 @@ export default class Const extends Vue {
   /** -----プロパティ関連----- */
   // ブックマーク上部固定
   BOOKMARKFIXED = Object.freeze(1);
+  // todoステータス
+  TOD0_STATUS = Object.freeze({
+    UNTREATED: 0, //未対応
+    ON_THE_WAY: 1, //対応中
+    ON_HPLD: 2, //保留
+    FINISH: 3, //完了
+  });
+  // todoブックマーク上部固定
+  TODO_BOOKMARK_FIXED = Object.freeze(1);
   /** -----メッセージ関連----- */
   // エラーMSG
   ERROR_MSG = Object.freeze({

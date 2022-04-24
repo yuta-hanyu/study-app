@@ -35,15 +35,16 @@ Route::post('/register/tokenVerify', 'App\Http\Controllers\RegisterController@to
 Route::post('/register/newUser', 'App\Http\Controllers\RegisterController@store');
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum','getUserInfo')->group(function () {
   /**
    * todo一覧表示
    */
-  Route::get('/todos/{user_id}', 'App\Http\Controllers\TodoController@index');
+  Route::get('/todo', 'App\Http\Controllers\TodoController@index');
+    // ->middleware('getUserInfo');
   /**
    * todo新規登録
    */
-  Route::post('/todos', 'App\Http\Controllers\TodoController@store');
+  Route::post('/todo/store', 'App\Http\Controllers\TodoController@store');
   /**
    * todo更新
    */

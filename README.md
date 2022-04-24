@@ -19,6 +19,9 @@ php artisan make:model BookMark
 php artisan make:model Inquiry
 php artisan make:model EmailVerification
 
+# middleware作成
+php artisan make:middleware GetUserInfoMiddleware
+
 # seed
 ## seedファイル作成
 php artisan make:seeder TodosTableSeeder

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class Todo extends Model
 {
@@ -20,6 +22,18 @@ class Todo extends Model
     'book_mark',
     'remainder',
   ];
+  /**
+   * バリデーション
+   */
+  public function validate(array $input)
+  {
+    $rules = [
+      'title' => 'required|max:15',
+      'content' => 'max:255',
+      'state' => 'required',
+    ];
+    return Validator::make($input, $rules);
+  }
   /**
    * ユーザーを取得
    */
