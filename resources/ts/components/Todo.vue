@@ -14,9 +14,9 @@
           v-model="finishFlag"
           label="完了を表示する"
           @click="getTodos()"
-          color="info"
+          color="red"
         ></v-switch>
-        <v-tooltip bottom color="primary">
+        <v-tooltip bottom color="#EEEEEE">
           <template v-slot:activator="{ on, attrs }">
             <v-icon
               size="50"
@@ -29,9 +29,9 @@
             mdi-plus-circle
             </v-icon>
           </template>
-          <span>タスク登録</span>
+          <span style="color: black;">タスク登録</span>
         </v-tooltip>
-        <v-tooltip bottom color="red">
+        <v-tooltip bottom color="#EEEEEE">
           <template v-slot:activator="{ on, attrs }">
             <v-icon
               size="50"
@@ -44,7 +44,7 @@
             mdi-delete-alert
             </v-icon>
           </template>
-          <span>タスク一括削除</span>
+          <span style="color: black;">タスク一括削除</span>
         </v-tooltip>
       </v-row>
       <!-- ブックマークあり -->
@@ -56,12 +56,12 @@
         <v-col cols="3"
           v-for="(todo,index) in bookMarkTodos"
           :key=index
-          v-show="todo.book_mark === 1">
-          <v-tooltip bottom color="deep-orange lighten-2">
+          v-show="todo.book_mark === TODO_BOOKMARK_FIXED">
+          <v-tooltip bottom color="#EEEEEE">
             <template v-slot:activator="{ on, attrs }">
               <v-card
                 dark
-                @click="todoDetail(todo)"
+                @click="goDetail(todo)"
                 elevation="10"
                 class="mx-auto"
                 outlined
@@ -70,13 +70,13 @@
                 v-on="on">
                 <v-card-title>{{todo.title}}</v-card-title>
                 <v-card-subtitle class="mb-n7">
-                  <span v-if="todo.state === 0">
+                  <span v-if="todo.state === TOD0_STATUS.UNTREATED">
                   未対応
                   </span>
-                  <span v-else-if="todo.state === 1">
+                  <span v-else-if="todo.state === TOD0_STATUS.ON_THE_WAY">
                   対応中
                   </span>
-                  <span v-else-if="todo.state === 2">
+                  <span v-else-if="todo.state === TOD0_STATUS.ON_HPLD">
                   保留
                   </span>
                   <span v-else>
@@ -88,7 +88,7 @@
                 </v-card-text>
               </v-card>
             </template>
-            <span>todo編集・削除</span>
+            <span style="color: black;">タスク編集・削除</span>
           </v-tooltip>
         </v-col>
       </v-row>
@@ -101,12 +101,12 @@
         <v-col cols="3"
           v-for="(todo,index) in todos"
           :key=index
-          v-show="todo.book_mark !== 1">
-          <v-tooltip bottom color="deep-orange lighten-2">
+          v-show="todo.book_mark !== TODO_BOOKMARK_FIXED">
+          <v-tooltip bottom color="#EEEEEE">
             <template v-slot:activator="{ on, attrs }">
               <v-card
                 dark
-                @click="todoDetail(todo)"
+                @click="goDetail(todo)"
                 elevation="10"
                 class="mx-auto"
                 outlined
@@ -115,13 +115,13 @@
                 v-on="on">
                 <v-card-title>{{todo.title}}</v-card-title>
                 <v-card-subtitle class="mb-n7">
-                  <span v-if="todo.state === 0">
+                  <span v-if="todo.state === TOD0_STATUS.UNTREATED">
                   未対応
                   </span>
-                  <span v-else-if="todo.state === 1">
+                  <span v-else-if="todo.state === TOD0_STATUS.ON_THE_WAY">
                   対応中
                   </span>
-                  <span v-else-if="todo.state === 2">
+                  <span v-else-if="todo.state === TOD0_STATUS.ON_HPLD">
                   保留
                   </span>
                   <span v-else>
@@ -133,7 +133,7 @@
                 </v-card-text>
               </v-card>
             </template>
-            <span>todo編集・削除</span>
+            <span style="color: black;">タスク編集・削除</span>
           </v-tooltip>
         </v-col>
       </v-row>
@@ -180,8 +180,9 @@
     <v-dialog
       persistent
       v-model="allDeleteDialog"
-      width="700px">
+      width="400px">
       <all-delete-todo
+        @remove-all="registered"
         @back="allDeleteDialog=!allDeleteDialog">
       </all-delete-todo>
     </v-dialog>
@@ -193,6 +194,8 @@
       <detail-todo
         ref="child"
         @back="detailDialog=!detailDialog"
+        @todo-update="registered"
+        @delete-todo="registered"
         :detailTodo=detailTodo>
       </detail-todo>
     </v-dialog>
@@ -213,7 +216,7 @@
 
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
-import AllDeleteTodo from './todoComponents/allDeleteTodo.vue'
+import AllDeleteTodo from './todoComponents/AllDeleteTodo.vue'
 import NewTodo from './todoComponents/NewTodo.vue';
 import DetailTodo from './todoComponents/DetailTodo.vue';
 import RemaindTodo from './todoComponents/RemaindTodo.vue';
@@ -244,7 +247,7 @@ export default class Todo extends Mixins(Const, Util) {
   // その他一覧
   private todos: Todos[] = [];
   // 新規登録ダイアログ表示フラグ
-  private newDialog: boolean = true;
+  private newDialog: boolean = false;
   // 新規登録ダイアログ表示フラグ
   private allDeleteDialog: boolean = false;
   // 詳細ダイアログ表示フラグ
@@ -353,7 +356,6 @@ export default class Todo extends Mixins(Const, Util) {
    * todo新規登録・削除・編集完了
    */
   private registered(succueseMsg: string): void {
-    console.log(succueseMsg);
     this.newDialog = false;
     this.allDeleteDialog = false;
     this.detailDialog = false;
@@ -389,14 +391,14 @@ export default class Todo extends Mixins(Const, Util) {
   /**
    * todo詳細
    */
-  async todoDetail(todo: Todos): Promise<void> {
+  async goDetail(todo: Todos): Promise<void> {
     // 子コンポーネント生成後、初期をセット
     await (
       this.detailTodo = todo,
       this.detailDialog = true
     );
     // コンポーネントに初期をセット
-    this.$refs.child.setVal();
+    this.$refs.child.setInitializeValue();
   };
   /**
    * todo編集完了

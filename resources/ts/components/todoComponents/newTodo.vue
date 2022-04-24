@@ -34,15 +34,15 @@
                 class="my-0 pr-4">
                 <v-radio
                   label="未対応"
-                  value=0
+                  :value="TOD0_STATUS.UNTREATED"
                 ></v-radio>
                 <v-radio
                   label="対応中"
-                  value=1
+                  :value="TOD0_STATUS.ON_THE_WAY"
                 ></v-radio>
                 <v-radio
                   label="保留"
-                  value=2
+                  :value="TOD0_STATUS.ON_HPLD"
                 ></v-radio>
               </v-radio-group>
             </v-col>
@@ -50,7 +50,7 @@
               <v-checkbox
                 v-model="newTodo.book_mark"
                 label="上部へ固定する"
-                :value="this.TODO_BOOKMARK_FIXED"
+                :value="TODO_BOOKMARK_FIXED"
                 class="my-0 d-flex flex-column justify-space-between align-center">
               </v-checkbox>
             </v-col>
@@ -81,14 +81,14 @@
                 cols="3">
                 <v-btn
                   class="back"
-                  @click="back()">
+                  @click="back">
                   戻る
                 </v-btn>
               </v-col>
               <v-col cols="3" class="text-center">
                 <v-btn
                   class="go"
-                  @click="todoRegister()">
+                  @click="todoRegister">
                   登録
                 </v-btn>
               </v-col>

@@ -48,19 +48,19 @@ Route::middleware('auth:sanctum','getUserInfo')->group(function () {
   /**
    * todo更新
    */
-  Route::put('/todo/update', 'App\Http\Controllers\TodoController@update');
+  Route::post('/todo/update', 'App\Http\Controllers\TodoController@update');
   /**
    * todoリマインダー更新
    */
-  Route::put('/todo/updateRemaind', 'App\Http\Controllers\TodoController@updateRemaind');
+  Route::post('/todo/updateRemaind', 'App\Http\Controllers\TodoController@updateRemaind');
   /**
    * todo削除
    */
-  Route::delete('/todo/{id}', 'App\Http\Controllers\TodoController@destroy');
+  Route::post('/todo/remove', 'App\Http\Controllers\TodoController@destroy');
   /**
    * todo全削除
    */
-  Route::delete('/todos/{user_id}', 'App\Http\Controllers\TodoController@allDestroy');
+  Route::post('/todo/remove_all', 'App\Http\Controllers\TodoController@allDestroy');
   /**
    * ブックマーク一覧表示
    */

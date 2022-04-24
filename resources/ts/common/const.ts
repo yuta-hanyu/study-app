@@ -45,6 +45,7 @@ export default class Const extends Vue {
     STORE_SUCCESS: 'を新たに登録しました',
     EDIT_SUCCESS: 'を編集しました',
     DELETE_SUCCESS: 'を削除しました',
+    ALL_ELETE_SUCCESS: 'を全て削除しました',
     IMPORT_SUCCESS: '取込が完了しました',
     REGISTER_SUCCESS: '登録が完了しました',
     REGISTER_TEMPORART_SIGN_UP: '仮登録メールをお送りしました',

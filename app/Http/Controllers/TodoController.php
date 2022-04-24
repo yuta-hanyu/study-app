@@ -40,8 +40,6 @@ class TodoController extends Controller
   */
   public function store(Request $request)
   {
-    Log::info($request['userInfo']['id']);
-    Log::info($request);
     Log::info('todo新規登録開始');
     // バリデーション
     $todo = new Todo();
@@ -76,46 +74,43 @@ class TodoController extends Controller
     return;
   }
   /**
-   * 更新
+   * 編集
    */
   public function update(Request $request)
   {
     Log::info('todo更新開始');
     // バリデーション
-    $validate = Validator::make($request->all(), [
-      'title' => 'required|max:15',
-      'content' => 'max:255',
-      'state' => 'required',
-    ]);
-    if ($validate->fails()) {
-      // バリデーションエラーメッセージ
+    $todo = new Todo();
+    $validate = $todo->validate($request['editTodo']);
+    if($validate->fails()) {
       $message = $validate->errors();
-      // エラー判定
       $validateState = false;
+      Log::error("todo編集失敗_バリデーションエラー");
       return response()->json(['message' => $message, 'validateState' => $validateState]);
     }
     // リマインド日付、時間を合算し保存（空の場合はnullを保存）
-    if(!is_null($request->reminderDate) && !is_null($request->reminderTime)) {
-      $reminder = $request->reminderDate.' '.$request->reminderTime.':00';
-    } else {
-      $reminder = null;
-    };
+    // if(!is_null($request->reminderDate) && !is_null($request->reminderTime)) {
+    //   $reminder = $request->reminderDate.' '.$request->reminderTime.':00';
+    // } else {
+    //   $reminder = null;
+    // };
+    $input = $request['editTodo'];
+    $input = array_merge($input, array('user_id'=>$request['userInfo']['id']));
     // 更新開始
     DB::beginTransaction();
     try {
-      $todo = new Todo();
-      $updateTodo = $todo->where('id', $request->id)->first();
-      $updateTodo->title = $request->title;
-      $updateTodo->content = $request->content;
-      $updateTodo->state = $request->state;
-      $updateTodo->book_mark = $request->book_mark;
-      $updateTodo->reminder = $reminder;
+      $updateTodo = $todo
+                    ->where('id', '=' ,$input['id'])
+                    ->where('user_id', '=' ,$input['user_id'])
+                    ->first();
+      $updateTodo->fill($input);
       $updateTodo->save();
       DB::commit();
     } catch (\Exception $e) {
       Log::info('todo更新失敗');
       Log::info($e);
       DB::rollback();
+      return response()->json([], 500);
     };
     Log::info('todo更新終了');
     return;
@@ -150,8 +145,22 @@ class TodoController extends Controller
   public function destroy(Request $request)
   {
     Log::info('todo削除開始');
-    $todo = new Todo();
-    $todo->where('id', '=', $request->id)->delete();
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $todo = new Todo();
+      $deleteTodo = $todo
+                    ->where('id', '=' ,$request['editTodo']['id'])
+                    ->where('user_id', '=' ,$request['userInfo']['id'])
+                    ->first();
+      $deleteTodo->delete();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('todo削除失敗');
+      Log::info($e);
+      DB::rollback();
+      return response()->json([], 500);
+    }
     Log::info('todo削除終了');
     return;
   }
@@ -159,11 +168,23 @@ class TodoController extends Controller
   * 全削除
   * @return Http response
   */
-  public function allDestroy($user_id)
+  public function allDestroy(Request $request)
   {
     Log::info('todo全削除開始');
-    $todo = new Todo();
-    $todo->where('user_id', '=', $user_id)->delete();
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $todo = new Todo();
+      $deleteTodos = $todo
+                    ->where('user_id', '=' ,$request['userInfo']['id'])
+                    ->delete();
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('todo全削除失敗');
+      Log::info($e);
+      DB::rollback();
+      return response()->json([], 500);
+    }
     Log::info('todo全削除終了');
     return;
   }
