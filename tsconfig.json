@@ -14,7 +14,8 @@
     "lib": [
       "es2020",
       "dom",
-    ]
+    ],
+    // "vuedraggable": "src/ts/vuedraggable"
   },
   "include": [
     "resources/ts/**/*",

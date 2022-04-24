@@ -8,6 +8,9 @@ php artisan make:migration create_todos_table
 php artisan make:migration create_inquiries_table
 php artisan make:migration create_email_verification_table
 
+# カラム追加
+php artisan make:migration add_sort_order_to_todos_table --table=todos
+
 ## migraton実行
 php artisan migrate
 ## rollback

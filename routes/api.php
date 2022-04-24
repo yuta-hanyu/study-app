@@ -39,8 +39,11 @@ Route::middleware('auth:sanctum','getUserInfo')->group(function () {
   /**
    * todo一覧表示
    */
-  Route::get('/todo', 'App\Http\Controllers\TodoController@index');
-    // ->middleware('getUserInfo');
+  Route::post('/todo', 'App\Http\Controllers\TodoController@index');
+  /**
+   * todoソート更新
+   */
+  Route::post('/todo/update_sort', 'App\Http\Controllers\TodoController@updateSort');
   /**
    * todo新規登録
    */

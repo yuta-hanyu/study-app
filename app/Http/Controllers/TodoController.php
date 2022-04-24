@@ -19,9 +19,21 @@ class TodoController extends Controller
   {
     Log::info('todo一覧取得開始');
     $todo = new Todo();
+    $bookMarkTodos = $todo
+                ->where('user_id', '=', $request['userInfo']['id'])
+                ->where('book_mark', '=', config('const.TODO_FIXED'))
+                ->when(!$request['finishFlag'], function ($query) {
+                  return $query->where('state', '!=', config('const.FINISH'));
+                })
+                ->orderBy('sort_order', 'asc')
+                ->get();
     $todos = $todo
                 ->where('user_id', '=', $request['userInfo']['id'])
-                ->orderBy('updated_at', 'desc')
+                ->where('book_mark', '!=', config('const.TODO_FIXED'))
+                ->when(!$request['finishFlag'], function ($query) {
+                  return $query->where('state', '!=', config('const.FINISH'));
+                })
+                ->orderBy('sort_order', 'asc')
                 ->get();
     // リマインド（reminder）をフロント表示用に分割
     // foreach($result as $todo) {
@@ -31,8 +43,37 @@ class TodoController extends Controller
     // };
     Log::info('todo一覧取得終了');
     return response()->json([
+      'bookMarkTodos' => $bookMarkTodos,
       'todos' => $todos
     ]);
+  }
+  /**
+   * 編集
+   */
+  public function updateSort(Request $request)
+  {
+    Log::info('todoソート更新開始');
+    // 更新開始
+    DB::beginTransaction();
+    try {
+      $todo = new Todo();
+      foreach($request['targetTodos'] as $inputTodo) {
+        $updateTodo = $todo
+                        ->where('id', '=' ,$inputTodo['id'])
+                        ->where('user_id', '=' ,$inputTodo['user_id'])
+                        ->first();
+        $updateTodo->sort_order = $inputTodo['sort_order'];
+        $updateTodo->save();
+      }
+      DB::commit();
+    } catch (\Exception $e) {
+      Log::info('todoソート更新失敗');
+      Log::info($e);
+      DB::rollback();
+      return response()->json([], 500);
+    };
+    Log::info('todoソート更新終了');
+    return;
   }
   /**
   * 新規登録

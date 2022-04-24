@@ -21,6 +21,7 @@ class Todo extends Model
     'state',
     'book_mark',
     'remainder',
+    'sort_order',
   ];
   /**
    * バリデーション
