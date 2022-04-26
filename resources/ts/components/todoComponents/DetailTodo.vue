@@ -50,6 +50,27 @@
                 ></v-radio>
               </v-radio-group>
             </v-col>
+              <v-col cols="10" height='10%' class="mt-3">
+              <v-dialog
+                v-model="datePickerDialog"
+                persistent
+                width="290px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      class="pt-0 pb-3 label-font"
+                      v-model="editTodo.reminder"
+                      label="リマインダー日付"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                <date-picker
+                  @choice-date="setReminderDate">
+                </date-picker>
+              </v-dialog>
+            </v-col>
             <v-col cols="10" class="d-flex flex-column justify-space-between align-center">
               <v-checkbox
                 v-model="editTodo.book_mark"
@@ -58,27 +79,6 @@
                 class="my-0 d-flex flex-column justify-space-between align-center">
               </v-checkbox>
             </v-col>
-            <!-- <v-col cols="6" height='10%' class="pt-0">
-              <v-dialog
-                v-model="timePickerDialog"
-                persistent
-                width="450px">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      class="pt-0 pb-3 label-font"
-                      v-model="editTodo.reminderTime"
-                      label="リマインダー時間"
-                      prepend-icon="mdi-timer-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                <time-picker
-                  @choice-time=setReminderTime>
-                </time-picker>
-              </v-dialog>
-            </v-col> -->
             <v-row justify="center" class="mb-3">
               <v-col
                 class="text-center"
@@ -113,7 +113,6 @@
 <script lang="ts">
 import {Component, Mixins, Prop, Emit} from 'vue-property-decorator';
 import DatePicker from '../utilComponent/DatePicker.vue';
-import TimePicker from '../utilComponent/TimePicker.vue';
 import Const from '../../common/const';
 import { Todos } from '../../interfaces/Todos';
 import Axios from 'axios';
@@ -124,7 +123,6 @@ import AlertMsg from '../utilComponent/AlertMsg.vue';
   name: 'DetailTodo',
   components: {
     DatePicker,
-    TimePicker,
     AlertMsg,
   }
 })
@@ -157,27 +155,8 @@ export default class DetailTodo extends Mixins(Util, Const) {
   private alertType: 'error'|'success'|'' = '';
   // 編集用todo
   private editTodo: Todos | null = Object.assign({}, this.detailTodo);
-  // // 日付カレンダーダイアログ表示フラグ
-  // private datePickerDialog: boolean = false;
-  // // 日付カレンダーダイアログ表示フラグ
-  // private timePickerDialog: boolean = false;
-  //   // リマインダー年月日表示用ラッパー
-  // get changeReminderDate(): string {
-  //   let reminderDate = new Date(this.editTodo.reminderDate!.replace(/-/g,'/'));
-  //   // 実際に表示する年月日
-  //   let displayDate: string = '';
-  //   // 年月日に取得
-  //   const year = reminderDate.getFullYear();
-  //   const month = reminderDate.getMonth() + 1; // 月は0~11の値で管理されるため+1とする
-  //   const date = reminderDate.getDate();
-  //   // NaNは排除
-  //   if(Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(date)) {
-  //     return displayDate = '';
-  //   };
-  //   // 表示用に加工
-  //   displayDate = year + "年" + month + "月" + date + "日";
-  //   return displayDate;
-  // };
+  // 日付カレンダーダイアログ表示フラグ
+  private datePickerDialog: boolean = false;
   /**
    * データ初期化
    */
@@ -211,12 +190,6 @@ export default class DetailTodo extends Mixins(Util, Const) {
         };
         return;
       }
-      // let reminderMsg: string;
-      // if(!this.editTodo.reminderDate || !this.editTodo.reminderTime) {
-      //   reminderMsg = '（リマインダーなし）';
-      // } else {
-      //   reminderMsg = '（リマインダーあり）';
-      // };
       let succueseMsg = `「${this.editTodo!.title}」を編集しました`
       this.register(succueseMsg);
     }).catch((e) => {
@@ -228,7 +201,7 @@ export default class DetailTodo extends Mixins(Util, Const) {
    * 初期データセット
    */
   private setInitializeValue(): void {
-    this.editTodo = Object.assign({}, this.detailTodo)
+    this.editTodo = Object.assign({}, this.detailTodo);
   };
   /**
    * 削除ボタン押下
@@ -245,20 +218,13 @@ export default class DetailTodo extends Mixins(Util, Const) {
       this.serverError(e);
     });
   };
-  //   /**
-  //  * リマインダー日付セット
-  //  */
-  // private setReminderDate(date: string): void {
-  //   this.editTodo.reminderDate = date;
-  //   this.datePickerDialog = false;
-  // };
-  // /**
-  //  * リマインダー時間セット
-  //  */
-  // private setReminderTime(time: string): void {
-  //   this.editTodo.reminderTime = time;
-  //   this.timePickerDialog = false;
-  // };
+    /**
+   * リマインダー日付セット
+   */
+  private setReminderDate(date: string): void {
+    this.editTodo!.reminder = date;
+    this.datePickerDialog = false;
+  };
 }
 </script>
 

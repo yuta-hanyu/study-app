@@ -248,7 +248,7 @@ export default class Login extends Mixins(Const, Util) {
 <style scoped>
 .bg {
   left: 0;
-  min-height: 800px;
+  min-height: 1000px;
   background-size: contain;
   background: url("../../../public/images/login.jpg") center center / cover no-repeat fixed;
   background-attachment: fixed;

@@ -46,15 +46,8 @@
                 ></v-radio>
               </v-radio-group>
             </v-col>
-            <v-col cols="10" class="d-flex flex-column justify-space-between align-center">
-              <v-checkbox
-                v-model="newTodo.book_mark"
-                label="上部へ固定する"
-                :value="TODO_BOOKMARK_FIXED"
-                class="my-0 d-flex flex-column justify-space-between align-center">
-              </v-checkbox>
-            </v-col>
-            <!-- <v-col cols="6" height='10%' class="mt-n5 pt-0">
+
+            <v-col cols="10" height='10%' class="mt-3">
               <v-dialog
                 v-model="datePickerDialog"
                 persistent
@@ -62,7 +55,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       class="pt-0 pb-3 label-font"
-                      v-model="changeReminderDate"
+                      v-model="newTodo.reminder"
                       label="リマインダー日付"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -71,10 +64,19 @@
                     ></v-text-field>
                   </template>
                 <date-picker
-                  @choice-date=setReminderDate>
+                  @choice-date="setReminderDate">
                 </date-picker>
               </v-dialog>
-            </v-col> -->
+            </v-col>
+
+            <v-col cols="10" class="d-flex flex-column justify-space-between align-center">
+              <v-checkbox
+                v-model="newTodo.book_mark"
+                label="上部へ固定する"
+                :value="TODO_BOOKMARK_FIXED"
+                class="my-0 d-flex flex-column justify-space-between align-center">
+              </v-checkbox>
+            </v-col>
             <v-row justify="center" class="mb-3">
               <v-col
                 class="text-center"
@@ -102,7 +104,6 @@
 <script lang="ts">
 import {Component, Mixins, Prop, Emit} from 'vue-property-decorator';
 import DatePicker from '../utilComponent/DatePicker.vue';
-import TimePicker from '../utilComponent/TimePicker.vue';
 import Const from '../../common/const';
 import Axios from 'axios';
 import { Todos } from '../../interfaces/Todos';
@@ -113,7 +114,6 @@ import AlertMsg from '../utilComponent/AlertMsg.vue';
   name: 'NewTodo',
   components: {
     DatePicker,
-    TimePicker,
     AlertMsg,
   }
 })
@@ -138,9 +138,7 @@ export default class NewTodo extends Mixins(Util, Const) {
   // 新規登録ブックマーク情報
   private newTodo: Todos = {}
   // 日付カレンダーダイアログ表示フラグ
-  // private datePickerDialog: boolean = false;
-  //   // 日付カレンダーダイアログ表示フラグ
-  // private timePickerDialog: boolean = false;
+  private datePickerDialog: boolean = false;
 
   /**
    * データ初期化
@@ -155,23 +153,6 @@ export default class NewTodo extends Mixins(Util, Const) {
     this.alertMsgs = [];
     this.alertType = '';
   }
-  // リマインダー年月日表示用ラッパー
-  // get changeReminderDate(): string {
-  //   let reminderDate = new Date(this.newTodo.reminderDate!.replace(/-/g,'/'));
-  //   // 実際に表示する年月日
-  //   let displayDate: string = '';
-  //   // 年月日に取得
-  //   const year = reminderDate.getFullYear();
-  //   const month = reminderDate.getMonth() + 1; // 月は0~11の値で管理されるため+1とする
-  //   const date = reminderDate.getDate();
-  //   // NaNは排除
-  //   if(Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(date)) {
-  //     return displayDate = '';
-  //   };
-  //   // 表示用に加工
-  //   displayDate = year + "年" + month + "月" + date + "日";
-  //   return displayDate;
-  // };
   /**
    * 登録
    */
@@ -192,12 +173,6 @@ export default class NewTodo extends Mixins(Util, Const) {
         };
         return;
       }
-      // let reminderMsg: string;
-      // if(!this.newTodo.reminderDate || !this.newTodo.reminderTime) {
-      //   reminderMsg = '（リマインダーなし）';
-      // } else {
-      //   reminderMsg = '（リマインダーあり）';
-      // };
       let succueseMsg = `「${this.newTodo.title}」${this.SUCCESS_MSG.STORE_SUCCESS}`;
       this.register(succueseMsg);
     }).catch((e) => {
@@ -208,17 +183,10 @@ export default class NewTodo extends Mixins(Util, Const) {
   /**
    * リマインダー日付セット
    */
-  // private setReminderDate(date: string): void {
-  //   this.newTodo.reminderDate = date;
-  //   this.datePickerDialog = false;
-  // };
-  /**
-   * リマインダー時間セット
-   */
-  // private setReminderTime(time: string): void {
-  //   this.newTodo.reminderTime = time;
-  //   this.timePickerDialog = false;
-  // }
+  private setReminderDate(date: string): void {
+    this.newTodo.reminder = date;
+    this.datePickerDialog = false;
+  };
 }
 </script>
 

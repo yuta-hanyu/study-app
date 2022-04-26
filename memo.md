@@ -46,15 +46,6 @@ php artisan tinker
 \App\Models\User::factory()->create(['name' => 'ccc', 'email' => 'ccc@gmail.com', 'password' => bcrypt('ccc')]);
 \App\Models\User::factory()->create(['name' => 'aaa', 'email' => 'aaa@gmail.com', 'password' => bcrypt('aaa')]);
 
-# 認証エラーハンドリング
-import consts from '../common/const.js'
-
-if(e.response.status === 401) {
-  alert(consts.ERROR_MSG.EXPAIRED_SESSION);
-  this.$store.dispatch('userInfo/resetUserInfo');
-  this.$router.push("/login");
-};
-
 # コントローラー作成
 php artisan make:controller BookMarkController
 php artisan make:controller InquiryController
@@ -65,7 +56,10 @@ php artisan make:controller RegisterController
 # カスタムバリデーションのルール作成
 php artisan make:rule CustomPasswordComparisonValidation
 php artisan make:rule CustomGuestUserValidation
+php artisan make:rule CustomReminderValidation
 
+# バッチ処理
+php artisan make:command TodoReminderBatch
 
 # クラス作成
 php artisan make:mail InquiryMail

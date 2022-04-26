@@ -10,6 +10,9 @@ use App\Rules\CustomPasswordComparisonValidation;
 use App\Rules\CustomGuestUserValidation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+
 
 class User extends Authenticatable
 // class User extends Authenticatable
@@ -49,11 +52,9 @@ class User extends Authenticatable
      */
     public function validate(array $input, bool $editFlag = false)
     {
-      // 会員情報編集の場合はメールのユニークチェックは行わない
-      $editFlag === false ? $uniqueCheck = '|unique:users,deleted_at,email' : $uniqueCheck = '';
       $rules = [
         'name' => 'required',
-        'email' => 'required|string|email'.$uniqueCheck,
+        'email'=>['required','email', Rule::unique('users','email')->ignore(Auth::id())->whereNull('deleted_at')],
         'password' => 'required|max:8'
       ];
       return Validator::make($input, $rules);

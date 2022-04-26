@@ -33,9 +33,9 @@ return [
     'boolean' => 'The :attribute field must be true or false.',
     'confirmed' => 'The :attribute confirmation does not match.',
     'current_password' => 'The password is incorrect.',
-    'date' => 'The :attribute is not a valid date.',
+    'date' => ':attribute は年月日形式でご入力ください',
     'date_equals' => 'The :attribute must be a date equal to :date.',
-    'date_format' => 'The :attribute does not match the format :format.',
+    'date_format' => ':attribute は :format でご入力ください.',
     'declined' => 'The :attribute must be declined.',
     'declined_if' => 'The :attribute must be declined when :other is :value.',
     'different' => 'The :attribute and :other must be different.',
@@ -130,6 +130,7 @@ return [
     'uuid' => 'The :attribute must be a valid UUID.',
     'passwordComparison' => '既存の:attributeと一致しません',
     'gestUserEmail' => ':attribute情報は編集・削除できません',
+    'pasteReminderDate' => ':attributeが過去日となっています',
 
 
     /*
@@ -172,7 +173,8 @@ return [
       'type' => '種別',
       'content' => 'お問い合わせ内容',
       'name' => 'お名前',
-      'gestUserEmail' => 'ゲストユーザー'
+      'gestUserEmail' => 'ゲストユーザー',
+      'reminder' => 'リマインダー',
     ],
 
 ];

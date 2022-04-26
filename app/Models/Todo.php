@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Rules\CustomReminderValidation;
+
 
 class Todo extends Model
 {
@@ -20,7 +22,7 @@ class Todo extends Model
     'content',
     'state',
     'book_mark',
-    'remainder',
+    'reminder',
     'sort_order',
   ];
   /**
@@ -32,6 +34,7 @@ class Todo extends Model
       'title' => 'required|max:15',
       'content' => 'max:255',
       'state' => 'required',
+      'reminder' => ['bail', 'date_format:Y-m-d', new CustomReminderValidation],
     ];
     return Validator::make($input, $rules);
   }
