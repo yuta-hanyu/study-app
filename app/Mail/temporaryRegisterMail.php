@@ -25,7 +25,7 @@ class temporaryRegisterMail extends Mailable
     {
         $this->title = '登録手続きのご案内';
         $this->expiration_datetime = $emailVerification->expiration_datetime;
-        $this->studyAppUrl = env('APP_URL')."verify/".$emailVerification->token;
+        $this->studyAppUrl = "https://muscle-myapp.com/verify/".$emailVerification->token;
     }
 
     /**
