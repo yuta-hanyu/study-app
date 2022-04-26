@@ -6,6 +6,4 @@ export interface Todos {
   book_mark?: number | null;
   reminder?: string;
   sort_order?: number | null;
-  reminderDate? :string;
-  reminderTime? :string;
 };

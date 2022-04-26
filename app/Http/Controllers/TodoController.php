@@ -7,7 +7,6 @@ use App\Models\Todo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
@@ -27,6 +26,10 @@ class TodoController extends Controller
                 })
                 ->orderBy('sort_order', 'asc')
                 ->get();
+    // リマインド（reminder）をフロント表示用に整形
+    foreach($bookMarkTodos as $bookMarkTodo) {
+      $bookMarkTodo->reminder = substr($bookMarkTodo->reminder, 0, 10);
+    };
     $todos = $todo
                 ->where('user_id', '=', $request['userInfo']['id'])
                 ->where('book_mark', '!=', config('const.TODO_FIXED'))
@@ -35,12 +38,10 @@ class TodoController extends Controller
                 })
                 ->orderBy('sort_order', 'asc')
                 ->get();
-    // リマインド（reminder）をフロント表示用に分割
-    // foreach($result as $todo) {
-    //   $todo->reminderDate = substr($todo->reminder, 0, 10);
-    //   $todo->reminderTime = substr($todo->reminder, 11, 5);
-    //   unset($todo->reminder);
-    // };
+    // リマインド（reminder）をフロント表示用に整形
+    foreach($todos as $todo) {
+      $todo->reminder = substr($todo->reminder, 0, 10);
+    };
     Log::info('todo一覧取得終了');
     return response()->json([
       'bookMarkTodos' => $bookMarkTodos,
@@ -91,12 +92,6 @@ class TodoController extends Controller
       Log::error("todo登録失敗_バリデーションエラー");
       return response()->json(['message' => $message, 'validateState' => $validateState]);
     }
-    // リマインド日付、時間を合算し保存（空の場合はnullを保存）
-    // if(!is_null($request->reminderDate) && !is_null($request->reminderTime)) {
-    //   $reminder = $request->reminderDate.' '.$request->reminderTime.':00';
-    // } else {
-    //   $reminder = null;
-    // };
     $input = $request['newTodo'];
     $input = array_merge($input, array('user_id'=>$request['userInfo']['id']));
     // 登録開始
@@ -129,12 +124,6 @@ class TodoController extends Controller
       Log::error("todo編集失敗_バリデーションエラー");
       return response()->json(['message' => $message, 'validateState' => $validateState]);
     }
-    // リマインド日付、時間を合算し保存（空の場合はnullを保存）
-    // if(!is_null($request->reminderDate) && !is_null($request->reminderTime)) {
-    //   $reminder = $request->reminderDate.' '.$request->reminderTime.':00';
-    // } else {
-    //   $reminder = null;
-    // };
     $input = $request['editTodo'];
     $input = array_merge($input, array('user_id'=>$request['userInfo']['id']));
     // 更新開始
