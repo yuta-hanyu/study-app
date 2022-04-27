@@ -111,6 +111,7 @@ class TodoController extends Controller
   }
   /**
    * 編集
+   * @return Http response
    */
   public function update(Request $request)
   {
