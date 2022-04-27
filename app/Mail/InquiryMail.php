@@ -37,7 +37,6 @@ class InquiryMail extends Mailable
      */
     public function build()
     {
-      Log::info($this->studyAppUrl);
       return $this->view('emails.inquiryReplay')
                     ->subject($this->title)
                     ->with([

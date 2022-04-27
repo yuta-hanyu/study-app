@@ -60,6 +60,10 @@ php artisan make:rule CustomReminderValidation
 
 # バッチ処理
 php artisan make:command TodoReminderBatch
+# cron設定
+00 21 * * * /var/www/html/study-app/artisan command:TodoReminderBatch
+# cronテスト用
+*/1 * * * * /var/www/html/study-app/artisan command:TodoReminderBatch
 
 # クラス作成
 php artisan make:mail InquiryMail
