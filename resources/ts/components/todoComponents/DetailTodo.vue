@@ -59,7 +59,7 @@
                     <v-text-field
                       class="pt-0 pb-3 label-font"
                       v-model="editTodo.reminder"
-                      label="リマインダー日付"
+                      label="期日"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"

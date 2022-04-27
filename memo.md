@@ -63,6 +63,8 @@ php artisan make:command TodoReminderBatch
 
 # クラス作成
 php artisan make:mail InquiryMail
+php artisan make:mail TodoReminderMail
+
 
 # トランケイト
 mysql> set foreign_key_checks = 0;

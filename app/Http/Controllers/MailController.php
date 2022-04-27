@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InquiryMail;
 use App\Mail\temporaryRegisterMail;
+use App\Mail\TodoReminderMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -39,5 +40,16 @@ class MailController extends Controller
     Mail::to($to)
           ->bcc($bcc)
           ->send(new temporaryRegisterMail($emailVerification));
+  }
+  /**
+  * タスク管理_リマインダーメール通知_バッチ処理_メール送信
+  * @return void
+  */
+  public function todoReminderSend($group) {
+    $to = $group[0]['email'];
+    $bcc = config('const.TO_BCC_MAIL');
+    Mail::to($to)
+          ->bcc($bcc)
+          ->send(new TodoReminderMail($group));
   }
 }
