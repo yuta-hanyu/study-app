@@ -80,6 +80,7 @@
 
 <p style="text-indent:1em;">また、フロントエンドにて、期日超過したタスクはプッシュ通知し、リマインドするよう実装しております。</p>
 
+![タスク管理](/public/img/push.png)
 
 ## ブックマーク管理
 <p style="text-indent:1em;">
