@@ -48,32 +48,20 @@ class TodoReminderBatch extends Command
 
       // 通知対象データ取得
       $todo = new Todo();
-      $targetTodos = $todo
-                  ->select(
-                    'users.id as users_id',
-                    'users.name as users_name',
-                    'users.email as email',
-                    'todos.id as todos_id',
-                    'title as todos_title',
-                    'state as todos_state',
-                    'reminder as todos_reminder',
-                  )
-                  ->join('users', 'todos.user_id', '=', 'users.id')
-                  ->where('state', '!=', config('const.FINISH'))
-                  ->whereBetween('reminder', [$startToday, $lastToday])
-                  ->get();
-      // リマインド（reminder）の時間を削除
+      $targetTodos = $todo->getRemaindTodos($startToday, $lastToday);
+
+      // リマインドの時間を削除
       foreach($targetTodos as $targetTodo) {
         $targetTodo->todos_reminder = substr($targetTodo->todos_reminder, 0, 10);
       };
       $grouped = [];
       $grouped = $targetTodos->groupBy('email');
       $grouped->toArray();
-    // メールを送信
-    $mail = app()->make('App\Http\Controllers\MailController');
-    foreach($grouped as $group) {
-      $mail->todoReminderSend($group);
-    }
+      // メールを送信
+      $mail = app()->make('App\Http\Controllers\MailController');
+      foreach($grouped as $group) {
+        $mail->todoReminderSend($group);
+      }
       Log::info('タスク管理_リマインダーメール通知_バッチ処理終了');
     }
 }

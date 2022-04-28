@@ -45,4 +45,28 @@ class Todo extends Model
   {
     return $this->belongsTo('/App/Models/User', 'id');
   }
+  /**
+   * リマインド対象データ取得
+   */
+  public function getRemaindTodos($startToday, $lastToday, $user_id = false)
+  {
+    $targetTodos = [];
+    $targetTodos = $this->select(
+                    'users.id as users_id',
+                    'users.name as users_name',
+                    'users.email as email',
+                    'todos.id as todos_id',
+                    'title as todos_title',
+                    'state as todos_state',
+                    'reminder as todos_reminder',
+                  )
+                  ->join('users', 'todos.user_id', '=', 'users.id')
+                  ->where('state', '!=', config('const.FINISH'))
+                  ->when($user_id !== false, function ($query) use($user_id) {
+                    return $query->where('user_id', '=', $user_id);
+                  })
+                  ->whereBetween('reminder', [$startToday, $lastToday])
+                  ->get();
+    return $targetTodos;
+  }
 }

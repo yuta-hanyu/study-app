@@ -177,16 +177,6 @@
         :detailTodo=detailTodo>
       </detail-todo>
     </v-dialog>
-    <!-- リマインダーダイアログ -->
-    <!-- <v-dialog
-      persistent
-      v-model="remaindDialog"
-      width="400px">
-      <remaind-todo
-        @back="remaindDialog!=remaindDialog"
-        :onRemindTodos=onRemindTodos>
-      </remaind-todo>
-    </v-dialog> -->
   </div>
 </template>
 
@@ -195,14 +185,15 @@ import {Component, Mixins} from 'vue-property-decorator';
 import AllDeleteTodo from './todoComponents/AllDeleteTodo.vue'
 import NewTodo from './todoComponents/NewTodo.vue';
 import DetailTodo from './todoComponents/DetailTodo.vue';
-import RemaindTodo from './todoComponents/RemaindTodo.vue';
 import Const from '../common/const';
 import Axios from 'axios';
 import { User } from '../interfaces/User';
 import { Todos } from '../interfaces/Todos';
 import AlertMsg from '../components/utilComponent/AlertMsg.vue';
 import Util from '../common/util';
-import draggable from 'vuedraggable'
+import draggable from 'vuedraggable';
+import Push from 'push.js';
+
 
 @Component({
   name: 'Todo',
@@ -210,7 +201,6 @@ import draggable from 'vuedraggable'
     NewTodo,
     AllDeleteTodo,
     DetailTodo,
-    RemaindTodo,
     AlertMsg,
     draggable
   },
@@ -234,21 +224,33 @@ export default class Todo extends Mixins(Const, Util) {
   private detailTodo: Todos | null = null;
   // ステータス完了表示フラグ
   private finishFlag: boolean = false;
-  // リマンダーダイアログ表示フラグ
-  // private remaindDialog: boolean = false;
 // 処理完了Msg
   private alertMsgs: string[] = [];
   // 処理完了Msgタイプ
   private alertType: 'error'|'success'|'' = '';
-  // リマインドデータを初期化
-  // private onRemindTodos: Todos[]  = [];
+  // リマインド対象タスク
+  private onRemindTodos: Todos[]  = [];
+
   mounted() {
     this.getTodos();
-    // リマインダー管理
-    // if(this.remaindDialog === false) {
-    //   setInterval(this.checkReminder, 60000);
-    // }
+    if(this.onRemindTodos !== []) {
+      this.remind();
+      setInterval(() =>{
+        this.remind();
+      }, 3600000);
+    }
   };
+  /**
+   * リマインドプシュ通知
+   */
+  private remind(): void {
+    Push.create('本日〆切のタスクがあります！', {
+      body: 'StudyApp',
+      onClick: function () {
+      this.close();
+      location.href = 'https://muscle-myapp.com/todo';
+    }})
+  }
   /**
    * todo一覧取得
    */
@@ -261,6 +263,7 @@ export default class Todo extends Mixins(Const, Util) {
     }).then((res) => {
       this.bookMarkTodos = res.data.bookMarkTodos;
       this.todos = res.data.todos;
+      this.onRemindTodos = res.data.onRemindTodos;
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
@@ -310,7 +313,6 @@ export default class Todo extends Mixins(Const, Util) {
     this.newDialog = false;
     this.allDeleteDialog = false;
     this.detailDialog = false;
-    // this.remaindDialog = false;
     this.alertType = '';
     this.alertMsgs = [];
     this.alertType = 'success';
@@ -329,33 +331,6 @@ export default class Todo extends Mixins(Const, Util) {
     // コンポーネントに初期をセット
     this.$refs.child.setInitializeValue();
   };
-  /**
-   * リマインダー管理
-   */
-  // private checkReminder(): void {
-  //   // 要リマインドデータを初期化
-  //   this.onRemindTodos = [];
-  //   // 現在時刻を取得
-  //   const now = new Date();
-  //   // 現在時刻とリマインドを比較
-  //   this.bookMarkTodos.map((todo) => {
-  //     let reminder = new Date((todo.reminderDate!.replace(/-/g,'/')) + ' ' + todo.reminderTime);
-  //     if(reminder.getTime() < now.getTime()) {
-  //       this.remaindDialog = true;
-  //       this.onRemindTodos.push(todo);
-  //     };
-  //   });
-  // };
-  /**
-   * リマインダーダイアログから戻る
-   */
-  // private backRemaind(): void {
-  //   if(this.remaindDialog = true) {
-  //     this.remaindDialog = false;
-  //   };
-  //   // DB値を変更となるため、フロントデータも更新
-  //   this.getTodos();
-  // };
 };
 </script>
 
@@ -371,28 +346,6 @@ export default class Todo extends Mixins(Const, Util) {
 .container {
   padding: 3% 7%;
 }
-/* #switch{
-  position: fixed;
-  right: 5%;
-  top: 10%;
-} */
-/* #plus-circle{
-  position: fixed;
-  right: 10%;
-  bottom: 5%;
-  transform: scale(2, 2);
-} */
-/* #delete-alert {
-  position: fixed;
-  right: 5%;
-  bottom: 5%;
-  transform: scale(2, 2);
-} */
-/* .trash{
-  position: absolute;
-  right: 0;
-  top: 2%;
-} */
 .edit{
   position: absolute;
   right: 20px;

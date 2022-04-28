@@ -7,6 +7,7 @@ use App\Models\Todo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class TodoController extends Controller
 {
@@ -42,10 +43,18 @@ class TodoController extends Controller
     foreach($todos as $todo) {
       $todo->reminder = substr($todo->reminder, 0, 10);
     };
+
+    // 通知対象データ取得
+    $onRemindTodos = [];
+    $startToday = Carbon::today();
+    $lastToday = str_replace('00:00:00', '23:59:59', $startToday);
+    $onRemindTodos = $todo->getRemaindTodos($startToday, $lastToday, $request['userInfo']['id']);
+
     Log::info('todo一覧取得終了');
     return response()->json([
       'bookMarkTodos' => $bookMarkTodos,
-      'todos' => $todos
+      'todos' => $todos,
+      'onRemindTodos' => $onRemindTodos,
     ]);
   }
   /**
