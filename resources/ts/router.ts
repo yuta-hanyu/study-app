@@ -27,12 +27,12 @@ const router = new VueRouter({
       component: Logout,
       meta: {isAuthenticated: true},
     },
-    // {
-    //   path: '/',
-    //   name: 'Top',
-    //   component: Top,
-    //   meta: {isAuthenticated: true},
-    // },
+    {
+      path: '/',
+      name: 'Top',
+      component: Top,
+      meta: {isAuthenticated: true, title: 'トップ'},
+    },
     {
       path: '/todo',
       name: 'Todo',

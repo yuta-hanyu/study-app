@@ -1,21 +1,176 @@
 <template>
-<div>
-<h1>TOP</h1>
-</div>
+  <div class="bg">
+    <v-container class="container">
+      <!-- 格言 -->
+      <v-row class="mt-8">
+        <v-col cols="12">
+          <h2>今日の格言</h2>
+          <h1 style="text-align: center;">ああああああああああああああaaaaa</h1>
+        </v-col>
+      </v-row>
+      <!-- ニュース -->
+      <v-row justify="center" class="mt-3">
+        <v-col cols="12">
+          <h2>News</h2>
+          <v-row>
+            <v-col clos="5">
+              <v-select
+                dark
+                :items="NEWS_CATEGORES"
+                v-model="newsCategory"
+                label="カテゴリー検索"
+                @change="getNews"
+              ></v-select>
+            </v-col>
+            <v-col clos="7">
+              <v-text-field
+                dark
+                clearable
+                v-model="newsWordSerch"
+                label="キーワード検索"
+                @change="getNews"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <div v-if="!newsFalseFlag">
+            <v-row justify="center" class="mt-3">
+              <v-col
+                class="my-1"
+                cols="6"
+                v-for="(news,index) in displayNewses"
+                :key=index>
+                <a :href=news.url target=”_blank” style="text-decoration: none;">
+                <v-tooltip bottom color="#1E1E1E">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-sheet
+                      dark
+                      v-on="on"
+                      v-bind="attrs"
+                      max-height="150"
+                      class="px-1">
+                      <v-row>
+                        <v-col cols="5">
+                          <v-img
+                            :aspect-ratio="16/9"
+                            :src="news.urlToImage">
+                            <template v-slot:placeholder>
+                              <v-row
+                                class="fill-height ma-0"
+                                align="center"
+                                justify="center">
+                                <v-progress-circular
+                                  indeterminate
+                                  color="grey lighten-5"
+                                ></v-progress-circular>
+                              </v-row>
+                            </template>
+                          </v-img>
+                        </v-col>
+                        <v-col cols="7" >
+                          <h3 class="lineClamp">{{ news.title }}</h3>
+                          <p style="text-align: right;">{{ newsPublishedAt(news.publishedAt) }}</p>
+                        </v-col>
+                      </v-row>
+                    </v-sheet>
+                  </template>
+                <span style="color: white;">News詳細へ遷移</span>
+                </v-tooltip>
+                </a>
+              </v-col>
+            </v-row>
+            <v-pagination
+              dark
+              class="my-2"
+              color="#1B5E20"
+              v-model="newsPage"
+              :length="newsLength"
+              :total-visible="8"
+              circle
+              @input="chengePage"
+            ></v-pagination>
+          </div>
+        <h2 v-else-if="newsFalseFlag" style="text-align: center;" class="my-4">ニュースの取得に失敗しました</h2>
+        <h2 v-if="!newses.length" style="text-align: center;" class="my-4">ニュースがありません</h2>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
 import {Component, Mixins, Emit} from 'vue-property-decorator';
 import Const from '../common/const';
+import Axios from 'axios';
+import Util from '../common/util';
 
 @Component ({
   name: 'TOP'
 })
 
-export default class Top extends Mixins(Const){
+export default class Top extends Mixins(Const, Util){
+  // 取得ニュース
+  private newses: string[] = [];
+  // 表示表ニュース
+  private displayNewses: string[] = [];
+  // ニュース取得失敗フラグ
+  private newsFalseFlag: boolean = false;
+  // ニュースページネーション開始位置
+  private newsPage: number = 1;
+  // ニュース表示最大数
+  private newsPageSize: number = 6;
+  // ニュースカテゴリ選択
+  private newsCategory: string = '';
+  // ニュースカテゴリ選択
+  private newsWordSerch: string = '';
+  // ニュースページネーション最大数計算
+  get newsLength(): number {
+    return Math.ceil(this.newses.length / this.newsPageSize);
+  }
+  // ニュース公表時間表示用
+  get newsPublishedAt(): any {
+    return(publishedAt: string) => {
+      return `${publishedAt.slice(0,10)} ${publishedAt.slice(11,16)}`;
+    }
+  }
 
+  mounted() {
+    this.getNews();
+  }
+  /**
+   * ニュース取得
+   */
+  private getNews(): void {
+    this.setLoading();
+    Axios.post(`/api/top/getNews`,{
+      newsCategory: this.newsCategory,
+      newsWordSerch: this.newsWordSerch,
+    }).then((res) => {
+      res.data.status === 'error' ? this.newsFalseFlag = true : this.newsFalseFlag = false;
+      this.newses = res.data.articles;
+      this.displayNewses = this.newses.slice(0,this.newsPageSize);
+    }).catch((e) => {
+      this.authCheck(e);
+      this.serverError(e);
+    }).finally(() => this.closeLoading());
+  }
+  /**
+   * ニュースページネーション押下
+   */
+  private chengePage(num: number): void {
+    this.displayNewses = this.newses.slice(this.newsPageSize *(num -1), this.newsPageSize*(num));
+  }
 }
 </script>
-<style>
+<style scoped>
 
+.container {
+  padding: 4% 5%;
+}
+.lineClamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-align: left;
+}
 </style>

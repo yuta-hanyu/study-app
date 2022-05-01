@@ -20,6 +20,11 @@ return [
   'ON_THE_WAY' => 1, //対応中
   'ON_HPLD' => 2, //保留
   'FINISH' => 3, //完了
+    /** -----Top画面関連----- */
+  'apiKey' => 'c19c61fccb9642518b0a685f84ce9e6c',
+  'country' => 'jp',
+  'newsPage' => 100,
+
 ];
 
 

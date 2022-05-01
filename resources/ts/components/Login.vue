@@ -220,7 +220,7 @@ export default class Login extends Mixins(Const, Util) {
               omitEmail: this.email
             });
           };
-          this.$router.push("/bookMark");
+          this.$router.push("/");
         }
         if(res.data.retultFlag === false) {
         this.alertType = 'error';

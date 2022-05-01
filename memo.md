@@ -52,6 +52,8 @@ php artisan make:controller InquiryController
 php artisan make:controller MailController
 php artisan make:controller UserController
 php artisan make:controller RegisterController
+php artisan make:controller TopController
+
 
 # カスタムバリデーションのルール作成
 php artisan make:rule CustomPasswordComparisonValidation
