@@ -12,12 +12,16 @@ export default class Const extends Vue {
   });
   /** -----サイドメニュー----- */
   MENU_ITEMS = Object.freeze([
-    // {name: 'トップ', url: '/'},
+    {name: 'トップ', url: '/'},
     {name: 'タスク管理', url: '/todo'},
     {name: 'ブックマーク管理', url: '/bookMark'},
     {name: '会員情報', url: '/account'},
   ]);
   /** -----プロパティ関連----- */
+  // Top画面・ニュースカテゴリー
+  NEWS_CATEGORES = Object.freeze([
+    '','business', 'entertainment', 'general', 'health','science','sports','technology',
+  ]);
   // ブックマーク上部固定
   BOOKMARKFIXED = Object.freeze(1);
   // todoステータス

@@ -27,7 +27,7 @@
 　　PW => y@y@ <br>
 </p>
 <p style="text-indent:1em;">※ 現在は自身以外の利用を想定していないため、Basic認証を設定しています。</p>
-<p style="text-indent:1em;">※ お試し利用はログイン画面、右下にございますゲストログインからお試し利用をお勧めします。（会員登録不要です）</p>
+<p style="text-indent:1em;">※ お試し利用はログイン画面、右下にございますゲストログインからご利用できます。（会員登録不要です）</p>
 
 ![ゲストログイン](/public/img/guestLogin.png)
 <br>
@@ -36,14 +36,13 @@
 ![インフラ構成図](/public/img/infraStractrure.png)
 ※ 個人利用のため冗長化構成等は行なっていません。
 
-# ３-１．使用技術
+# ３-１．使用技術一覧
 |No|技術名等|採用経緯|
 |:---|:---|:---|
 |1|PHP(ver8.1)|実務で使用しているため|
 |2|laravel(ver8.8)|実務で使用しているため|
 |3|MySQL(ver8.0)|実務で使用しているため|
 |4|Nginx(ver1.20)|実務で使用しているため|
-|5|MySQL(ver8.0)|実務で使用しているため|
 |6|Docker|ローカル環境構築のため|
 |7|TypeScript(ver4.5)|バグ未然防止を優先し、JSではなくTSを採用。実務で使用しているため|
 |8|Vue.js(ver2.6)|SPA開発のため（実務ではver3ではなくver2.6のため、あえてverは2系を採用）|
@@ -84,7 +83,7 @@
 
 ![タスク管理](/public/img/todoMail.png)
 
-<p style="text-indent:1em;">また、フロントエンドにて、期日超過したタスクはプッシュ通知し、リマインドするよう実装しております。</p>
+<p style="text-indent:1em;">また、フロントエンドでは、デスクトップ通知を用いてリマインドを行います。</p>
 
 ![タスク管理](/public/img/push.png)
 
@@ -98,11 +97,11 @@ googleブラウザ標準のブックマークでは、ブラウザ上に表示�
 ブックマークフォルダ、ブックマークに関するCRUD機能は一通り付いており、かつフォルダごとに色をつけれますので、視認性を工夫しています。
 </p>
 
-![タスク管理](/public/img/bookmark.png)
+![ブックマーク管理](/public/img/bookmark.png)
 
 <p style="text-indent:1em;">google標準のブックマークからデータをインポートすることができるため、googleブックマークから本アプリへのデータ移行を行うことができます。</p>
 
-![タスク管理](/public/img/bookmarkImport.png)
+![ブックマーク管理](/public/img/bookmarkImport.png)
 
 ## 会員情報編集・退会
 <p style="text-indent:1em;">会員情報の閲覧・編集・削除が可能です。</p>

@@ -116,6 +116,10 @@ Route::middleware('auth:sanctum','getUserInfo')->group(function () {
    *退会処理
   */
   Route::delete('/register/remove_user', 'App\Http\Controllers\RegisterController@delete');
+  /**
+   * ニュース取得
+  */
+  Route::post('/top/getNews', 'App\Http\Controllers\TopController@getNews');
 });
 
 
