@@ -7,6 +7,7 @@ php artisan make:migration create_users_table
 php artisan make:migration create_todos_table
 php artisan make:migration create_inquiries_table
 php artisan make:migration create_email_verification_table
+php artisan make:migration create_maxims_table
 
 # カラム追加
 php artisan make:migration add_sort_order_to_todos_table --table=todos
@@ -21,6 +22,8 @@ php artisan make:model BookMarkFolder
 php artisan make:model BookMark
 php artisan make:model Inquiry
 php artisan make:model EmailVerification
+php artisan make:model Maxim
+
 
 # middleware作成
 php artisan make:middleware GetUserInfoMiddleware
@@ -30,6 +33,7 @@ php artisan make:middleware GetUserInfoMiddleware
 php artisan make:seeder TodosTableSeeder
 php artisan make:seeder BookMarkFolderTableSeeder
 php artisan make:seeder BookMarkTableSeeder
+php artisan make:seeder MaximsTableSeeder
 
 ## seed実行
 ### 全部実行
@@ -38,6 +42,8 @@ php artisan db:seed
 php artisan db:seed --class=TodosTableSeeder
 php artisan db:seed --class=BookMarkFolderTableSeeder
 php artisan db:seed --class=BookMarkTableSeeder
+php artisan db:seed --class=MaximsTableSeeder
+
 
 # コマンドラインからデータ投入
 php artisan tinker
