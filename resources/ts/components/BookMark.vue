@@ -69,8 +69,9 @@
       </v-row>
       <v-row>
       </v-row>
-      <hr class="hr-up mt-10 mb-5">
       <!-- ブックマーク上部固定一覧 -->
+      <div class="mt-5" align="left">固定済み</div>
+      <hr class="mb-3">
       <v-row justify="center">
         <v-col
           md="2"
@@ -106,8 +107,10 @@
           </v-tooltip>
         </v-col>
       </v-row>
-      <hr class="hr-down mt-10 mb-5">
       <!-- ブックマーク一覧 -->
+      <div class="mt-5" align="left">その他
+      </div>
+      <hr class="mb-3">
       <v-row>
         <v-col md="4" sm="6"
           v-for="(bookMarkFolder,index) in bookMarkFolders" :key=index>
@@ -370,11 +373,11 @@ export default class BookMark extends Mixins(Const, Util) {
 <style scoped>
 .bg {
   padding-top: 3%;
-  left: 0;
+  /* left: 0;
   min-height: 1200px;
   background-size: contain;
   background: url("../../../public/images/school.jpeg") center center / cover no-repeat fixed;
-  background-attachment: fixed;
+  background-attachment: fixed; */
 }
 .v-application a {
   color: white;
@@ -414,7 +417,7 @@ export default class BookMark extends Mixins(Const, Util) {
   width: 30px;
   border-radius: 30%;
 }
-hr {
+/* hr {
   border: 1px solid #aaa7a7;
   text-align: left;
 }
@@ -425,15 +428,15 @@ hr {
   top: -30px;
   color: #aaa7a7;
   font-size: 15px;
-}
-.hr-down::after {
+} */
+/* .hr-down::after {
   content: 'その他';
   display: inline-block;
   position: relative;
   top: -30px;
   color: #aaa7a7;
   font-size: 15px;
-}
+} */
 </style>
 
 

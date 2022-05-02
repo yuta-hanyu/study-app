@@ -4,14 +4,18 @@
       <!-- 格言 -->
       <v-row class="mt-8">
         <v-col cols="12">
-          <h2>今日の格言</h2>
-          <h1 style="text-align: center;">ああああああああああああああaaaaa</h1>
+          <h2>Maxim</h2>
+          <div class="maxim">
+            <h1 style="text-align: center;">{{ maxim.maxim }}</h1>
+            <p class="mb-0" style="text-align: right;">{{ maxim.author }}</p>
+          </div>
         </v-col>
       </v-row>
       <!-- ニュース -->
       <v-row justify="center" class="mt-3">
         <v-col cols="12">
           <h2>News</h2>
+          <hr class="mb-1">
           <v-row>
             <v-col clos="5">
               <v-select
@@ -122,6 +126,8 @@ export default class Top extends Mixins(Const, Util){
   private newsCategory: string = '';
   // ニュースカテゴリ選択
   private newsWordSerch: string = '';
+  // 格言
+  private maxim: string = '';
   // ニュースページネーション最大数計算
   get newsLength(): number {
     return Math.ceil(this.newses.length / this.newsPageSize);
@@ -135,6 +141,7 @@ export default class Top extends Mixins(Const, Util){
 
   mounted() {
     this.getNews();
+    this.getMaxim();
   }
   /**
    * ニュース取得
@@ -148,6 +155,19 @@ export default class Top extends Mixins(Const, Util){
       res.data.status === 'error' ? this.newsFalseFlag = true : this.newsFalseFlag = false;
       this.newses = res.data.articles;
       this.displayNewses = this.newses.slice(0,this.newsPageSize);
+    }).catch((e) => {
+      this.authCheck(e);
+      this.serverError(e);
+    }).finally(() => this.closeLoading());
+  }
+  /**
+   * 格言取得
+   */
+  private getMaxim(): void {
+    this.setLoading();
+    Axios.get(`/api/top/getMaxim`).then((res) => {
+      this.maxim = res.data.maxim;
+      console.log(res.data.maxim);
     }).catch((e) => {
       this.authCheck(e);
       this.serverError(e);
@@ -172,5 +192,16 @@ export default class Top extends Mixins(Const, Util){
   -webkit-line-clamp: 3;
   overflow: hidden;
   text-align: left;
+}
+.maxim {
+  color: black;
+  padding: 1rem 2rem;
+  border-top: 4px solid #d8dcdc;
+  border-right: 4px solid #666;
+  border-bottom: 4px solid #333;
+  border-left: 4px solid #868888;
+  border-radius: 0;
+  background-image: -webkit-linear-gradient(135deg, #ccc 0%, #868888 20%, #d8dcdc 34%, white 53%, #ccc 100%);
+  background-image: linear-gradient(-45deg, #ccc 0%, #868888 20%, #d8dcdc 34%, white 53%, #ccc 100%);
 }
 </style>

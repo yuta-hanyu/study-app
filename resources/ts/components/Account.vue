@@ -339,11 +339,11 @@ export default class Account extends Mixins(Const, Util) {
 <style scoped>
 .bg {
   padding-top: 3%;
-  left: 0;
+  /* left: 0;
   min-height: 1200px;
   background-size: contain;
   background: url("../../../public/images/account.jpeg") center center / cover no-repeat fixed;
-  background-attachment: fixed;
+  background-attachment: fixed; */
 }
 .v-tab {
   font-weight: bold !important;

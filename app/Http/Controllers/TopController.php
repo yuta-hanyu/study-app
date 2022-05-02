@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Maxim;
 
 class TopController extends Controller
 {
@@ -32,5 +33,18 @@ class TopController extends Controller
     curl_close($ch);
     Log::info('ニュース情報取得終了');
     return;
+  }
+  /**
+  * 格言取得
+  * @return Http response
+  */
+  public function getMaxim(Request $request)
+  {
+    Log::info('格言取得開始');
+    $maxim = Maxim::inRandomOrder()->first();
+    return response()->json([
+      'maxim' => $maxim,
+    ]);
+    Log::info('格言取得終了');
   }
 }

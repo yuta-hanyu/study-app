@@ -7,7 +7,6 @@
         :alertType=alertType
         :alertMsgs=alertMsgs>
       </alert-msg>
-
       <v-row class="mt-4" justify="end">
         <v-switch
           dark
@@ -53,7 +52,6 @@
           <div class="mt-5" align="left">固定済み</div>
           <hr class="hr-down mt-1 mb-1">
         </v-col>
-
         <draggable @end="sortChange(true)" v-model="bookMarkTodos" flat draggable=".bookMarkTodos" class="d-flex flex-wrap justify-center">
         <div class="bookMarkTodos mx-2 my-2"
           v-for="(todo,index) in bookMarkTodos"
@@ -337,11 +335,11 @@ export default class Todo extends Mixins(Const, Util) {
 <style scoped>
 .bg {
   padding-top: 3%;
-  left: 0;
+  /* left: 0;
   min-height: 1200px;
   background-size: contain;
   background: url("../../../public/images/todo.jpeg") center center / cover no-repeat fixed;
-  background-attachment: fixed;
+  background-attachment: fixed; */
 }
 .container {
   padding: 3% 7%;

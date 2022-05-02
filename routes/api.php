@@ -120,6 +120,10 @@ Route::middleware('auth:sanctum','getUserInfo')->group(function () {
    * ニュース取得
   */
   Route::post('/top/getNews', 'App\Http\Controllers\TopController@getNews');
+  /**
+   * 格言取得
+  */
+  Route::get('/top/getMaxim', 'App\Http\Controllers\TopController@getMaxim');
 });
 
 
