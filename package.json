@@ -32,6 +32,8 @@
     "push.js": "^1.0.12",
     "vue-axios": "^3.4.1",
     "vue-class-component": "^7.2.6",
+    "vue-gtag": "^2.0.1",
+    "vue-gtm": "^3.0.0-vue2",
     "vue-router": "^3.5.3",
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.6.3",
