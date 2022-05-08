@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
-import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import Inquiry from './components/inquiry.vue';
 import bookMark from './components/BookMark.vue';
 import Verify from './components/Verify.vue';
 import Account from './components/Account.vue';
 import NotFound from './components/NotFound.vue';
+import Welcom from './components/Welcom.vue';
 
 Vue.use(VueRouter)
 
@@ -16,10 +16,10 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     {
-      path: '/login',
-      name: 'Login',
-      component: Login,
-      meta: {title: 'ログイン'}
+      path: '/',
+      name: 'Welcom',
+      component: Welcom,
+      meta: {title: 'ウェルカム'}
     },
     {
       path: '/logout',
@@ -28,7 +28,7 @@ const router = new VueRouter({
       meta: {isAuthenticated: true},
     },
     {
-      path: '/',
+      path: '/top',
       name: 'Top',
       component: Top,
       meta: {isAuthenticated: true, title: 'トップ'},
@@ -73,7 +73,7 @@ router.beforeEach((to, from, next) => {
   const userInfoObj = JSON.parse(userInfo);
   if (to.matched.some(record => record.meta.isAuthenticated)) {
     if (userInfoObj.userInfo.isAuth === false) {
-      next({ name: 'Login' });
+      next({ name: 'Welcom' });
     } else {
       next();
     }

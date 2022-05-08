@@ -58,6 +58,7 @@
 |6|vue-class-component(ver7.6)|TS採用により、こちらも導入|
 |7|vue-property-decorator(ver9.1)|TS採用により、こちらも導入|
 |8|push.js(ver1.0)|デスクトップ通知。タスク管理リマインドで使用。|
+|9|vue-gtm(ver3.0.0-vue2)|googleアナリティクスを使用するため導入。|
 
 
 # ４．バッチ処理一覧

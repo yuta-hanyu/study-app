@@ -32,7 +32,9 @@
           @back-logout="LogoutDialog = !LogoutDialog">
         </logout>
       </v-dialog>
+      <div style="height: 50px;"></div>
       </main>
+      <Footer></Footer>
     </v-app>
   </div>
 </template>
@@ -41,9 +43,9 @@
 import { Component, Ref, Watch} from 'vue-property-decorator';
 import Vue from 'vue';
 import Header from './global/Header.vue';
+import Footer from './global/Footer.vue';
 import Todo from './components/Todo.vue';
 import Top from './components/Top.vue';
-import Login from './components/Login.vue';
 import Logout from './components/Logout.vue';
 import BookMark from './components/BookMark.vue';
 import Loading from './global/Loading.vue';
@@ -54,11 +56,11 @@ import Inquiry from './components/Inquiry.vue';
     Header,
     Todo,
     Top,
-    Login,
     Logout,
     BookMark,
     Loading,
     Inquiry,
+    Footer,
   },
 })
 

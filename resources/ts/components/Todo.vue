@@ -341,6 +341,7 @@ export default class Todo extends Mixins(Const, Util) {
   background: url("../../../public/images/todo.jpeg") center center / cover no-repeat fixed;
   background-attachment: fixed; */
 }
+
 .container {
   padding: 3% 7%;
 }

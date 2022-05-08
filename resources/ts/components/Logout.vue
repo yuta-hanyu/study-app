@@ -51,7 +51,7 @@ export default class Logout extends Mixins(Const){
       this.$store.dispatch('resetUserInfo');
       // ログアウトダイアログを閉じる
       this.back();
-      this.$router.push("/login");
+      this.$router.push("/");
     }).catch((e) => {
       window.alert(this.ERROR_MSG.SERVER_ERROR);
     });

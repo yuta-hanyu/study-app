@@ -331,7 +331,7 @@ export default class Account extends Mixins(Const, Util) {
    * ログイン画面へ戻る
    */
   private backLogin(): void {
-    this.$router.push("/login");
+    this.$router.push("/");
   };
 }
 </script>
