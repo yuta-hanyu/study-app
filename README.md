@@ -21,7 +21,7 @@
 - 無料で自分好みの業務アプリを使用したかったため(Notion等の有料アプリは有料)
 
 ## アプリURL
-### https://muscle-myapp.com/login <br>
+### https://muscle-myapp.com <br>
 <p style="text-indent:1em;">※ Basic認証を設定しています<br>
 　　ID => hanyu <br>
 　　PW => y@y@ <br>
