@@ -36,7 +36,7 @@ export default class Util extends Mixins(Const, Vue) {
     if(e.response.status === 401) {
       window.alert(this.ERROR_MSG.EXPAIRED_SESSION);
       this.$store.dispatch('resetUserInfo');
-      this.$router.push("/login");
+      this.$router.push("/");
     }
   }
   /**

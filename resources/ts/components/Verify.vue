@@ -72,7 +72,7 @@
                       class="back mr-5"
                       width="180px"
                       @click="backLogin">
-                      ログイン画面へ戻る
+                      戻る
                     </v-btn>
                   </v-col>
                   <v-col cols="3" class="text-center">
@@ -284,7 +284,7 @@ export default class Verify extends Mixins(Const, Util) {
    * ログイン画面へ戻る
    */
   private backLogin(): void {
-    this.$router.push("/login");
+    this.$router.push("/");
   };
 }
 </script>

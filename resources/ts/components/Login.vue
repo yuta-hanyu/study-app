@@ -1,29 +1,17 @@
 <template>
-  <div class="bg">
-    <v-container>
-      <v-row justify="center" style="height: 800px;">
-        <v-col cols="10" class="title-container">
-          <div :class="title">
-            <span>S</span>
-            <span>T</span>
-            <span>U</span>
-            <span>D</span>
-            <span>Y</span>
-            <span>&nbsp;</span>
-            <span>A</span>
-            <span>P</span>
-            <span>P</span>
-          </div>
-        </v-col>
+  <div>
+    <v-sheet width="800px" dark class="kokuban my-0">
+      <p style="text-align: center;" class="dialog-title">ログイン</p>
+      <v-row justify="center">
         <v-col cols="12" v-if="alertMsgs.length">
           <alert-msg class="mt-4"
             :alertType=alertType
             :alertMsgs=alertMsgs>
           </alert-msg>
         </v-col>
-        <v-col md="10" mx="10">
+        <v-col cols="12">
           <v-row justify="center">
-            <v-col md="10" mx="10">
+            <v-col cols="12">
               <v-form>
                 <v-col md="12" align="center">
                   <v-text-field
@@ -61,99 +49,47 @@
             </v-col>
           </v-row>
           <v-row justify="center">
-
-          <v-col md="3" align="right" class="mr-0">
-            <v-tooltip bottom color="#EEEEEE">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                @click="TemporarySignUpDialog = !TemporarySignUpDialog"
-                class="font-weight-black"
-                dark
-                v-bind="attrs"
-                v-on="on"
-                width="60%"
-                elevation="11"
-                color="#0D47A1">
-                会員登録
+            <v-col cols="3">
+              <v-btn
+                class="back"
+                width="80%"
+                @click="back()">
+                戻る
               </v-btn>
-              </template>
-              <span style="color: black;">新規会員登録はこちら</span>
-            </v-tooltip>
-          </v-col>
-
-          <v-col md="3" align="center">
-            <v-tooltip bottom color="#EEEEEE">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  v-bind="attrs"
-                  v-on="on"
-                  class="font-weight-black"
-                  dark
-                  width="60%"
-                  elevation="11"
-                  @click="login(false)"
-                  color="#388E3C">
-                  ログイン
-                </v-btn>
-              </template>
-              <span style="color: black;">会員登録済みの方はこちら</span>
-            </v-tooltip>
-          </v-col>
-
-          <v-col md="3" align="left" class="mr-0">
-            <v-tooltip bottom color="#EEEEEE">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  v-bind="attrs"
-                  v-on="on"
-                  dark
-                  class="font-weight-black"
-                  align="right"
-                  width="60%"
-                  elevation="11"
-                  color="#880E4F"
-                  @click="login(true)">
-                  ゲストログイン
-                </v-btn>
-              </template>
-              <span style="color: black;">お試しはこちら</span>
-            </v-tooltip>
-          </v-col>
-
+            </v-col>
+            <v-col cols="3">
+              <v-btn
+                class="go"
+                width="80%"
+                @click="login">
+                ログイン
+              </v-btn>
+            </v-col>
           </v-row>
         </v-col>
       </v-row>
-      <!-- 新規会員登録ダイアログ -->
-    </v-container>
-      <v-dialog
-        v-model="TemporarySignUpDialog"
-        persistent
-        width="600px">
-        <temporary-sign-up
-          @back="TemporarySignUpDialog=!TemporarySignUpDialog"
-          @sign-uped="TemporarySignUpDialog=!TemporarySignUpDialog">
-        </temporary-sign-up>
-      </v-dialog>
+    </v-sheet>
   </div>
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
+import {Component, Mixins, Emit} from 'vue-property-decorator';
 import Const from '../common/const';
 import Axios from 'axios';
 import Util from '../common/util';
-import TemporarySignUp from './accountComponents/TemporarySignUp.vue';
 import AlertMsg from './utilComponent/AlertMsg.vue';
 
 @Component ({
   name: "Login",
   components: {
     AlertMsg,
-    TemporarySignUp
   },
 })
 
 export default class Login extends Mixins(Const, Util) {
+  // 戻るボタン押下
+  @Emit('back')
+    back(): void {};
   // 認証メールアドレス
   private email: string = this.$store.state.userInfo.omitEmail;
   // 認証パスワード
@@ -166,22 +102,9 @@ export default class Login extends Mixins(Const, Util) {
   private alertType: 'error'|'success'|'' = '';
   // メールアドレススキップ
   private omitEmailSend: boolean = false;
-  // アプリ名タイトル
-  private title: string = 'title';
-  // 会員登録ダイアログ
-  private signUpDialog: boolean = false;
-  // 仮会員登録ダイアログ
-  private TemporarySignUpDialog: boolean = false;
 
   mounted() {
     this.closeLoading();
-    // タイトル表示制御
-    setInterval(() => {
-      this.title += " -visible";
-      setTimeout(() => {
-        this.title = "title";
-      }, 1000);
-    }, 2000);
   }
   /**
    * メッセージ初期化
@@ -196,11 +119,6 @@ export default class Login extends Mixins(Const, Util) {
   private login(gestFlag: boolean): void {
     this.msgReset()
     this.setLoading();
-    // ゲストログインの場合
-    if(gestFlag === true) {
-        this.email = this.GUEST_USER.email;
-        this.password = this.GUEST_USER.password;
-    };
     // クッキー認証
     Axios.get('/api/csrf-cookie', {withCredentials:true}).then((res) => {
       // ログイン認証開始
@@ -220,7 +138,7 @@ export default class Login extends Mixins(Const, Util) {
               omitEmail: this.email
             });
           };
-          this.$router.push("/");
+          this.$router.push("/top");
         }
         if(res.data.retultFlag === false) {
         this.alertType = 'error';
@@ -246,13 +164,6 @@ export default class Login extends Mixins(Const, Util) {
 </script>
 
 <style scoped>
-.bg {
-  left: 0;
-  min-height: 1000px;
-  background-size: contain;
-  background: url("../../../public/images/login.jpg") center center / cover no-repeat fixed;
-  background-attachment: fixed;
-}
 .checkbox {
 	display: flex;
 	align-items: center;

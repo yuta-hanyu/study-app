@@ -12,11 +12,11 @@
         </v-col>
       </v-row>
       <!-- ニュース -->
-      <v-row justify="center" class="mt-3">
+      <v-row justify="center" class="mt-10">
         <v-col cols="12">
           <h2>News</h2>
           <hr class="mb-1">
-          <v-row>
+          <v-row class="mt-3 mx-2">
             <v-col clos="5">
               <v-select
                 dark
@@ -55,6 +55,7 @@
                       <v-row>
                         <v-col cols="5">
                           <v-img
+                            max-height="150"
                             :aspect-ratio="16/9"
                             :src="news.urlToImage">
                             <template v-slot:placeholder>
@@ -84,7 +85,7 @@
             </v-row>
             <v-pagination
               dark
-              class="my-2"
+              class="my-5"
               color="#1B5E20"
               v-model="newsPage"
               :length="newsLength"
