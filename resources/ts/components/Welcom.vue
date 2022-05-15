@@ -20,6 +20,26 @@
             class="font-weight-black mx-3"
             width="150px"
             elevation="11"
+            color="#E53935"
+            @click="googleLogin">
+            <v-icon
+              dark
+              left>
+              mdi-google
+            </v-icon>ログイン
+          </v-btn>
+        </template>
+        <span style="color: black;">Google認証はこちら</span>
+      </v-tooltip>
+      <v-tooltip bottom color="#EEEEEE">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            dark
+            class="font-weight-black mx-3"
+            width="150px"
+            elevation="11"
             color="#880E4F"
             @click="guestlogin">
             ゲストログイン
@@ -28,37 +48,37 @@
         <span style="color: black;">お試しはこちら</span>
       </v-tooltip>
       <v-tooltip bottom color="#EEEEEE">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              class="font-weight-black mx-3"
-              dark
-              width="150px"
-              elevation="11"
-              @click="loginDialog=!loginDialog"
-              color="#388E3C">
-              ログイン
-            </v-btn>
-          </template>
-          <span style="color: black;">会員登録済みの方はこちら</span>
-        </v-tooltip>
-        <v-tooltip bottom color="#EEEEEE">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-            @click="TemporarySignUpDialog = !TemporarySignUpDialog"
-            class="font-weight-black mx-3"
-            dark
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
             v-bind="attrs"
             v-on="on"
+            class="font-weight-black mx-3"
+            dark
             width="150px"
             elevation="11"
-            color="#0D47A1">
-            会員登録
+            @click="loginDialog=!loginDialog"
+            color="#388E3C">
+            ログイン
           </v-btn>
-          </template>
-          <span style="color: black;">新規会員登録はこちら</span>
-        </v-tooltip>
+        </template>
+        <span style="color: black;">会員登録済みの方はこちら</span>
+      </v-tooltip>
+      <v-tooltip bottom color="#EEEEEE">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+          @click="TemporarySignUpDialog = !TemporarySignUpDialog"
+          class="font-weight-black mx-3"
+          dark
+          v-bind="attrs"
+          v-on="on"
+          width="150px"
+          elevation="11"
+          color="#0D47A1">
+          会員登録
+        </v-btn>
+        </template>
+        <span style="color: black;">新規会員登録はこちら</span>
+      </v-tooltip>
     </v-app-bar>
     <div style="height: 100px;"></div>
     <div class="welcom-kokuban mt-10">
@@ -507,9 +527,22 @@ export default class Welcom extends Mixins(Const, Util) {
     this.alertType = '';
   }
   /**
+   * gooleログイン押下
+   */
+  private googleLogin(): void {
+    this.msgReset();
+    this.setLoading();
+    // ログイン認証開始
+    Axios.get('/api/login/google').then((res) => {
+      window.location.href = res.data.redirect_url;
+    }).catch((e) => {
+      this.serverError(e);
+    }).finally(() => this.closeLoading());
+  }
+  /**
    * ゲストログイン押下
    */
-  private guestlogin(gestFlag: boolean): void {
+  private guestlogin(): void {
     this.msgReset()
     this.setLoading();
     // クッキー認証

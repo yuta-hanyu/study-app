@@ -1,7 +1,7 @@
 <?php
 return [
   /** -----URL----- */
-  // 'STUDY_APP_URL' => env('APP_URL'),
+  'STUDY_APP_URL' => env('APP_URL'),
   /** -----ブックマーク関連----- */
   'BOOK_MARK_FIXED' => 1,
   'BOOK_MARK_NOT_FIXED' => 0,

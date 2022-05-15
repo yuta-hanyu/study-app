@@ -22,17 +22,24 @@ Route::post('/login', 'App\Http\Controllers\LoginController@login');
  */
 Route::post('/logout', 'App\Http\Controllers\LoginController@logout');
 /**
- *仮会員登録
+ * 仮会員登録
  */
 Route::post('/register', 'App\Http\Controllers\RegisterController@emailVerification');
 /**
- *トークン認証
+ * トークン認証
  */
 Route::post('/register/tokenVerify', 'App\Http\Controllers\RegisterController@tokenVerify');
 /**
- *本会員登録
+ * 本会員登録
  */
 Route::post('/register/newUser', 'App\Http\Controllers\RegisterController@store');
+/**
+ * SNS認証
+ */
+Route::get('/login/{provider}', 'App\Http\Controllers\LoginController@redirectToProvider')->where('social', 'google');
+Route::post('/login/{provider}/callback', 'App\Http\Controllers\LoginController@handleProviderCallback')->where('social', 'google');
+// Route::get('/login/google/callback', 'App\Http\Controllers\LoginController@handleProviderCallback');
+
 
 
 Route::middleware('auth:sanctum','getUserInfo')->group(function () {

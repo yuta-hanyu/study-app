@@ -80,4 +80,11 @@ class User extends Authenticatable
     {
       return $this->hasMany('App/Models/BookMark', 'users_id');
     }
+    /**
+     * SNS認証を取得
+     */
+    function IdentityProvider()
+    {
+      return $this->hasMany('App/Models/IdentityProvider', 'users_id');
+    }
 }

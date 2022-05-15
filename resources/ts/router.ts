@@ -9,12 +9,19 @@ import Verify from './components/Verify.vue';
 import Account from './components/Account.vue';
 import NotFound from './components/NotFound.vue';
 import Welcom from './components/Welcom.vue';
+import SnSConfirming from './components/SnSConfirming.vue';
 
 Vue.use(VueRouter)
 
 const router = new VueRouter({
   mode: 'history',
   routes: [
+    {
+      path: '/users/auth/google/callback*',
+      name: 'SnSConfirming',
+      component: SnSConfirming,
+      meta: {title: '確認中・・'}
+    },
     {
       path: '/',
       name: 'Welcom',
