@@ -8,9 +8,13 @@ php artisan make:migration create_todos_table
 php artisan make:migration create_inquiries_table
 php artisan make:migration create_email_verification_table
 php artisan make:migration create_maxims_table
+php artisan make:migration create_identity_providers_table
 
 # カラム追加
 php artisan make:migration add_sort_order_to_todos_table --table=todos
+
+# カラム変更(nulable)
+php artisan make:migration change_email_password_to_nullable --table=users
 
 ## migraton実行
 php artisan migrate
@@ -23,6 +27,7 @@ php artisan make:model BookMark
 php artisan make:model Inquiry
 php artisan make:model EmailVerification
 php artisan make:model Maxim
+php artisan make:model IdentityProvider
 
 
 # middleware作成
@@ -94,3 +99,8 @@ SELECT * FROM study_app.book_mark_folders;
 # docker 
 docker-compose up -d
 
+# google認証ローカル
+## クライアントID
+742026765055-hs22jspvddoosuespq3brdpb80npvgp5.apps.googleusercontent.com
+## クライアントシークレット
+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
