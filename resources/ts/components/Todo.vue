@@ -192,7 +192,6 @@ import Util from '../common/util';
 import draggable from 'vuedraggable';
 import Push from 'push.js';
 
-
 @Component({
   name: 'Todo',
   components: {
@@ -230,16 +229,38 @@ export default class Todo extends Mixins(Const, Util) {
   private onRemindTodos: Todos[]  = [];
 
   mounted() {
-    this.getTodos();
-    if(this.onRemindTodos !== []) {
-      this.remind();
-      setInterval(() =>{
-        this.remind();
-      }, 3600000);
-    }
+    this.checkRemaindTodos();
+    setInterval(() => {
+      if(this.onRemindTodos.length) this.remind();
+    }, 3600000);
   };
   /**
-   * リマインドプシュ通知
+   * プッシュ通知対象todoチェック
+   */
+  async checkRemaindTodos(): Promise<void> {
+    await this.getTodos();
+    if(this.onRemindTodos.length) this.remind();
+  }
+  /**
+   * todo一覧取得
+   */
+  async getTodos(): Promise<void> {
+    await new Promise((resolve, reject) => {
+      Axios.post(`/api/todo/`,{
+      finishFlag: this.finishFlag
+    }).then((res) => {
+      this.bookMarkTodos = res.data.bookMarkTodos;
+      this.todos = res.data.todos;
+      this.onRemindTodos = res.data.onRemindTodos;
+      resolve(true);
+    }).catch((e) => {
+      this.authCheck(e);
+      this.serverError(e);
+    }).finally(() => this.closeLoading());
+    })
+  }
+  /**
+   * リマインドプッシュ通知
    */
   private remind(): void {
     Push.create('本日〆切のタスクがあります！', {
@@ -249,24 +270,6 @@ export default class Todo extends Mixins(Const, Util) {
       location.href = 'https://muscle-myapp.com/todo';
     }})
   }
-  /**
-   * todo一覧取得
-   */
-  private getTodos(): void {
-    this.setLoading();
-    this.bookMarkTodos = [];
-    this.todos = [];
-    Axios.post(`/api/todo/`,{
-      finishFlag: this.finishFlag
-    }).then((res) => {
-      this.bookMarkTodos = res.data.bookMarkTodos;
-      this.todos = res.data.todos;
-      this.onRemindTodos = res.data.onRemindTodos;
-    }).catch((e) => {
-      this.authCheck(e);
-      this.serverError(e);
-    }).finally(() => this.closeLoading());
-  };
   /**
    * ステータスに応じた配色適用
    */
