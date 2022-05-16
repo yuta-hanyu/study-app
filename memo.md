@@ -77,6 +77,11 @@ php artisan make:command TodoReminderBatch
 00 21 * * * /var/www/html/study-app/artisan command:TodoReminderBatch
 # cronテスト用
 */1 * * * * /var/www/html/study-app/artisan command:TodoReminderBatch
+# ssl自動更新設定
+00 04 01 * * sudo certbot renew && sudo service nginx reload 
+# ssl有効期限確認コマンド
+openssl s_client -connect muscle-myapp.com:443 < /dev/null 2> /dev/null | openssl x509 -text | grep "Not After"
+
 
 # クラス作成
 php artisan make:mail InquiryMail
